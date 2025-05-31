@@ -1,10 +1,10 @@
 import flet as ft
 from modules.home import *
-from modules.calculadoras import *
-from modules.navigation import *
+from modules.cal import *
+from modules.nav import *
 from modules.info import *
 from modules.hc import *
-from modules.paraclinicos import *
+from modules.labs import *
 
 
 def main(page: ft.Page):

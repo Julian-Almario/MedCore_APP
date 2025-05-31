@@ -1,5 +1,5 @@
 import flet as ft
-from modules.navigation import *
+from modules.nav import *
 
 
 PRIMARY_COLOR = ft.Colors.BLUE_GREY_900
