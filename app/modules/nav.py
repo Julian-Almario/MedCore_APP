@@ -67,20 +67,18 @@ def nav(page, page_change):
     )
     return bar, drawer
 
-def search_bar(filtrar, buscar, selecciona):
-    search = ft.SearchBar(
-        view_elevation=4,
-        divider_color=ft.Colors.AMBER,
-        bar_hint_text=buscar,
-        view_hint_text=selecciona,
+def search_bar(filtrar, buscar):
+    return ft.TextField(
+        label=buscar,
         on_change=filtrar,
-        controls=[],
+        border=ft.InputBorder.UNDERLINE,
+        border_color=ft.Colors.OUTLINE,
+        bgcolor=ft.Colors.TRANSPARENT,
+        filled=False,
+        dense=True,
+        content_padding=ft.padding.symmetric(horizontal=12, vertical=10),
+        width=400,
         expand=True,
-    )
-    return ft.Container(
-        content=search,
-        expand=True,
-        alignment=ft.alignment.center,
     )
 
 def list_content_search(list_content):
@@ -88,7 +86,6 @@ def list_content_search(list_content):
 
     list_container = ft.Column(spacing=20)
     buscar = "Buscar..."
-    selecciona = "Selecciona..."
 
     def build_list(filtered_items):
         list_container.controls.clear()
@@ -114,7 +111,7 @@ def list_content_search(list_content):
         expand=True,
         controls=[
             ft.Container(
-                content=search_bar(filtrar_calculadoras, buscar, selecciona),
+                content=search_bar(filtrar_calculadoras, buscar),
                 padding=ft.padding.symmetric(horizontal=40)
             ),
             ft.Container(
