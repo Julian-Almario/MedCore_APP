@@ -1,0 +1,41 @@
+[project]
+name = "medcore"
+version = "0.1.6"
+description = "Application for calculating, searching, and accessing medical tools for your medical practice and study. "
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "Julian Andres Almario Loaiza", email = "julian-andres-almario@hotmail.com" }
+]
+dependencies = [
+  "flet==0.28.2",
+]
+
+[tool.flet]
+org = "julianalmario"
+product = "MedCore"
+company = "Julian Almario"
+copyright = "Copyright (C) 2025 by Julian Almario"
+
+app.module = "main"
+app.path = "app"
+splash.web = false
+splash.ios = false
+splash.android = false
+
+
+[tool.flet.android.signing]
+key_store = "path/to/key/key.jks"
+key_alias = "upload"
+
+
+[tool.uv]
+dev-dependencies = [
+    "flet[all]==0.28.2",
+]
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.group.dev.dependencies]
+flet = {extras = ["all"], version = "0.28.2"}

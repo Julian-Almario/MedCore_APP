@@ -1,0 +1,92 @@
+[
+  {
+    "nombre": "Acetaminofén",
+    "mecanismo": "Inhibe la síntesis de prostaglandinas en el sistema nervioso central, produciendo efectos analgésicos y antipiréticos. No tiene efecto antiinflamatorio significativo.",
+    "indicaciones": "• Fiebre\n• Dolor leve a moderado (cefalea, odontalgia, mialgias, artralgias, dismenorrea, etc.)",
+    "dosis": "• Adultos: 500–1000 mg cada 6–8 horas. Máx: 4 g/día.\n• Niños: 10–15 mg/kg/dosis cada 4–6 h. Máx: 75 mg/kg/día o 4 g/día.",
+    "contraindicaciones": "• Hipersensibilidad al acetaminofén\n• Insuficiencia hepática grave",
+    "observaciones": "• Seguro durante embarazo y lactancia.\n• No se recomienda su uso crónico sin supervisión médica.",
+    "tags": ["analgésico", "antipirético", "fiebre", "dolor"]
+  },
+  {
+    "nombre": "Ibuprofeno",
+    "mecanismo": "Inhibe de forma no selectiva la enzima ciclooxigenasa (COX-1 y COX-2), reduciendo la síntesis de prostaglandinas responsables del dolor, la fiebre y la inflamación.",
+    "indicaciones": "• Dolor leve a moderado\n• Fiebre\n• Inflamación (artritis, dismenorrea, lesiones musculares)",
+    "dosis": "• Adultos: 200–400 mg cada 6–8 horas. Máx: 1200–2400 mg/día según indicación.\n• Niños: 5–10 mg/kg/dosis cada 6–8 horas. Máx: 40 mg/kg/día.",
+    "contraindicaciones": "• Úlcera péptica activa\n• Insuficiencia renal o hepática grave\n• Hipersensibilidad a AINEs\n• Embarazo en el tercer trimestre",
+    "observaciones": "• Tomar con alimentos para reducir irritación gástrica.\n• Riesgo de daño renal en uso prolongado.",
+    "tags": ["AINE", "analgésico", "antipirético", "antiinflamatorio"]
+  },
+  {
+    "nombre": "Amoxicilina",
+    "mecanismo": "Antibiótico betalactámico que inhibe la síntesis de la pared celular bacteriana mediante unión a las proteínas fijadoras de penicilina (PBP).",
+    "indicaciones": "• Infecciones del tracto respiratorio superior e inferior\n• Infecciones urinarias no complicadas\n• Otitis media aguda\n• Faringoamigdalitis estreptocócica",
+    "dosis": "• Adultos: 500–1000 mg cada 8 horas.\n• Niños: 25–50 mg/kg/día divididos en 2–3 dosis. Máx: 100 mg/kg/día.",
+    "contraindicaciones": "• Hipersensibilidad a penicilinas\n• Infecciones por gérmenes productores de betalactamasas sin combinación con inhibidor",
+    "observaciones": "• Puede causar diarrea.\n• Usar con precaución en pacientes alérgicos a cefalosporinas.",
+    "tags": ["antibiótico", "infecciones", "penicilina", "amigdalitis"]
+  },
+  {
+    "nombre": "Salbutamol",
+    "mecanismo": "Agonista beta-2 adrenérgico que relaja la musculatura lisa bronquial, produciendo broncodilatación.",
+    "indicaciones": "• Asma aguda o crónica\n• Enfermedad pulmonar obstructiva crónica (EPOC)\n• Broncoespasmo inducido por ejercicio",
+    "dosis": "• Inhalador: 100 mcg por inhalación, 1–2 inhalaciones cada 4–6 h si es necesario.\n• Nebulización: 2.5–5 mg cada 4–6 h.\n• Niños: ajustar según edad y presentación.",
+    "contraindicaciones": "• Hipersensibilidad al salbutamol\n• Arritmias graves no controladas",
+    "observaciones": "• Puede causar taquicardia, temblor y nerviosismo.\n• Usar con precaución en pacientes con enfermedad cardiovascular.",
+    "tags": ["broncodilatador", "asma", "EPOC", "urgencias"]
+  },
+  {
+    "nombre": "Metformina",
+    "mecanismo": "Reduce la producción hepática de glucosa e incrementa la captación periférica de glucosa sin estimular la secreción de insulina.",
+    "indicaciones": "• Diabetes mellitus tipo 2\n• Síndrome de ovario poliquístico (off-label)",
+    "dosis": "• Adultos: 500–850 mg 2–3 veces al día con alimentos. Máx: 2000–2550 mg/día.\n• Ajustar dosis según tolerancia gastrointestinal.",
+    "contraindicaciones": "• Insuficiencia renal moderada a grave (TFG <30 mL/min)\n• Acidosis metabólica\n• Alcoholismo crónico",
+    "observaciones": "• Riesgo raro de acidosis láctica.\n• Monitorizar función renal periódicamente.",
+    "tags": ["antidiabético", "diabetes tipo 2", "glucosa", "metformina"]
+  },
+    {
+    "nombre": "Loratadina",
+    "mecanismo": "Antihistamínico de segunda generación que bloquea de forma selectiva los receptores H1 periféricos, reduciendo los síntomas alérgicos sin causar sedación significativa.",
+    "indicaciones": "• Rinitis alérgica\n• Urticaria crónica idiopática\n• Conjuntivitis alérgica",
+    "dosis": "• Adultos y niños ≥6 años: 10 mg una vez al día.\n• Niños 2–5 años: 5 mg una vez al día.",
+    "contraindicaciones": "• Hipersensibilidad a loratadina o desloratadina",
+    "observaciones": "• No atraviesa fácilmente la barrera hematoencefálica.\n• Usar con precaución en insuficiencia hepática grave.",
+    "tags": ["antihistamínico", "alergia", "rinitis", "urticaria"]
+  },
+  {
+    "nombre": "Omeprazol",
+    "mecanismo": "Inhibidor de la bomba de protones que bloquea de forma irreversible la H+/K+ ATPasa gástrica, disminuyendo la secreción de ácido.",
+    "indicaciones": "• Enfermedad por reflujo gastroesofágico (ERGE)\n• Úlcera gástrica o duodenal\n• Erradicación de Helicobacter pylori\n• Síndrome de Zollinger-Ellison",
+    "dosis": "• Adultos: 20–40 mg/día.\n• Niños: 0.7–3.5 mg/kg/día en una o dos dosis.",
+    "contraindicaciones": "• Hipersensibilidad a los inhibidores de bomba de protones\n• Uso concomitante con rilpivirina",
+    "observaciones": "• Puede disminuir la absorción de vitamina B12 y magnesio a largo plazo.\n• Utilizar la dosis mínima efectiva.",
+    "tags": ["IBP", "gastritis", "úlceras", "reflujo"]
+  },
+  {
+    "nombre": "Enalapril",
+    "mecanismo": "Inhibidor de la enzima convertidora de angiotensina (IECA), disminuye la formación de angiotensina II, reduciendo la presión arterial y la poscarga.",
+    "indicaciones": "• Hipertensión arterial\n• Insuficiencia cardíaca\n• Nefropatía diabética (protección renal)",
+    "dosis": "• Adultos: 5–20 mg/día, dividido en 1–2 dosis.\n• Niños: 0.1–0.5 mg/kg/día, máx: 0.6 mg/kg/día o 40 mg/día.",
+    "contraindicaciones": "• Embarazo\n• Angioedema previo por IECA\n• Estenosis bilateral de arterias renales",
+    "observaciones": "• Monitorizar potasio y función renal.\n• Puede causar tos seca persistente.",
+    "tags": ["antihipertensivo", "IECA", "insuficiencia cardíaca", "nefroprotector"]
+  },
+  {
+    "nombre": "Dexametasona",
+    "mecanismo": "Glucocorticoide sintético con potente acción antiinflamatoria e inmunosupresora; actúa inhibiendo la expresión de citoquinas proinflamatorias.",
+    "indicaciones": "• Enfermedades inflamatorias graves\n• Shock anafiláctico\n• Asma grave\n• Edema cerebral\n• COVID-19 grave",
+    "dosis": "• Adultos: 4–8 mg/día IV/IM/VO (ajustar según indicación).\n• Niños: 0.15–0.3 mg/kg/día.",
+    "contraindicaciones": "• Infecciones micóticas sistémicas no tratadas\n• Hipersensibilidad a corticosteroides",
+    "observaciones": "• Riesgo de hiperglucemia, osteoporosis y supresión adrenal con uso prolongado.\n• No suspender bruscamente si uso crónico.",
+    "tags": ["corticoide", "antiinflamatorio", "asma", "inmunosupresor"]
+  },
+  {
+    "nombre": "Diazepam",
+    "mecanismo": "Benzodiacepina que potencia la acción del GABA, produciendo efectos ansiolíticos, sedantes, anticonvulsivantes y relajantes musculares.",
+    "indicaciones": "• Crisis convulsivas agudas\n• Ansiedad severa\n• Espasmos musculares\n• Síndrome de abstinencia alcohólica",
+    "dosis": "• Adultos: 2–10 mg cada 6–8 h VO; 5–10 mg IV para crisis.\n• Niños: 0.2–0.5 mg/kg/dosis IV o rectal.",
+    "contraindicaciones": "• Miastenia gravis\n• Glaucoma de ángulo cerrado\n• Insuficiencia respiratoria grave",
+    "observaciones": "• Riesgo de dependencia.\n• Evitar alcohol y depresores del SNC.",
+    "tags": ["benzodiacepina", "anticonvulsivante", "ansiolítico", "sedante"]
+  }
+]
