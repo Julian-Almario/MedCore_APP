@@ -12,7 +12,6 @@
 
 **MedCore** es una aplicación multiplataforma para **móviles, web y escritorio**, desarrollada en Python utilizando el framework [Flet](https://flet.dev). Su objetivo es centralizar calculadoras clínicas, valores de referencia paraclínicos y otros recursos útiles en una plataforma intuitiva, modular y eficiente.
 
----
 
 ## 🎬 Demo
 
@@ -20,7 +19,6 @@
   <img src="img/demo.gif" alt="Demo MedCore" width="400"/>
 </p>
 
----
 
 ## 🩺 Características
 
@@ -43,7 +41,6 @@
 - 🌙 **Modo oscuro permanente**
 - 🧩 **Diseño modular** y expansible
 
----
 
 ## 🧰 Tecnologías utilizadas
 
@@ -51,7 +48,6 @@
 - **[Flet](https://flet.dev/)** – Framework para interfaces web y de escritorio
 - **Arquitectura modular** y escalable
 
----
 
 ## 🚀 Instalación y ejecución
 
@@ -70,7 +66,6 @@
     ```
 > **Nota:** Se recomienda usar un entorno virtual.
 
----
 
 ## 📁 Estructura del proyecto
 
@@ -91,8 +86,6 @@ app/
 │       ├── historias_clinicas/
 │       └── meds.json
 ```
-
----
 
 ## 🧪 Estado actual
 
@@ -116,13 +109,10 @@ app/
 * [x] Búsqueda interactiva
 * [x] Creador de historias clínicas
 
----
-
 ## 📌 Objetivo
 
 **MedCore** busca ser una herramienta de referencia para estudiantes de medicina, médicos generales y especialistas, centralizando cálculos, valores normales y parámetros clave para agilizar la toma de decisiones clínicas.
 
----
 
 ## ❓ Preguntas frecuentes
 
@@ -132,29 +122,16 @@ app/
 **¿Cómo reporto un bug o sugiero una mejora?**  
 Abre un [issue aquí](https://github.com/Julian-Almario/medcore_app/issues).
 
----
-
-## 🛠️ Soporte y contacto
-
-¿Tienes dudas, sugerencias o necesitas soporte?  
-📧 julian-andres-almario@hotmail.com  
-O abre un [issue](https://github.com/Julian-Almario/medcore_app/issues).
-
----
-
 ## 🙌 Contribuciones
 
-¡Las contribuciones son bienvenidas!  
-Consulta la [guía de contribución](CONTRIBUTING.md) o abre un [pull request](https://github.com/Julian-Almario/medcore_app/pulls).
+¡Las contribuciones son bienvenidas!. Consulta la [guía de contribución](CONTRIBUTING.md) o abre un [pull request](https://github.com/Julian-Almario/medcore_app/pulls).
 
----
+
 
 ## 📄 Licencia
 
-Este proyecto se distribuye bajo la licencia **GNU GPL v3**.  
-Consulta el archivo [`LICENSE`](LICENSE) para más detalles.
+Este proyecto se distribuye bajo la licencia **GNU GPL v3**. Consulta el archivo [`LICENSE`](LICENSE) para más detalles.
 
----
 
 ## 🌟 Reconocimientos
 
