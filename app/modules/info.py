@@ -1,6 +1,4 @@
 import flet as ft
-import flet_ads as ads
-
 
 def info_page(page: ft.Page):
 
