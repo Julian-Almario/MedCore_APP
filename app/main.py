@@ -1,6 +1,7 @@
 import flet as ft
 import os
 import json
+from modules.guias import *
 from modules.cal import *
 from modules.info import *
 from modules.hc import *
@@ -236,6 +237,11 @@ def main(page: ft.Page):
         main_content.controls.clear()
         main_content.controls.append(pantalla_historia_clinica(page))
         page.update()
+    
+    def show_guias():
+        main_content.controls.clear()
+        main_content.controls.append(pagina_guias(page))
+        page.update()
 
     def show_info():
         main_content.controls.clear()
@@ -259,6 +265,8 @@ def main(page: ft.Page):
         elif current_page_index == 3:
             show_hc()
         elif current_page_index == 4:
+            show_guias()
+        elif current_page_index == 5:
             show_info()
 
     page.navigation_bar = ft.CupertinoNavigationBar(
@@ -271,6 +279,7 @@ def main(page: ft.Page):
             ft.NavigationBarDestination(icon=ft.Icons.LOCAL_PHARMACY_OUTLINED, label="Medicamentos"),
             ft.NavigationBarDestination(icon=ft.Icons.BIOTECH_OUTLINED, label="Laboratorios"),
             ft.NavigationBarDestination(icon=ft.Icons.DESCRIPTION_OUTLINED, label="Historia"),
+            ft.NavigationBarDestination(icon=ft.Icons.LIBRARY_BOOKS_OUTLINED, label="Guías"),
             ft.NavigationBarDestination(icon=ft.Icons.INFO_OUTLINED, label="Info"),
         ],
     )
