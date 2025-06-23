@@ -252,14 +252,13 @@ def main(page: ft.Page):
     def load_current_page():
         if current_page_index == 0:
             show_cals()
-        #Page meds in progress
-        #elif current_page_index == 1:
-        #    show_meds()
         elif current_page_index == 1:
-            show_labs()
+            show_meds()
         elif current_page_index == 2:
-            show_hc()
+            show_labs()
         elif current_page_index == 3:
+            show_hc()
+        elif current_page_index == 4:
             show_info()
 
     page.navigation_bar = ft.CupertinoNavigationBar(
@@ -269,7 +268,7 @@ def main(page: ft.Page):
         on_change=on_navigation_change,
         destinations=[
             ft.NavigationBarDestination(icon=ft.Icons.CALCULATE_OUTLINED, label="Calculadoras"),
-            #ft.NavigationBarDestination(icon=ft.Icons.LOCAL_PHARMACY_OUTLINED, label="Medicamentos"),
+            ft.NavigationBarDestination(icon=ft.Icons.LOCAL_PHARMACY_OUTLINED, label="Medicamentos"),
             ft.NavigationBarDestination(icon=ft.Icons.BIOTECH_OUTLINED, label="Laboratorios"),
             ft.NavigationBarDestination(icon=ft.Icons.DESCRIPTION_OUTLINED, label="Historia"),
             ft.NavigationBarDestination(icon=ft.Icons.INFO_OUTLINED, label="Info"),
