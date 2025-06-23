@@ -1,65 +1,90 @@
 import flet as ft
 import os
 import json
+from modules.colors import *
 
 def pagina_guias(page: ft.Page):
-    ruta_webs = os.path.abspath(os.path.join(os.path.dirname(__file__), "..","storage", "data", "webs.json"))
+    ruta_webs = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "storage", "data", "webs.json"))
     with open(ruta_webs, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     filtro = {"value": ""}
+    lista_paneles = []
 
-    panels = []
+    def crear_panel_categoria(categoria, guias):
+        panel_ref = ft.Ref[ft.ExpansionPanel]()
+
+        contenido = ft.Column(
+            controls=[
+                ft.Container(
+                    alignment=ft.alignment.center_left,
+                    content=ft.TextButton(
+                        text=guia["titulo"],
+                        url=guia["url"],
+                        style=ft.ButtonStyle(
+                            color=ft.Colors.BLUE_400,
+                            overlay_color=ft.Colors.BLUE_100,
+                            padding=ft.padding.symmetric(horizontal=8, vertical=6),
+                            shape=ft.RoundedRectangleBorder(radius=8),
+                        ),
+                    )
+                )
+                for guia in guias
+            ],
+            spacing=10
+        )
+
+
+        return ft.ExpansionPanelList(
+            controls=[
+                ft.ExpansionPanel(
+                    ref=panel_ref,
+                    header=ft.ListTile(
+                        title=ft.Text(categoria.capitalize()),
+                    ),
+                    content=ft.Container(content=contenido, padding=15),
+                    bgcolor=PRIMARY_COLOR,
+                    expanded=False
+                )
+            ],
+            expand_icon_color=TEXT_COLOR,
+            elevation=8,
+            divider_color=TEXT_COLOR,
+        )
 
     def build_panels():
-        panels.clear()
+        lista_paneles.clear()
         filtro_val = filtro["value"].lower()
+
         for categoria, enlaces in data.items():
-            # Filtra las guías por el filtro actual
             guias_filtradas = [
                 guia for guia in enlaces
                 if filtro_val in guia["titulo"].lower()
             ]
             if not guias_filtradas:
                 continue
-            panels.append(
-                ft.ExpansionPanel(
-                    header=ft.ListTile(
-                        title=ft.Text(categoria.capitalize(), weight=ft.FontWeight.BOLD)
-                    ),
-                    content=ft.Container(
-                        content=ft.Column(
-                            controls=[
-                                ft.TextButton(
-                                    text=guia["titulo"],
-                                    url=guia["url"],
-                                    style=ft.ButtonStyle(color=ft.Colors.BLUE_400),
-                                )
-                                for guia in guias_filtradas
-                            ],
-                            spacing=8
-                        ),
-                        padding=ft.padding.all(16)
-                    ),
-                    expanded=False
+
+            panel = crear_panel_categoria(categoria, guias_filtradas)
+            lista_paneles.append(
+                ft.Container(
+                    content=panel,
+                    margin=ft.margin.only(bottom=16)
                 )
             )
-
-    panel_list = ft.ExpansionPanelList(
-        controls=panels,
-        expand_icon_color=ft.Colors.BLUE_400,
-        elevation=4,
-    )
 
     def on_search(e):
         filtro["value"] = e.control.value
         build_panels()
-        panel_list.controls = panels
-        panel_list.update()
+        lista_view.controls = lista_paneles
+        lista_view.update()
 
-    # Inicializa los paneles
     build_panels()
-    panel_list.controls = panels
+
+    lista_view = ft.ListView(
+        expand=True,
+        padding=ft.padding.symmetric(horizontal=10, vertical=5),
+        controls=lista_paneles
+    )
 
     return ft.Column(
         expand=True,
@@ -82,10 +107,7 @@ def pagina_guias(page: ft.Page):
             ),
             ft.Container(
                 expand=True,
-                content=ft.ListView(
-                    expand=True,
-                    controls=[panel_list]
-                )
+                content=lista_view
             )
         ]
     )
