@@ -7,7 +7,6 @@ from modules.info import *
 from modules.hc import *
 from modules.labs import *
 
-
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
     page.adaptive = True
@@ -102,11 +101,7 @@ def main(page: ft.Page):
             ],
         )
 
-    
-#----------------------------------------------
-    #Page meds
-
-    RUTA_MEDS = os.path.abspath(os.path.join(os.path.dirname(__file__),"storage", "data"))
+    RUTA_MEDS = os.path.abspath(os.path.join(os.path.dirname(__file__), "storage", "data"))
     os.makedirs(RUTA_MEDS, exist_ok=True)
 
     def crear_panel_medicamento(med: dict):
@@ -172,19 +167,14 @@ def main(page: ft.Page):
                 ],
             )
         }
-    
-    #Database load meds.json
+
     def cargar_medicamentos_desde_json(ruta_archivo):
         with open(ruta_archivo, "r", encoding="utf-8") as f:
             datos = json.load(f)
-
         return [crear_panel_medicamento(med) for med in datos]
 
-
     def pagina_medicamentos(page: ft.Page):
-
         list_data = cargar_medicamentos_desde_json(f"{RUTA_MEDS}/meds.json")
-
         buscar = "Buscar medicamentos..."
         mensaje_no_resultados = ft.Text(
             value="No se encontraron medicamentos.",
@@ -192,7 +182,6 @@ def main(page: ft.Page):
             text_align=ft.TextAlign.CENTER,
             color=ft.Colors.ON_SURFACE_VARIANT,
         )
-
         list_container, filtrar_items = list_content_search(list_data, mensaje_no_resultados)
 
         return ft.Column(
@@ -214,10 +203,6 @@ def main(page: ft.Page):
             ],
         )
 
-
-
-#--------------------------------------------------
-
     def show_cals():
         main_content.controls.clear()
         main_content.controls.append(build_fixed_page(calculadoras, "Buscar calculadora..."))
@@ -237,7 +222,7 @@ def main(page: ft.Page):
         main_content.controls.clear()
         main_content.controls.append(pantalla_historia_clinica(page))
         page.update()
-    
+
     def show_guias():
         main_content.controls.clear()
         main_content.controls.append(pagina_guias(page))
@@ -248,12 +233,58 @@ def main(page: ft.Page):
         main_content.controls.append(info_page(page))
         page.update()
 
-    def on_navigation_change(e):
+    def cambiar_pagina(index):
         nonlocal current_page_index
-        current_page_index = e.control.selected_index
+        current_page_index = index
         load_current_page()
+        navigation_container.content = custom_navigation_bar()
+        page.update()
 
-    # Load pages
+    def custom_navigation_bar():
+        return ft.Row(
+            scroll="auto",
+            alignment=ft.MainAxisAlignment.CENTER,
+            expand=True,
+            spacing=10,
+            controls=[
+                ft.TextButton(
+                    text="Calculadoras",
+                    icon=ft.Icons.CALCULATE_OUTLINED,
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 0 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(0),
+                ),
+                ft.TextButton(
+                    text="Medicamentos",
+                    icon=ft.Icons.LOCAL_PHARMACY_OUTLINED,
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 1 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(1),
+                ),
+                ft.TextButton(
+                    text="Laboratorios",
+                    icon=ft.Icons.BIOTECH_OUTLINED,
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 2 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(2),
+                ),
+                ft.TextButton(
+                    text="Guías",
+                    icon=ft.Icons.LIBRARY_BOOKS_OUTLINED,
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 3 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(3),
+                ),
+                ft.TextButton(
+                    text="Historias Clínicas",
+                    icon=ft.Icons.DESCRIPTION_OUTLINED,
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 4 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(4),
+                ),
+                ft.TextButton(
+                    text="Info",
+                    icon=ft.Icons.INFO_OUTLINED,
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 5 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(5),
+                ),
+            ]
+        )
 
     def load_current_page():
         if current_page_index == 0:
@@ -263,28 +294,35 @@ def main(page: ft.Page):
         elif current_page_index == 2:
             show_labs()
         elif current_page_index == 3:
-            show_hc()
-        elif current_page_index == 4:
             show_guias()
+        elif current_page_index == 4:
+            show_hc()
         elif current_page_index == 5:
             show_info()
 
-    page.navigation_bar = ft.CupertinoNavigationBar(
+    # Contenedor para navegación
+    navigation_container = ft.Container(
         bgcolor=PRIMARY_COLOR,
-        inactive_color=SELECT_COLOR,
-        active_color=TEXT_COLOR,
-        on_change=on_navigation_change,
-        destinations=[
-            ft.NavigationBarDestination(icon=ft.Icons.CALCULATE_OUTLINED, label="Calculadoras"),
-            ft.NavigationBarDestination(icon=ft.Icons.LOCAL_PHARMACY_OUTLINED, label="Medicamentos"),
-            ft.NavigationBarDestination(icon=ft.Icons.BIOTECH_OUTLINED, label="Laboratorios"),
-            ft.NavigationBarDestination(icon=ft.Icons.DESCRIPTION_OUTLINED, label="Historia"),
-            ft.NavigationBarDestination(icon=ft.Icons.LIBRARY_BOOKS_OUTLINED, label="Guías"),
-            ft.NavigationBarDestination(icon=ft.Icons.INFO_OUTLINED, label="Info"),
-        ],
+        expand=False,
+        width=page.width,
+        padding=ft.padding.only(top=8, bottom=8),
+        content=ft.Row(
+            controls=[custom_navigation_bar()],
+            alignment=ft.MainAxisAlignment.CENTER,
+            expand=True
+        )
     )
 
     load_current_page()
-    page.add(main_content)
+
+    page.add(
+        ft.Column(
+            expand=True,
+            controls=[
+                main_content,
+                navigation_container
+            ]
+        )
+    )
 
 ft.app(target=main, assets_dir="assets")
