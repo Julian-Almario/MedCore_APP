@@ -23,7 +23,8 @@ def main(page: ft.Page):
 
     current_page_index = 0
     main_content = ft.Column(expand=True)
-
+# -------------------------------------------------------------------------------
+# Search bar general
     def search_bar(filtrar, buscar):
         return ft.TextField(
             label=buscar,
@@ -101,6 +102,8 @@ def main(page: ft.Page):
             ],
         )
 
+# -------------------------------------------------------------------------------
+# page de medicamentos
     RUTA_MEDS = os.path.abspath(os.path.join(os.path.dirname(__file__), "storage", "data"))
     os.makedirs(RUTA_MEDS, exist_ok=True)
 
@@ -203,6 +206,8 @@ def main(page: ft.Page):
             ],
         )
 
+# -------------------------------------------------------------------------------
+
     def show_cals():
         main_content.controls.clear()
         main_content.controls.append(build_fixed_page(calculadoras, "Buscar calculadora..."))
@@ -233,6 +238,9 @@ def main(page: ft.Page):
         main_content.controls.append(info_page(page))
         page.update()
 
+
+# -------------------------------------------------------------------------------
+# Barra de navegación personalizada
     def cambiar_pagina(index):
         nonlocal current_page_index
         current_page_index = index
@@ -242,7 +250,7 @@ def main(page: ft.Page):
 
     def custom_navigation_bar():
         return ft.Row(
-            scroll="auto",
+            scroll=ft.ScrollMode.AUTO,
             alignment=ft.MainAxisAlignment.CENTER,
             expand=True,
             spacing=10,
@@ -286,6 +294,19 @@ def main(page: ft.Page):
             ]
         )
 
+    navigation_container = ft.Container(
+        expand=False,
+        width=page.width,
+        padding=ft.padding.only(top=8, bottom=8),
+        content=ft.Row(
+            controls=[custom_navigation_bar()],
+            alignment=ft.MainAxisAlignment.CENTER,
+            expand=True
+        )
+    )
+
+# -------------------------------------------------------------------------------
+
     def load_current_page():
         if current_page_index == 0:
             show_cals()
@@ -300,18 +321,6 @@ def main(page: ft.Page):
         elif current_page_index == 5:
             show_info()
 
-    # Contenedor para navegación
-    navigation_container = ft.Container(
-        bgcolor=PRIMARY_COLOR,
-        expand=False,
-        width=page.width,
-        padding=ft.padding.only(top=8, bottom=8),
-        content=ft.Row(
-            controls=[custom_navigation_bar()],
-            alignment=ft.MainAxisAlignment.CENTER,
-            expand=True
-        )
-    )
 
     load_current_page()
 
