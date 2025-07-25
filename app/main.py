@@ -370,23 +370,23 @@ def main(page: ft.Page):
                     on_click=lambda e: cambiar_pagina(2),
                 ),
                 ft.TextButton(
-                    text="Historias Clínicas",
-                    icon=ft.Icons.DESCRIPTION_OUTLINED,
+                    text="Algoritmos",
+                    icon=ft.Icons.DEVICE_HUB_OUTLINED,
                     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 3 else SELECT_COLOR),
                     on_click=lambda e: cambiar_pagina(3),
                 ),
                 ft.TextButton(
-                    text="Info",
-                    icon=ft.Icons.INFO_OUTLINED,
+                    text="Historias Clínicas",
+                    icon=ft.Icons.DESCRIPTION_OUTLINED,
                     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 4 else SELECT_COLOR),
                     on_click=lambda e: cambiar_pagina(4),
                 ),
                 ft.TextButton(
-                    text="Algoritmos",
-                    icon=ft.Icons.DEVICE_HUB_OUTLINED,
+                    text="Info",
+                    icon=ft.Icons.INFO_OUTLINED,
                     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 5 else SELECT_COLOR),
                     on_click=lambda e: cambiar_pagina(5),
-                ),
+                )
 
             ]
         )
@@ -412,11 +412,12 @@ def main(page: ft.Page):
         elif current_page_index == 2:
             show_labs()
         elif current_page_index == 3:
-            show_hc()
-        elif current_page_index == 4:
-            show_info()
-        elif current_page_index == 5:
             show_algorithms()
+        elif current_page_index == 4:
+            show_hc()
+        elif current_page_index == 5:
+            show_info()
+
 
 
 
