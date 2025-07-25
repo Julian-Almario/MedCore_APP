@@ -206,6 +206,7 @@ def main(page: ft.Page):
             ],
         )
 #---------------------------------------------------
+
     RUTA_ALGO = os.path.abspath(os.path.join(os.path.dirname(__file__), "storage", "data", "algoritmos"))
     os.makedirs(RUTA_ALGO, exist_ok=True)
 
@@ -230,7 +231,7 @@ def main(page: ft.Page):
             panel.update()
 
         ruta_imagen = os.path.join(RUTA_ALGO, algo["imagen"])
-        
+
         if not es_imagen_valida(ruta_imagen):
             imagen_componente = ft.Text(
                 f"Imagen no encontrada o formato no soportado: {algo['imagen']}",
@@ -238,10 +239,17 @@ def main(page: ft.Page):
                 selectable=True
             )
         else:
-            imagen_componente = ft.Image(
-                src=ruta_imagen,
-                fit=ft.ImageFit.CONTAIN,
-                expand=True,
+            imagen_componente = ft.InteractiveViewer(
+                min_scale=0.5,
+                max_scale=5,
+                boundary_margin=ft.margin.all(20),
+                content=ft.Image(
+                    src=ruta_imagen,
+                    fit=ft.ImageFit.CONTAIN,
+                    width=600,
+                    height=400,
+                    expand=True
+                )
             )
 
         return {
