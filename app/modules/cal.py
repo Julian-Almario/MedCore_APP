@@ -91,4 +91,9 @@ calculadoras = [
             "tags": ["apendicitis", "quirúrgica", "criterios", "alvarado"],
             "componente": criterios_alvarado()
         },
+        {
+            "titulo": "Indice de bishop",
+            "tags": ["ginecolgia", "quirúrgica", "parto", "borramiento"],
+            "componente": bishop()
+        }
     ]

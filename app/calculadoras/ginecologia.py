@@ -18,7 +18,7 @@ def edad_gestacional_fur():
             if dias < 0:
                 edad_gestacional.value = "Edad gestacional: FUM en el futuro"
                 fpp.value = "Fecha probable de parto: -"
-                fpp.color = ft.colors.RED_400
+                fpp.color = ft.Colors.RED_400
             else:
                 semanas = dias // 7
                 dias_restantes = dias % 7
@@ -28,7 +28,7 @@ def edad_gestacional_fur():
                 fpp.value = f"Fecha probable de parto: {fpp_date.strftime('%Y-%m-%d')}"
 
                 if semanas <= 13:
-                    fpp.color = ft.colors.YELLOW_700
+                    fpp.color = ft.Colors.YELLOW_700
                 elif 14 <= semanas <= 27:
                     fpp.color = ft.Colors.BLUE_400
                 else:
@@ -71,7 +71,7 @@ def edad_gestacional_fur():
             fum_texto.value = "FUM: -"
             edad_gestacional.value = "Edad gestacional: -"
             fpp.value = "Fecha probable de parto: -"
-            fpp.color = ft.colors.ON_SURFACE_VARIANT
+            fpp.color = ft.Colors.ON_SURFACE_VARIANT
             fum_texto.update()
             edad_gestacional.update()
             fpp.update()
@@ -145,7 +145,7 @@ def edad_corregida_prematuro():
 
             if edad_crono_dias < 0:
                 edad_cronologica.value = "Edad cronológica: Fecha en el futuro"
-                edad_cronologica.color = ft.colors.RED
+                edad_cronologica.color = ft.Colors.RED
                 edad_corregida.value = "Edad corregida: -"
                 edad_corregida.color = TEXT_COLOR
                 texto_ecuacion.value = ""
@@ -309,3 +309,106 @@ def edad_corregida_prematuro():
         ]
     )
 
+def bishop():
+    opciones_bishop = {
+        "Dilatación (cm)": ["Cerrado", "1–2", "3–4", "≥5"],
+        "Borramiento (%)": ["0–30", "40–50", "60–70", "≥80"],
+        "Estación fetal": ["–3", "–2", "–1/0", "+1/+2"],
+        "Consistencia cervical": ["Firme", "Media", "Blanda"],
+        "Posición cervical": ["Posterior", "Media", "Anterior"],
+    }
+
+    # Mapeo de puntajes según índice en la lista
+    selectores = {}
+    for criterio, opciones in opciones_bishop.items():
+        selectores[criterio] = ft.Dropdown(
+            options=[ft.dropdown.Option(opcion) for opcion in opciones],
+            label=criterio,
+            width=400,
+        )
+
+    resultado_bishop = ft.Text("Puntaje total: -", text_align=ft.TextAlign.CENTER, color=TEXT_COLOR)
+    interpretacion_bishop = ft.Text("Interpretación: -", text_align=ft.TextAlign.CENTER, color=TEXT_COLOR)
+
+    def calcular_bishop(e):
+        puntaje = 0
+        incompleto = False
+
+        for criterio, dropdown in selectores.items():
+            if dropdown.value is None:
+                incompleto = True
+                continue
+            opciones = opciones_bishop[criterio]
+            indice = opciones.index(dropdown.value)
+            puntaje += indice
+
+        if incompleto:
+            resultado_bishop.value = "Puntaje total: -"
+            interpretacion_bishop.value = "Interpretación: Selecciona todos los parámetros."
+            resultado_bishop.color = TEXT_COLOR
+            interpretacion_bishop.color = TEXT_COLOR
+        else:
+            if puntaje >= 7:
+                interpretacion = "Inducción trabajo de parto"
+                color = "green"
+            elif puntaje <= 6:
+                interpretacion = "Maduración cervical"
+                color = "orange"
+            else:
+                interpretacion = "Condiciones desfavorables para inducción."
+                color = "red"
+            resultado_bishop.value = f"Puntaje total: {puntaje}"
+            interpretacion_bishop.value = f"Interpretación: {interpretacion}"
+            resultado_bishop.color = color
+            interpretacion_bishop.color = color
+
+        resultado_bishop.update()
+        interpretacion_bishop.update()
+
+    for dropdown in selectores.values():
+        dropdown.on_change = calcular_bishop
+
+    panel_ref = ft.Ref[ft.ExpansionPanel]()
+    panel_list_ref = ft.Ref[ft.ExpansionPanelList]()
+
+    def on_expand_change(e):
+        panel = panel_ref.current
+        is_expanded = panel.expanded
+        panel.bgcolor = SECONDARY_COLOR if is_expanded else PRIMARY_COLOR
+        panel.update()
+        if not is_expanded:
+            for d in selectores.values():
+                d.value = None
+                d.update()
+            resultado_bishop.value = "Puntaje total: -"
+            interpretacion_bishop.value = "Interpretación: -"
+            resultado_bishop.update()
+            interpretacion_bishop.update()
+
+    return ft.ExpansionPanelList(
+        ref=panel_list_ref,
+        on_change=on_expand_change,
+        expand_icon_color=TEXT_COLOR,
+        elevation=8,
+        divider_color=TEXT_COLOR,
+        controls=[
+            ft.ExpansionPanel(
+                ref=panel_ref,
+                header=ft.ListTile(
+                    title=ft.Text("Índice de Bishop para inducción del parto", color=TEXT_COLOR),
+                    subtitle=ft.Text("Evaluación obstétrica", size=SUBTITLE_SIZE, color=TEXT_COLOR)
+                ),
+                content=ft.Container(
+                    content=ft.Column(
+                        controls=list(selectores.values()) + [resultado_bishop, interpretacion_bishop],
+                        spacing=10,
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                    ),
+                    padding=ft.padding.symmetric(vertical=25, horizontal=50),
+                    alignment=ft.alignment.center
+                ),
+                bgcolor=PRIMARY_COLOR,
+                expanded=False,
+            )
+        ],
+    )
