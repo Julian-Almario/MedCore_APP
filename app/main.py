@@ -310,7 +310,124 @@ def main(page: ft.Page):
         )
 
 # -------------------------------------------------------------------------------
+# Pages imagenes diagnosticas
+    # Ruta a imágenes diagnósticas
+    RUTA_IMAGENES_DIAGNOSTICAS = os.path.abspath(os.path.join(os.path.dirname(__file__), "storage", "data", "imgdx"))
+    os.makedirs(RUTA_IMAGENES_DIAGNOSTICAS, exist_ok=True)
 
+    # Extensiones válidas de imagen
+    EXTENSIONES_VALIDAS = [".jpg", ".jpeg", ".png", ".webp", ".bmp", ".gif"]
+
+    def es_imagen_valida(ruta_imagen):
+        return os.path.exists(ruta_imagen) and os.path.splitext(ruta_imagen)[1].lower() in EXTENSIONES_VALIDAS
+
+    def cargar_imagenes_diagnosticas_desde_json(ruta_archivo):
+        with open(ruta_archivo, "r", encoding="utf-8") as f:
+            datos = json.load(f)
+        return [crear_panel_imagen_diagnostica(img) for img in datos]
+
+    def crear_panel_imagen_diagnostica(img: dict):
+        panel_ref = ft.Ref[ft.ExpansionPanel]()
+
+        def on_expand_change(e):
+            panel = panel_ref.current
+            is_expanded = panel.expanded
+            panel.bgcolor = SECONDARY_COLOR if is_expanded else PRIMARY_COLOR
+            panel.update()
+
+        ruta_imagen = os.path.join(RUTA_IMAGENES_DIAGNOSTICAS, img["imagen"])
+
+        if not es_imagen_valida(ruta_imagen):
+            imagen_componente = ft.Text(
+                f"Imagen no encontrada o formato no soportado: {img['imagen']}",
+                color=ft.Colors.RED,
+                selectable=True
+            )
+        else:
+            imagen_componente = ft.Column(
+                [
+                    ft.InteractiveViewer(
+                        min_scale=0.5,
+                        max_scale=5,
+                        boundary_margin=ft.margin.all(10),
+                        content=ft.Image(
+                            src=ruta_imagen,
+                            fit=ft.ImageFit.CONTAIN,
+                            width=600,
+                            height=400,
+                        )
+                    ),
+                    ft.Divider(height=10),
+                    ft.Text(
+                        img.get("descripcion", ""),
+                        size=14,
+                        text_align=ft.TextAlign.CENTER
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER
+            )
+
+
+        return {
+            "titulo": img["nombre"],
+            "tags": img["tags"],
+            "componente": ft.ExpansionPanelList(
+                on_change=on_expand_change,
+                expand_icon_color=TEXT_COLOR,
+                elevation=8,
+                divider_color=TEXT_COLOR,
+                controls=[
+                    ft.ExpansionPanel(
+                        ref=panel_ref,
+                        header=ft.ListTile(
+                            title=ft.Text(img["nombre"], text_align=ft.TextAlign.LEFT),
+                        ),
+                        content=ft.Container(
+                            content=imagen_componente,
+                            padding=15,
+                        ),
+                        bgcolor=PRIMARY_COLOR,
+                        expanded=False,
+                    )
+                ],
+            )
+        }
+
+    def pagina_imagenes_diagnosticas(page: ft.Page):
+        list_data = cargar_imagenes_diagnosticas_desde_json(os.path.join(RUTA_IMAGENES_DIAGNOSTICAS, "imgdx.json"))
+        buscar = "Buscar imágenes diagnósticas..."
+
+        mensaje_no_resultados = ft.Text(
+            value="No se encontraron imágenes diagnósticas.",
+            style=ft.TextThemeStyle.BODY_MEDIUM,
+            text_align=ft.TextAlign.CENTER,
+            color=ft.Colors.ON_SURFACE_VARIANT,
+        )
+
+        list_container, filtrar_items = list_content_search(list_data, mensaje_no_resultados)
+
+        return ft.Column(
+            expand=True,
+            controls=[
+                ft.Container(
+                    content=search_bar(filtrar_items, buscar),
+                    padding=ft.padding.symmetric(horizontal=40, vertical=10),
+                    alignment=ft.alignment.center,
+                ),
+                ft.Container(
+                    expand=True,
+                    content=ft.ListView(
+                        expand=True,
+                        padding=ft.padding.symmetric(horizontal=10, vertical=5),
+                        controls=[list_container],
+                    ),
+                ),
+            ],
+        )
+
+
+#-------------------------------------------
     def show_cals():
         main_content.controls.clear()
         main_content.controls.append(build_fixed_page(calculadoras, "Buscar calculadora..."))
@@ -336,6 +453,10 @@ def main(page: ft.Page):
         main_content.controls.append(pagina_algoritmos(page))
         page.update()
 
+    def show_img_dx():
+        main_content.controls.clear()
+        main_content.controls.append(pagina_imagenes_diagnosticas(page))
+        page.update()
 
     def show_info():
         main_content.controls.clear()
@@ -384,16 +505,23 @@ def main(page: ft.Page):
                     on_click=lambda e: cambiar_pagina(3),
                 ),
                 ft.TextButton(
-                    text="Historias Clínicas",
-                    icon=ft.Icons.DESCRIPTION_OUTLINED,
+                    text="Imágenes Diagnósticas",
+                    icon=ft.Icons.IMAGE_OUTLINED,
                     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 4 else SELECT_COLOR),
                     on_click=lambda e: cambiar_pagina(4),
+                ),
+
+                ft.TextButton(
+                    text="Historias Clínicas",
+                    icon=ft.Icons.DESCRIPTION_OUTLINED,
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 5 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(5),
                 ),
                 ft.TextButton(
                     text="Info",
                     icon=ft.Icons.INFO_OUTLINED,
-                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 5 else SELECT_COLOR),
-                    on_click=lambda e: cambiar_pagina(5),
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 6 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(6),
                 )
 
             ]
@@ -422,8 +550,10 @@ def main(page: ft.Page):
         elif current_page_index == 3:
             show_algorithms()
         elif current_page_index == 4:
-            show_hc()
+            show_img_dx()
         elif current_page_index == 5:
+            show_hc()
+        elif current_page_index == 6:
             show_info()
 
 
