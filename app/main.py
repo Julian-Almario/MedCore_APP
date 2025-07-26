@@ -104,7 +104,7 @@ def main(page: ft.Page):
 
 # -------------------------------------------------------------------------------
 # page de medicamentos
-    RUTA_MEDS = os.path.abspath(os.path.join(os.path.dirname(__file__), "storage", "data"))
+    RUTA_MEDS = os.path.abspath(os.path.join(os.path.dirname(__file__), "storage", "data", "meds"))
     os.makedirs(RUTA_MEDS, exist_ok=True)
 
     def crear_panel_medicamento(med: dict):
