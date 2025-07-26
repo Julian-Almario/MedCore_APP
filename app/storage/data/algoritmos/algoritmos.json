@@ -3,10 +3,5 @@
     "nombre": "Asma",
     "tags": ["epoc", "pulmonar", "neumología"],
     "imagen": "asma.jpeg"
-  },
-  {
-    "nombre": "Crisis Asmatica",
-    "tags": ["", "pulmonar", "n"],
-    "imagen": "crisisasmatica.jpeg"
   }
 ]
