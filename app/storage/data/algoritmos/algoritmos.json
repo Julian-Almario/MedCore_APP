@@ -1,7 +1,12 @@
 [
   {
-    "nombre": "Asma",
-    "tags": ["epoc", "pulmonar", "neumología"],
-    "imagen": "asma.jpeg"
+    "nombre": "Codigo rojo",
+    "tags": ["ginecologia", "uterino", "emergencia", "postparto", "parto"],
+    "imagen": "codigorojo.png"
+  },
+  {
+    "nombre": "EPOC Gold 2025",
+    "tags": ["epoc", "pulmonar", "respiratorio"],
+    "imagen": "epocgold2025.png"
   }
 ]
