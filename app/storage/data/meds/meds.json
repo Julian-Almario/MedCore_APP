@@ -31,5 +31,27 @@
     "interacciones": "no se encuantran documentada",
     "toxicidad": "no se encuentra documentada",
     "tags": ["GABA", "ansiolisis", "amnesia", "sedacion", "anticovulsivos"]
-  }
+  },
+  {
+    "nombre": "Oxitocina",
+    "mecanismo": "Actúa sobre los receptores de oxitocina en el músculo liso uterino, aumentando la permeabilidad al sodio y promoviendo contracciones rítmicas. También estimula las células mioepiteliales de las glándulas mamarias para favorecer la eyección de leche. A dosis altas, puede inducir vasodilatación.",
+    "indicaciones": "• Inducción del parto\n• Hemorragia postparto\n• Inducción de la lactancia",
+    "dosis": "• Inducción del parto (IV): iniciar con 0.5–1 mU/min e incrementar cada 30–60 min hasta lograr contracciones adecuadas (habitual: 6 mU/min).\n• Hemorragia postparto: 10–40 U IV (40 U/L) o 10 U IM tras la expulsión de la placenta.\n• Lactancia (IN): una dosis en spray o 3 gotas (40 U/mL) en cada fosa nasal 2–3 min antes de amamantar.",
+    "contraindicaciones": "Sufrimiento fetal, posición fetal anómala, placenta previa, prolapso uterino, desproporción cefalopélvica, cirugía uterina mayor previa, cáncer cervical, herpes genital activo, emergencias obstétricas, eclampsia, atonía uterina crónica.",
+    "observaciones": "Categoría X en embarazo para uso intranasal. En el embarazo avanzado se incrementa la oxitocinasa placentaria que regula su degradación.",
+    "interacciones": "• Riesgo de hipertonía uterina con otros oxitócicos.\n• Ciclopropano puede causar bradicardia y arritmias.\n• Vasoconstrictores con anestesia caudal pueden inducir hipertensión severa.\n• Riesgo de intoxicación hídrica con administración conjunta de grandes volúmenes de líquidos.",
+    "toxicidad": "• Contracciones uterinas excesivas, ruptura uterina, laceraciones, hemorragia postparto.\n• Hipersensibilidad, shock anafiláctico.\n• Arritmias, hipotensión grave, hipoxia fetal, hiperbilirrubinemia neonatal.\n• Intoxicación hídrica, hiponatremia, convulsiones.",
+    "tags": ["contracción uterina", "parto", "postparto", "lactancia", "hormona", "obstetricia"]
+  },
+  {
+  "nombre": "Penicilina G (Benzilpenicilina)",
+  "mecanismo": "Inhibe la síntesis de la pared celular bacteriana al interferir con la formación de enlaces cruzados del peptidoglicano, lo que provoca la lisis bacteriana. Es bactericida y actúa principalmente sobre bacterias Gram positivas.",
+  "indicaciones": "• Infecciones por *Streptococcus* del grupo A\n• Sífilis\n• Profilaxis intraparto de la enfermedad estreptocócica neonatal\n• Infecciones por *Clostridium* spp.",
+  "dosis": "• Obstetricia y profilaxis intraparto: Penicilina G sódica 5 millones UI IV en bolo, luego 2,5–3 millones UI cada 4 h hasta el parto.\n• Sífilis: Penicilina G benzatina 2,4 millones UI IM dosis única.",
+  "contraindicaciones": "• Hipersensibilidad a penicilinas.\n• Reacciones previas de hipersensibilidad inmediata (anafilaxia, urticaria grave).",
+  "observaciones": "Usar con precaución en pacientes con antecedentes de alergia a betalactámicos. La formulación benzatina no debe administrarse por vía IV debido al riesgo de eventos adversos graves.",
+  "interacciones": "• Puede disminuir la eficacia de anticonceptivos orales.\n• Potencia la toxicidad del metotrexato.\n• Su efecto puede ser antagonizado por bacteriostáticos como las tetraciclinas.",
+  "toxicidad": "En dosis altas puede causar convulsiones, especialmente en pacientes con insuficiencia renal. Reacciones alérgicas graves pueden presentarse incluso con dosis mínimas.",
+  "tags": ["antibiótico", "betalactámico", "profilaxis", "estreptococo", "sífilis", "obstetricia"]
+}
 ]
