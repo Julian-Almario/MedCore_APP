@@ -333,6 +333,11 @@ def main(page: ft.Page):
         main_content.controls.append(pagina_algoritmos(page))
         page.update()
 
+    def show_info():
+        main_content.controls.clear()
+        main_content.controls.append(info_page(page))
+        page.update()
+
 
 # -------------------------------------------------------------------------------
 # Barra de navegación personalizada
