@@ -6,7 +6,7 @@ import re
 RUTA_HISTORIAS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "storage", "data", "historias_clinicas"))
 os.makedirs(RUTA_HISTORIAS, exist_ok=True)
 
-FORMATOS_HC = ["General", "Pediátrico"]
+FORMATOS_HC = ["General", "Pediátrico", "Ginecoobstétrica"]
 formato_seleccionado = {"valor": FORMATOS_HC[0]}
 
 def pantalla_historia_clinica(page: ft.Page):
@@ -214,6 +214,22 @@ def pantalla_historia_clinica(page: ft.Page):
         "diagnosticos_ped": ft.TextField(label="Diagnósticos", multiline=True, max_lines=2),
         "plan_ped": ft.TextField(label="Plan", multiline=True, max_lines=3),
     })
+
+    campos.update({
+        "gestas": ft.TextField(label="Gestas", width=100),
+        "partos": ft.TextField(label="Partos", width=100),
+        "abortos": ft.TextField(label="Abortos", width=100),
+        "cesareas": ft.TextField(label="Cesáreas", width=100),
+        "hijos_vivos": ft.TextField(label="Hijos vivos", width=100),
+        "fum_gineco": ft.TextField(label="FUM", hint_text="YYYY-MM-DD"),
+        "fpp_gineco": ft.TextField(label="FPP", hint_text="YYYY-MM-DD"),
+        "eco_gineco": ft.TextField(label="Última ecografía"),
+        "complicaciones_embarazo": ft.TextField(label="Complicaciones en el embarazo actual", multiline=True, max_lines=3),
+    })
+
+
+
+
 
     plan_manejo_default = """Hospitalizar
 Toma de exámenes de laboratorio
@@ -560,7 +576,111 @@ Aislamiento por gota
                 spacing=15,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             )
-        
+        elif formato_seleccionado["valor"] == "Ginecoobstétrica":
+            formulario = ft.Column(
+                controls=[
+                    dropdown_formato,
+                    mensaje,
+                    ft.Row(
+                        controls=[
+                            ft.Text("Historia Clínica Ginecoobstétrica", size=24, weight="bold", expand=True),
+                            ft.IconButton(
+                                icon=ft.Icons.ARROW_BACK,
+                                tooltip="Volver a la lista",
+                                on_click=lambda e: mostrar_lista(),
+                            ),
+                            ft.IconButton(
+                                icon=ft.Icons.SAVE,
+                                tooltip="Guardar historia clínica",
+                                on_click=guardar_historia,
+                            ),
+                        ],
+                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+                    ),
+
+                    ft.Text("Datos personales", weight="bold"),
+                    ft.Row(
+                        controls=[campos["documento"], campos["cama"], campos["fecha_historia"]],
+                        spacing=10,
+                        expand=True,
+                    ),
+                    campos["eps"], campos["nombre"], campos["estado_civil"],
+                    ft.Row(
+                        controls=[campos["fecha_nacimiento"], campos["edad"]],
+                        spacing=10,
+                        expand=True,
+                    ),
+                    ft.Row(
+                        controls=[campos["sexo"], campos["hemoclasificacion"]],
+                        spacing=10,
+                        expand=True,
+                    ),
+                    campos["ocupacion"], campos["escolaridad"], campos["direccion"],
+
+                    ft.Text("Antecedentes ginecoobstétricos", weight="bold"),
+                    ft.Row(
+                        controls=[campos["gestas"], campos["partos"], campos["abortos"], campos["cesareas"], campos["hijos_vivos"]],
+                        spacing=10,
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        expand=True,
+                        wrap=True,
+                    ),
+                    campos["fum_gineco"], campos["fpp_gineco"], campos["eco_gineco"], campos["complicaciones_embarazo"],
+
+                    ft.Text("Motivo de consulta", weight="bold"),
+                    campos["motivo"],
+
+                    ft.Text("Enfermedad actual", weight="bold"),
+                    campos["enfermedad_actual"],
+
+                    ft.Text("Antecedentes", weight="bold"),
+                    campos["patologicos"], campos["infecciosos"], campos["alergias"], campos["hospitalizaciones"], campos["urgencias"],
+                    campos["quirurgicos"], campos["transfusionales"], campos["traumaticos"], campos["zoo_contactos"], campos["epidemiologicos"],
+
+                    ft.Text("No patológicos", weight="bold"),
+                    campos["prenatales"], campos["alimentacion"], campos["crecimiento"], campos["inmunizaciones"], campos["sicosociales"], campos["escolaridad_no_pat"],
+
+                    ft.Text("Familiares", weight="bold"),
+                    campos["familiares_patologias"], campos["familiares_composicion"],
+
+                    ft.Text("Revisión por sistemas", weight="bold"),
+                    campos["revision_sistemas"],
+
+                    ft.Text("Examen físico", weight="bold"),
+                    campos["aspectos_generales"],
+                    ft.Text("Signos vitales", weight="bold"),
+                    ft.Container(
+                        content=ft.Row(
+                            controls=[campos["t"], campos["fc"], campos["fr"], campos["pa"], campos["sao2"], campos["fio2"]],
+                            spacing=10,
+                            wrap=True,
+                        )
+                    ),
+                    ft.Text("Antropometría", weight="bold"),
+                    ft.Container(
+                        content=ft.Row(
+                            controls=[campos["peso"], campos["talla"]],
+                            spacing=10,
+                            wrap=True,
+                        )
+                    ),
+                    ft.Text("Examen físico por sistemas", weight="bold"),
+                    campos["piel"], campos["cabeza"], campos["ojos"], campos["boca"], campos["oidos"], campos["nariz"], campos["cuello"], campos["cardiopulmonar"], campos["abdomen"], campos["neuromuscular"], campos["musculo_esqueletico"],
+
+                    ft.Text("DX", weight="bold"),
+                    campos["dx"],
+
+                    ft.Text("Análisis", weight="bold"),
+                    campos["analisis"],
+
+                    ft.Text("Plan de manejo", weight="bold"),
+                    campos["plan_manejo"],
+                ],
+                spacing=15,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            )
+
+
         contenedor_formulario = ft.Container(
             content=formulario,
             padding=20,
@@ -592,6 +712,7 @@ Aislamiento por gota
         datos = {k: v.value for k, v in campos.items()}
         formato = formato_seleccionado["valor"]
 
+
         if formato == "General":
             nombre = campos["nombre"].value.strip()
             edad = campos["edad"].value.strip()
@@ -611,6 +732,16 @@ Aislamiento por gota
                     page.update()
                 return
             nombre = hijo_de
+        elif formato == "Ginecoobstétrica":
+            nombre = campos["nombre"].value.strip()
+            edad = campos["edad"].value.strip()
+            if not nombre or not edad:
+                if not autoguardado:
+                    mensaje.value = "Debes ingresar el nombre de la paciente y edad."
+                    mensaje.color = ft.Colors.RED
+                    page.update()
+                return
+
 
         nombre_archivo = nombre.replace(" ", "_") + ".md"
         ruta_archivo = os.path.join(RUTA_HISTORIAS, nombre_archivo)
@@ -710,6 +841,59 @@ Aislamiento por gota
             contenido += f"{datos.get('diagnosticos_ped', '')}\n"
             contenido += "\n### Plan\n"
             contenido += f"{datos.get('plan_ped', '')}\n"
+        elif formato == "Ginecoobstétrica":
+            nombre = campos["nombre"].value.strip()
+            if not nombre:
+                if not autoguardado:
+                    mensaje.value = "Debes ingresar el nombre de la paciente."
+                    mensaje.color = ft.Colors.RED
+                    page.update()
+                return
+
+            
+            contenido += "\n## Datos personales\n"
+            for k in ["documento", "cama", "fecha_historia", "eps", "nombre", "estado_civil", "fecha_nacimiento", "edad", "sexo", "hemoclasificacion", "ocupacion", "escolaridad", "direccion"]:
+                contenido += f"- **{campos[k].label}:** {datos[k]}\n"
+
+            contenido += "\n## Antecedentes ginecoobstétricos\n"
+            for k in ["gestas", "partos", "abortos", "cesareas", "hijos_vivos", "fum_gineco", "fpp_gineco", "eco_gineco", "complicaciones_embarazo"]:
+                contenido += f"- **{campos[k].label}:** {datos[k]}\n"
+
+            contenido += "\n## Motivo de consulta\n"
+            contenido += f"{datos['motivo']}\n"
+
+            contenido += "\n## Enfermedad actual\n"
+            contenido += f"{datos['enfermedad_actual']}\n"
+
+            contenido += "\n## Antecedentes\n"
+            for k in ["patologicos", "infecciosos", "alergias", "hospitalizaciones", "urgencias", "quirurgicos", "transfusionales", "traumaticos", "zoo_contactos", "epidemiologicos"]:
+                contenido += f"- **{campos[k].label}:** {datos[k]}\n"
+
+            contenido += "\n## No patológicos\n"
+            for k in ["prenatales", "alimentacion", "crecimiento", "inmunizaciones", "sicosociales", "escolaridad_no_pat"]:
+                contenido += f"- **{campos[k].label}:** {datos[k]}\n"
+
+            contenido += "\n## Familiares\n"
+            for k in ["familiares_patologias", "familiares_composicion"]:
+                contenido += f"- **{campos[k].label}:** {datos[k]}\n"
+
+            contenido += "\n## Revisión por sistemas\n"
+            contenido += f"{datos['revision_sistemas']}\n"
+
+            contenido += "\n## Examen físico\n"
+            for k in ["aspectos_generales", "t", "fc", "fr", "pa", "sao2", "fio2", "peso", "talla", "piel", "cabeza", "ojos", "boca", "oidos", "nariz", "cuello", "cardiopulmonar", "abdomen", "neuromuscular", "musculo_esqueletico"]:
+                contenido += f"- **{campos[k].label}:** {datos[k]}\n"
+
+            contenido += "\n## DX\n"
+            contenido += f"{datos['dx']}\n"
+
+            contenido += "\n## Análisis\n"
+            contenido += f"{datos['analisis']}\n"
+
+            contenido += "\n## Plan de manejo\n"
+            for linea in datos['plan_manejo'].splitlines():
+                if linea.strip():
+                    contenido += f"- {linea.strip()}\n"
 
         try:
             if archivo_actual and archivo_actual != nombre_archivo:
