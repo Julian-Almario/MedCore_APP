@@ -564,3 +564,129 @@ def semanas_gestacion_por_ecografia():
         ]
     )
 
+def semanas_gestacion_por_fpp():
+    fecha_fpp_texto = ft.Text("Fecha probable de parto: -", text_align=ft.TextAlign.CENTER, color=TEXT_COLOR)
+    eg_actual_texto = ft.Text("Edad gestacional actual: -", text_align=ft.TextAlign.CENTER, color=TEXT_COLOR)
+    fur_estimada_texto = ft.Text("FUR estimada: -", text_align=ft.TextAlign.CENTER, color=TEXT_COLOR)
+    texto_ecuacion = ft.Text(
+        "Fórmula: EG actual = Semanas + días desde FUR estimada",
+        text_align=ft.TextAlign.CENTER,
+        size=12,
+        color=TEXT_COLOR,
+        italic=True
+    )
+
+    date_picker_ref = ft.Ref[ft.DatePicker]()
+    fecha_fpp_seleccionada = {"valor": None}
+
+    def calcular_eg(fecha_fpp_str):
+        try:
+            fecha_fpp = datetime.strptime(fecha_fpp_str, "%Y-%m-%d").date()
+            hoy = date.today()
+
+            # Calcular FUR estimada
+            fur_estimada = fecha_fpp - timedelta(weeks=40)
+
+            # Calcular EG actual
+            dias_gestacion = (hoy - fur_estimada).days
+            semanas_gestacion = dias_gestacion // 7
+            dias_restantes = dias_gestacion % 7
+
+            fur_estimada_texto.value = f"FUR estimada: {fur_estimada.strftime('%Y-%m-%d')}"
+            eg_actual_texto.value = f"Edad gestacional actual: {semanas_gestacion} semanas + {dias_restantes} días"
+            eg_actual_texto.color = TEXT_COLOR
+
+            texto_ecuacion.value = f"Fórmula: EG actual = {dias_gestacion} días desde FUR ({fur_estimada})"
+
+        except Exception:
+            eg_actual_texto.value = "Edad gestacional actual: Error en datos"
+            eg_actual_texto.color = ft.Colors.RED
+            fur_estimada_texto.value = "FUR estimada: -"
+            texto_ecuacion.value = ""
+
+        fur_estimada_texto.update()
+        eg_actual_texto.update()
+        texto_ecuacion.update()
+
+    def on_fecha_fpp_selected(e):
+        if e.data:
+            fecha_fpp_str = datetime.fromisoformat(e.data).strftime("%Y-%m-%d")
+            fecha_fpp_texto.value = f"Fecha probable de parto: {fecha_fpp_str}"
+            fecha_fpp_texto.update()
+
+            fecha_fpp_seleccionada["valor"] = fecha_fpp_str
+            calcular_eg(fecha_fpp_str)
+
+    date_picker = ft.DatePicker(
+        ref=date_picker_ref,
+        on_change=on_fecha_fpp_selected
+    )
+
+    def abrir_date_picker(e):
+        e.page.dialog = date_picker_ref.current
+        date_picker_ref.current.open = True
+        e.page.update()
+
+    panel_ref = ft.Ref[ft.ExpansionPanel]()
+
+    def on_expand_change(e):
+        panel = panel_ref.current
+        is_expanded = panel.expanded
+        panel.bgcolor = SECONDARY_COLOR if is_expanded else PRIMARY_COLOR
+        panel.update()
+
+        if not is_expanded:
+            fecha_fpp_texto.value = "Fecha probable de parto: -"
+            eg_actual_texto.value = "Edad gestacional actual: -"
+            fur_estimada_texto.value = "FUR estimada: -"
+            texto_ecuacion.value = "Fórmula: EG actual = Semanas + días desde FUR estimada"
+            eg_actual_texto.color = TEXT_COLOR
+            fecha_fpp_seleccionada["valor"] = None
+            fecha_fpp_texto.update()
+            eg_actual_texto.update()
+            fur_estimada_texto.update()
+            texto_ecuacion.update()
+
+    return ft.ExpansionPanelList(
+        on_change=on_expand_change,
+        expand_icon_color=TEXT_COLOR,
+        elevation=8,
+        divider_color=TEXT_COLOR,
+        controls=[
+            ft.ExpansionPanel(
+                ref=panel_ref,
+                header=ft.ListTile(
+                    title=ft.Text("Edad gestacional por FPP", color=TEXT_COLOR),
+                    subtitle=ft.Text("Calculada a partir de la fecha probable de parto", size=SUBTITLE_SIZE, color=TEXT_COLOR)
+                ),
+                content=ft.Container(
+                    content=ft.Column(
+                        controls=[
+                            ft.ElevatedButton(
+                                "Seleccionar fecha probable de parto",
+                                icon=ft.Icons.CALENDAR_MONTH,
+                                on_click=abrir_date_picker,
+                                style=ft.ButtonStyle(
+                                    bgcolor=ft.Colors.with_opacity(0.15, TEXT_COLOR),
+                                    color=TEXT_COLOR,
+                                    padding=ft.padding.symmetric(vertical=12, horizontal=20),
+                                    shape=ft.RoundedRectangleBorder(radius=12),
+                                )
+                            ),
+                            fecha_fpp_texto,
+                            fur_estimada_texto,
+                            eg_actual_texto,
+                            texto_ecuacion,
+                            date_picker
+                        ],
+                        spacing=12,
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                    ),
+                    padding=ft.padding.symmetric(vertical=25, horizontal=50),
+                    alignment=ft.alignment.center
+                ),
+                bgcolor=PRIMARY_COLOR,
+                expanded=False
+            )
+        ]
+    )

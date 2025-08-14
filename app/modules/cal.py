@@ -101,4 +101,9 @@ calculadoras = [
             "tags": ["ginecolgia", "quirúrgica", "parto", "gestacion"],
             "componente": semanas_gestacion_por_ecografia()
         },
+        {
+            "titulo": "Semana gestacional por fecha probable de parto",
+            "tags": ["ginecolgia", "parto", "gestacion"],
+            "componente": semanas_gestacion_por_fpp()
+        },
     ]
