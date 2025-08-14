@@ -273,7 +273,6 @@ Aislamiento por gota
                         ft.Text(
                             nombre_paciente,
                             size=22,
-                            weight="bold",
                             text_align=ft.TextAlign.CENTER,
                             expand=True
                         ),
@@ -397,7 +396,7 @@ Aislamiento por gota
                     mensaje,
                     ft.Row(
                         controls=[
-                            ft.Text("Historia Clínica", size=24, weight="bold", expand=True),
+                            ft.Text("Historia Clínica", size=24, expand=True),
                             ft.IconButton(
                                 icon=ft.Icons.ARROW_BACK,
                                 tooltip="Volver a la lista",
@@ -411,7 +410,7 @@ Aislamiento por gota
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN
                     ),
-                    ft.Text("Datos personales", weight="bold"),
+                    ft.Text("Datos personales"),
                     ft.Row(
                         controls=[
                             campos["documento"],
@@ -451,28 +450,28 @@ Aislamiento por gota
                     ),
                     campos["eps"],
 
-                    ft.Text("Motivo de consulta", weight="bold"),
+                    ft.Text("Motivo de consulta"),
                     campos["motivo"],
 
-                    ft.Text("Enfermedad actual", weight="bold"),
+                    ft.Text("Enfermedad actual"),
                     campos["enfermedad_actual"],
 
-                    ft.Text("Antecedentes", weight="bold"),
+                    ft.Text("Antecedentes"),
                     campos["patologicos"], campos["infecciosos"], campos["alergias"], campos["hospitalizaciones"], campos["urgencias"],
                     campos["quirurgicos"], campos["transfusionales"], campos["traumaticos"], campos["zoo_contactos"], campos["epidemiologicos"],
 
-                    ft.Text("No patológicos", weight="bold"),
+                    ft.Text("No patológicos"),
                     campos["prenatales"], campos["alimentacion"], campos["crecimiento"], campos["inmunizaciones"], campos["sicosociales"], campos["escolaridad_no_pat"],
 
-                    ft.Text("Familiares", weight="bold"),
+                    ft.Text("Familiares"),
                     campos["familiares_patologias"], campos["familiares_composicion"],
 
-                    ft.Text("Revisión por sistemas", weight="bold"),
+                    ft.Text("Revisión por sistemas"),
                     campos["revision_sistemas"],
 
-                    ft.Text("Examen físico", weight="bold"),
+                    ft.Text("Examen físico"),
                     campos["aspectos_generales"],
-                    ft.Text("Signos vitales", weight="bold"),
+                    ft.Text("Signos vitales"),
                     ft.Container(
                         content=ft.Row(
                             controls=[
@@ -493,7 +492,7 @@ Aislamiento por gota
                         width=True,
                         padding=ft.padding.symmetric(vertical=5),
                     ),
-                    ft.Text("Antropometría", weight="bold"),
+                    ft.Text("Antropometría"),
                     ft.Container(
                         content=ft.Row(
                             controls=[
@@ -510,18 +509,18 @@ Aislamiento por gota
                         width=True,
                         padding=ft.padding.symmetric(vertical=5),
                     ),
-                    ft.Text("Examen físico por sistemas", weight="bold"),
+                    ft.Text("Examen físico por sistemas"),
                     campos["piel"], campos["cabeza"], campos["ojos"], campos["boca"],
                     campos["oidos"], campos["nariz"], campos["cuello"], campos["cardiopulmonar"], campos["abdomen"],
                     campos["neuromuscular"], campos["musculo_esqueletico"],
 
-                    ft.Text("DX", weight="bold"),
+                    ft.Text("DX"),
                     campos["dx"],
 
-                    ft.Text("Análisis", weight="bold"),
+                    ft.Text("Análisis"),
                     campos["analisis"],
 
-                    ft.Text("Plan de manejo", weight="bold"),
+                    ft.Text("Plan de manejo"),
                     campos["plan_manejo"],
                 ],
                 spacing=15,
@@ -534,7 +533,7 @@ Aislamiento por gota
                     mensaje,
                     ft.Row(
                         controls=[
-                            ft.Text("Historia Clínica Pediátrica", size=24, weight="bold", expand=True),
+                            ft.Text("Historia Clínica Pediátrica", size=24, expand=True),
                             ft.IconButton(
                                 icon=ft.Icons.ARROW_BACK,
                                 tooltip="Volver a la lista",
@@ -548,29 +547,29 @@ Aislamiento por gota
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN
                     ),
-                    ft.Text("Datos maternos y perinatales", weight="bold"),
+                    ft.Text("Datos maternos y perinatales"),
                     campos["hijo_de"], campos["documento_ped"], campos["episodio"], campos["edad_materna"], campos["hemoclasificacion_ped"],
                     campos["edad_gestacional"], campos["fum"], campos["gestaciones"], campos["controles_prenatales"], campos["vacunacion"],
-                    ft.Text("Última ecografía", weight="bold"),
+                    ft.Text("Última ecografía"),
                     campos["ultima_ecografia"],
-                    ft.Text("ETS maternas", weight="bold"),
+                    ft.Text("ETS maternas"),
                     campos["ag_shb"], campos["vih"], campos["prueba_no_treponemica"], campos["prueba_treponemica"], campos["toxoplasma"], campos["ptog"], campos["cultivo_estreptococo"],
                     campos["paraclinicos_maternos"],
-                    ft.Text("Antecedentes personales", weight="bold"),
+                    ft.Text("Antecedentes personales"),
                     campos["ginecobstetricos"], campos["patologicos_ped"], campos["quirurgicos_ped"], campos["alergicos_ped"], campos["toxicos"], campos["farmacologicos"], campos["familiares_ped"],
                     campos["ruptura_membranas"], campos["analgesia_epidural"], campos["medicamentos_ped"], campos["maduracion_fetal"],
-                    ft.Text("Nacimiento", weight="bold"),
+                    ft.Text("Nacimiento"),
                     campos["sexo_bebe"], campos["fecha_nacimiento_bebe"], campos["hora_nacimiento_bebe"], campos["tipo_parto"], campos["liquido_amniotico"],
-                    ft.Text("Adaptación neonatal", weight="bold"),
+                    ft.Text("Adaptación neonatal"),
                     campos["adaptacion_neonatal"],
-                    ft.Text("Examen físico", weight="bold"),
+                    ft.Text("Examen físico"),
                     campos["apgar_minuto"], campos["apgar_5min"], campos["apgar_otros"], campos["ballard"],
                     campos["peso_gramos"], campos["peso_percentil"], campos["talla_cm"], campos["talla_percentil"],
                     campos["pc_cm"], campos["pc_percentil"], campos["pt_cm"], campos["pa_cm"],
                     campos["diuresis"], campos["meconio"],
-                    ft.Text("Diagnósticos", weight="bold"),
+                    ft.Text("Diagnósticos"),
                     campos["diagnosticos_ped"],
-                    ft.Text("Plan", weight="bold"),
+                    ft.Text("Plan"),
                     campos["plan_ped"],
                 ],
                 spacing=15,
@@ -583,7 +582,7 @@ Aislamiento por gota
                     mensaje,
                     ft.Row(
                         controls=[
-                            ft.Text("Historia Clínica Ginecoobstétrica", size=24, weight="bold", expand=True),
+                            ft.Text("Historia Clínica Ginecoobstétrica", size=24, expand=True),
                             ft.IconButton(
                                 icon=ft.Icons.ARROW_BACK,
                                 tooltip="Volver a la lista",
@@ -598,7 +597,7 @@ Aislamiento por gota
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN
                     ),
 
-                    ft.Text("Datos personales", weight="bold"),
+                    ft.Text("Datos personales"),
                     ft.Row(
                         controls=[campos["documento"], campos["cama"], campos["fecha_historia"]],
                         spacing=10,
@@ -617,7 +616,24 @@ Aislamiento por gota
                     ),
                     campos["ocupacion"], campos["escolaridad"], campos["direccion"],
 
-                    ft.Text("Antecedentes ginecoobstétricos", weight="bold"),
+                    ft.Text("Motivo de consulta"),
+                    campos["motivo"],
+
+                    ft.Text("Enfermedad actual"),
+                    campos["enfermedad_actual"],
+
+                    ft.Text("Revisión por sistemas"),
+                    campos["revision_sistemas"],
+
+
+                    ft.Text("Antecedentes"),
+                    campos["patologicos"], campos["infecciosos"], campos["alergias"], campos["hospitalizaciones"], campos["urgencias"],
+                    campos["quirurgicos"], campos["transfusionales"], campos["traumaticos"], campos["zoo_contactos"], campos["epidemiologicos"],
+
+                    ft.Text("No patológicos"),
+                    campos["prenatales"], campos["alimentacion"], campos["crecimiento"], campos["inmunizaciones"], campos["sicosociales"], campos["escolaridad_no_pat"],
+
+                    ft.Text("Antecedentes ginecoobstétricos"),
                     ft.Row(
                         controls=[campos["gestas"], campos["partos"], campos["abortos"], campos["cesareas"], campos["hijos_vivos"]],
                         spacing=10,
@@ -627,28 +643,12 @@ Aislamiento por gota
                     ),
                     campos["fum_gineco"], campos["fpp_gineco"], campos["eco_gineco"], campos["complicaciones_embarazo"],
 
-                    ft.Text("Motivo de consulta", weight="bold"),
-                    campos["motivo"],
-
-                    ft.Text("Enfermedad actual", weight="bold"),
-                    campos["enfermedad_actual"],
-
-                    ft.Text("Antecedentes", weight="bold"),
-                    campos["patologicos"], campos["infecciosos"], campos["alergias"], campos["hospitalizaciones"], campos["urgencias"],
-                    campos["quirurgicos"], campos["transfusionales"], campos["traumaticos"], campos["zoo_contactos"], campos["epidemiologicos"],
-
-                    ft.Text("No patológicos", weight="bold"),
-                    campos["prenatales"], campos["alimentacion"], campos["crecimiento"], campos["inmunizaciones"], campos["sicosociales"], campos["escolaridad_no_pat"],
-
-                    ft.Text("Familiares", weight="bold"),
+                    ft.Text("Familiares"),
                     campos["familiares_patologias"], campos["familiares_composicion"],
 
-                    ft.Text("Revisión por sistemas", weight="bold"),
-                    campos["revision_sistemas"],
-
-                    ft.Text("Examen físico", weight="bold"),
+                    ft.Text("Examen físico"),
                     campos["aspectos_generales"],
-                    ft.Text("Signos vitales", weight="bold"),
+                    ft.Text("Signos vitales"),
                     ft.Container(
                         content=ft.Row(
                             controls=[campos["t"], campos["fc"], campos["fr"], campos["pa"], campos["sao2"], campos["fio2"]],
@@ -656,7 +656,7 @@ Aislamiento por gota
                             wrap=True,
                         )
                     ),
-                    ft.Text("Antropometría", weight="bold"),
+                    ft.Text("Antropometría"),
                     ft.Container(
                         content=ft.Row(
                             controls=[campos["peso"], campos["talla"]],
@@ -664,16 +664,16 @@ Aislamiento por gota
                             wrap=True,
                         )
                     ),
-                    ft.Text("Examen físico por sistemas", weight="bold"),
+                    ft.Text("Examen físico por sistemas"),
                     campos["piel"], campos["cabeza"], campos["ojos"], campos["boca"], campos["oidos"], campos["nariz"], campos["cuello"], campos["cardiopulmonar"], campos["abdomen"], campos["neuromuscular"], campos["musculo_esqueletico"],
 
-                    ft.Text("DX", weight="bold"),
+                    ft.Text("DX"),
                     campos["dx"],
 
-                    ft.Text("Análisis", weight="bold"),
+                    ft.Text("Análisis"),
                     campos["analisis"],
 
-                    ft.Text("Plan de manejo", weight="bold"),
+                    ft.Text("Plan de manejo"),
                     campos["plan_manejo"],
                 ],
                 spacing=15,
@@ -969,7 +969,7 @@ Aislamiento por gota
                 controls=[
                     ft.Container(height=50),
                     ft.Container(
-                        content=ft.Text("Mi archivo clinico", size=25, weight="bold", expand=True),
+                        content=ft.Text("Mi archivo clinico", size=25, expand=True),
                     ),
                     ft.Container(
                         content=ft.IconButton(
@@ -1019,7 +1019,7 @@ Aislamiento por gota
                 fila = ft.Row(
                     controls=[
                         ft.Container(
-                            content=ft.Text(nombre, size=18, weight="bold"),
+                            content=ft.Text(nombre, size=18),
                             alignment=ft.alignment.center,
                             expand=True
                         ),
