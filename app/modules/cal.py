@@ -95,5 +95,10 @@ calculadoras = [
             "titulo": "Indice de bishop",
             "tags": ["ginecolgia", "quirúrgica", "parto", "borramiento"],
             "componente": bishop()
-        }
+        },
+        {
+            "titulo": "Semana gestacional por ecografia",
+            "tags": ["ginecolgia", "quirúrgica", "parto", "gestacion"],
+            "componente": semanas_gestacion_por_ecografia()
+        },
     ]
