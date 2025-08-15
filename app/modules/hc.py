@@ -103,33 +103,47 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
     extra_data = historia_existente.get("extra", {})
 
     def actualizar_campos_extra(ev):
+        # Guardar valores actuales antes de regenerar
+        valores_actuales = {}
+        for campo in campos_extra.controls:
+            if isinstance(campo, ft.TextField):
+                valores_actuales[campo.label] = campo.value or ""
+
         campos_extra.controls.clear()
+
+        def valor_guardado(clave):
+            return valores_actuales.get(clave, extra_data.get(clave, ""))
+
         if formato_dropdown.value == "Ginecología":
             campos_extra.controls.extend([
-                ft.TextField(label="Gestas", width=150, value=extra_data.get("Gestas", "")),
-                ft.TextField(label="Partos", width=150, value=extra_data.get("Partos", "")),
-                ft.TextField(label="Abortos", width=150, value=extra_data.get("Abortos", "")),
-                ft.TextField(label="Cesáreas", width=150, value=extra_data.get("Cesáreas", "")),
-                ft.TextField(label="FUM (Fecha Última Menstruación)", width=200, value=extra_data.get("FUM (Fecha Última Menstruación)", "")),
+                ft.TextField(label="Gestas", width=150, value=valor_guardado("Gestas")),
+                ft.TextField(label="Partos", width=150, value=valor_guardado("Partos")),
+                ft.TextField(label="Abortos", width=150, value=valor_guardado("Abortos")),
+                ft.TextField(label="Cesáreas", width=150, value=valor_guardado("Cesáreas")),
+                ft.TextField(label="FUM (Fecha Última Menstruación)", width=200, value=valor_guardado("FUM (Fecha Última Menstruación)")),
             ])
         elif formato_dropdown.value == "Pediatría":
             campos_extra.controls.extend([
-                ft.TextField(label="Edad gestacional al nacer", width=200, value=extra_data.get("Edad gestacional al nacer", "")),
-                ft.TextField(label="Peso al nacer", width=150, value=extra_data.get("Peso al nacer", "")),
-                ft.TextField(label="Talla al nacer", width=150, value=extra_data.get("Talla al nacer", "")),
-                ft.TextField(label="APGAR 1 min", width=150, value=extra_data.get("APGAR 1 min", "")),
-                ft.TextField(label="APGAR 5 min", width=150, value=extra_data.get("APGAR 5 min", "")),
+                ft.TextField(label="Edad gestacional al nacer", width=200, value=valor_guardado("Edad gestacional al nacer")),
+                ft.TextField(label="Peso al nacer", width=150, value=valor_guardado("Peso al nacer")),
+                ft.TextField(label="Talla al nacer", width=150, value=valor_guardado("Talla al nacer")),
+                ft.TextField(label="APGAR 1 min", width=150, value=valor_guardado("APGAR 1 min")),
+                ft.TextField(label="APGAR 5 min", width=150, value=valor_guardado("APGAR 5 min")),
             ])
         elif formato_dropdown.value == "Medicina General":
             campos_extra.controls.extend([
-                ft.TextField(label="Antecedentes personales", multiline=True, width=400, value=extra_data.get("Antecedentes personales", "")),
-                ft.TextField(label="Antecedentes familiares", multiline=True, width=400, value=extra_data.get("Antecedentes familiares", "")),
+                ft.TextField(label="Antecedentes personales", multiline=True, width=400, value=valor_guardado("Antecedentes personales")),
+                ft.TextField(label="Antecedentes familiares", multiline=True, width=400, value=valor_guardado("Antecedentes familiares")),
             ])
         elif formato_dropdown.value == "Otro":
             campos_extra.controls.append(
-                ft.TextField(label="Observaciones especiales", multiline=True, width=400, value=extra_data.get("Observaciones especiales", ""))
+                ft.TextField(label="Observaciones especiales", multiline=True, width=400, value=valor_guardado("Observaciones especiales"))
             )
-        campos_extra.update()
+
+        # Solo actualizamos si el control ya está en pantalla
+        if campos_extra.page is not None:
+            campos_extra.update()
+
 
     formato_dropdown.on_change = actualizar_campos_extra
     if historia_existente:
