@@ -31,6 +31,14 @@ def guardar_historia_en_json(historia: dict):
     historias.append(historia)
     guardar_todas_las_historias(historias)
 
+REVISION_POR_SISTEMAS = {
+    "Síntomas generales": ["Fiebre", "Escalofríos", "Pérdida de peso", "Sudoración nocturna"],
+    "Respiratorio": ["Tos", "Disnea", "Dolor torácico", "Hemoptisis"],
+    "Cardiovascular": ["Palpitaciones", "Edema", "Dolor precordial", "Síncope"],
+    "Digestivo": ["Náuseas", "Vómito", "Dolor abdominal", "Diarrea", "Estreñimiento"],
+    "Neurológico": ["Cefalea", "Convulsiones", "Mareos", "Pérdida de conciencia"],
+}
+
 def _panel_de_historia(hist: dict, index: int, refrescar_lista, page) -> ft.ExpansionPanel:
     panel_ref = ft.Ref[ft.ExpansionPanel]()
 
@@ -70,8 +78,10 @@ def _panel_de_historia(hist: dict, index: int, refrescar_lista, page) -> ft.Expa
         ft.Text(f"EPS: {hist.get('eps', '')}"),
         ft.Text(f"Fuente información: {hist.get('fuente_info', '')}"),
         ft.Text(f"Confianza de información: {hist.get('confianza_info', '')}"),
+        ft.Divider(),
         ft.Text(f"Motivo de consulta: {hist.get('motivo', '')}"),
         ft.Text(f"Enfermedad actual: {hist.get('enfermedad actual', '')}"),
+        ft.Divider(),
         ft.Row([
             ft.ElevatedButton("Editar", on_click=editar_historia_click),
             ft.ElevatedButton("Borrar", on_click=borrar_historia_click, bgcolor="red", color="white")
@@ -83,6 +93,11 @@ def _panel_de_historia(hist: dict, index: int, refrescar_lista, page) -> ft.Expa
         contenido_panel.insert(-1, ft.Text("Campos adicionales:", weight=ft.FontWeight.BOLD))
         for clave, valor in extra.items():
             contenido_panel.insert(-1, ft.Text(f"{clave}: {valor}"))
+
+    if "revision_por_sistemas" in hist and hist["revision_por_sistemas"]:
+        contenido_panel.insert(-1, ft.Text("Revisión por sistemas:", weight=ft.FontWeight.BOLD))
+        for sistema, sintomas in hist["revision_por_sistemas"].items():
+            contenido_panel.insert(-1, ft.Text(f"{sistema}: {', '.join(sintomas)}"))
 
     return ft.ExpansionPanel(
         ref=panel_ref,
@@ -225,6 +240,29 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
     campos_extra = ft.Column()
     extra_data = historia_existente.get("extra", {})
 
+    revision_por_sistemas = ft.Column(scroll=ft.ScrollMode.AUTO)
+
+    # Diccionario de refs para guardar checkboxes
+    checkbox_refs = {}
+
+    for sistema, sintomas in REVISION_POR_SISTEMAS.items():
+        checks = []
+        for sintoma in sintomas:
+            ref_cb = ft.Ref[ft.Checkbox]()
+            # Marcar los que ya estaban guardados (si edición)
+            valor_inicial = False
+            if historia_existente.get("revision_por_sistemas", {}):
+                valor_inicial = sintoma in historia_existente["revision_por_sistemas"].get(sistema, [])
+            checks.append(ft.Checkbox(label=sintoma, ref=ref_cb, value=valor_inicial))
+            checkbox_refs[f"{sistema} - {sintoma}"] = ref_cb
+
+        revision_por_sistemas.controls.append(
+            ft.ExpansionTile(
+                title=ft.Text(sistema),
+                controls=checks
+            )
+        )
+
     # Función para actualizar campos extra según formato
     def actualizar_campos_extra(ev):
         valores_actuales = {campo.label: campo.value for campo in campos_extra.controls if isinstance(campo, ft.TextField)}
@@ -266,6 +304,13 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
         actualizar_campos_extra(None)
 
     def guardar_click(ev):
+        revision_data = {}
+        for key, ref_cb in checkbox_refs.items():
+            if ref_cb.current and ref_cb.current.value:
+                sistema, sintoma = key.split(" - ", 1)
+                if sistema not in revision_data:
+                    revision_data[sistema] = []
+                revision_data[sistema].append(sintoma)
         historia = {
             "formato": formato_dropdown.value or "Medicina General",
             "nombre": (nombre_input.value or "").strip(),
@@ -285,6 +330,7 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
             "fecha_nacimiento": (fecha_nacimiento_input.value or "").strip(),
             "motivo": (motivo_input.value or "").strip(),
             "enfermedad actual": (enfermedadactual_input.value or "").strip(),
+            "revision_por_sistemas":revision_data,
             "fecha": str(date.today()),
             "extra": {}
         }
@@ -330,8 +376,11 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
                     eps_dropdown,
                     fuente_info_dropdown,
                     confianza_info_dropdown,
+                    ft.Divider(),
                     motivo_input,
                     enfermedadactual_input,
+                    ft.Text("Revisión por sistemas", weight=ft.FontWeight.BOLD),
+                    revision_por_sistemas,
                     campos_extra
                 ],
                 tight=True,

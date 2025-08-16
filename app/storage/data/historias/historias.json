@@ -1,1 +1,31 @@
-[]
+[
+    {
+        "formato": "Medicina General",
+        "nombre": "",
+        "identificacion": "",
+        "estado civil": "",
+        "edad": "",
+        "sexo": "",
+        "hemoclasificacion": "",
+        "escolaridad": "",
+        "ocupacion": "",
+        "direccion": "",
+        "acomp_parentesco": "",
+        "acomp_nombre": "",
+        "eps": "",
+        "fuente_info": "",
+        "confianza_info": "",
+        "fecha_nacimiento": "",
+        "motivo": "",
+        "enfermedad actual": "",
+        "revision_por_sistemas": {
+            "Síntomas generales": [
+                "Escalofríos",
+                "Pérdida de peso",
+                "Sudoración nocturna"
+            ]
+        },
+        "fecha": "2025-08-15",
+        "extra": {}
+    }
+]
