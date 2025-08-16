@@ -72,6 +72,18 @@ def _panel_de_historia(hist: dict, index: int, refrescar_lista, page) -> ft.Expa
         ft.Text(f"Confianza de información: {hist.get('confianza_info', '')}"),
         ft.Text(f"Motivo de consulta: {hist.get('motivo', '')}"),
         ft.Text(f"Enfermedad actual: {hist.get('enfermedad actual', '')}"),
+        ft.Divider(),
+        ft.Text(f"Revision por sistemas"),
+        ft.Text(f"Sintomas generales: {hist.get('sis_sintomas_generales', '')}"),
+        ft.Text(f"Ojos: {hist.get('sis_ojos', '')}"),
+        ft.Text(f"Nariz: {hist.get('sis_nariz', '')}"),
+        ft.Text(f"Boca: {hist.get('sis_boca', '')}"),
+        ft.Text(f"Oidos: {hist.get('sis_oidos', '')}"),
+        ft.Text(f"Cardiopulmonar: {hist.get('sis_cardiopulmonar', '')}"),
+        ft.Text(f"Gastrointestinal: {hist.get('sis_gastrointestinal', '')}"),
+        ft.Text(f"Genitourinario: {hist.get('sis_genitourinario', '')}"),
+        ft.Text(f"Neuromuscular: {hist.get('sis_neuromuscular', '')}"),
+        ft.Text(f"Piel y anexos: {hist.get('sis_pielanexos', '')}"),
         ft.Row([
             ft.ElevatedButton("Editar", on_click=editar_historia_click),
             ft.ElevatedButton("Borrar", on_click=borrar_historia_click, bgcolor="red", color="white")
@@ -222,6 +234,19 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
     motivo_input = ft.TextField(label="Motivo de consulta", multiline=True, value=historia_existente.get("motivo", ""))
     enfermedadactual_input = ft.TextField(label="Enfermedad actual", multiline=True, width=True, value=historia_existente.get("enfermedad actual", ""))
 
+
+    # Revision por sistemas
+    sis_sintomas_generales_input = ft.TextField(label="Sintomas generales", multiline=True, value=historia_existente.get("sis_sintomas_generales", ""))
+    sis_ojos_input = ft.TextField(label="Ojos", multiline=True, value=historia_existente.get("sis_ojos", ""))
+    sis_nariz_input = ft.TextField(label="Nariz", multiline=True, value=historia_existente.get("sis_nariz", ""))
+    sis_boca_input = ft.TextField(label="Boca", multiline=True, value=historia_existente.get("sis_boca", ""))
+    sis_oidos_input = ft.TextField(label="Oidos", multiline=True, value=historia_existente.get("sis_oidos", ""))
+    sis_cadiopulmonar_input = ft.TextField(label="Cardiopulmonar", multiline=True, value=historia_existente.get("sis_cardiopulmonar", ""))
+    sis_gastrointestinal_input = ft.TextField(label="Gastrointestinal", multiline=True, value=historia_existente.get("sis_gastrointestinal", ""))
+    sis_genitourinario_input = ft.TextField(label="Genitourinario", multiline=True, value=historia_existente.get("sis_genitourinario", ""))
+    sis_neuromuscular_input = ft.TextField(label="Neuromuscular", multiline=True, value=historia_existente.get("sis_neuromuscular", ""))
+    sis_pielanexos_input = ft.TextField(label="Piel y anexos", multiline=True, value=historia_existente.get("sis_pielanexos", ""))
+    
     campos_extra = ft.Column()
     extra_data = historia_existente.get("extra", {})
 
@@ -285,6 +310,16 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
             "fecha_nacimiento": (fecha_nacimiento_input.value or "").strip(),
             "motivo": (motivo_input.value or "").strip(),
             "enfermedad actual": (enfermedadactual_input.value or "").strip(),
+            "sintomas_generales": (sis_sintomas_generales_input.value or "").strip(),
+            "sis_ojos": (sis_ojos_input.value or "").strip(),
+            "sis_nariz": (sis_nariz_input.value or "").strip(),
+            "sis_boca": (sis_boca_input.value or "").strip(),
+            "sis_oidos": (sis_oidos_input.value or "").strip(),
+            "sis_cardiopulmonar": (sis_cadiopulmonar_input.value or "").strip(),
+            "sis_gastrointestinal": (sis_gastrointestinal_input.value or "").strip(),
+            "sis_genitourinario": (sis_genitourinario_input.value or "").strip(),
+            "sis_neuromuscular": (sis_neuromuscular_input.value or "").strip(),
+            "sis_pielanexos": (sis_pielanexos_input.value or "").strip(),
             "fecha": str(date.today()),
             "extra": {}
         }
@@ -332,6 +367,18 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
                     confianza_info_dropdown,
                     motivo_input,
                     enfermedadactual_input,
+                    ft.Divider(),
+                    sis_sintomas_generales_input,
+                    sis_ojos_input,
+                    sis_nariz_input,
+                    sis_boca_input,
+                    sis_oidos_input,
+                    sis_cadiopulmonar_input,
+                    sis_gastrointestinal_input,
+                    sis_genitourinario_input,
+                    sis_neuromuscular_input,
+                    sis_pielanexos_input,
+                    ft.Divider(),
                     campos_extra
                 ],
                 tight=True,
