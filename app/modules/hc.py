@@ -32,155 +32,12 @@ def guardar_historia_en_json(historia: dict):
     guardar_todas_las_historias(historias)
 
 REVISION_POR_SISTEMAS = {
-    "Síntomas generales": [
-        "Niega otros síntomas",
-        "Fiebre",
-        "Escalofríos",
-        "Pérdida de peso subjetiva",
-        "Sudoración nocturna",
-        "Fatiga",
-        "Astenia",
-        "Adinamia",
-        "Malestar general"
-    ],
-    "Ojos": [
-        "Niega otros síntomas",
-        "Epífora",
-        "Xeroftalmia",
-        "Alteraciones de la agudeza visual",
-        "Visión borrosa",
-        "Fotofobia",
-        "Diplopía",
-        "Dolor retro-ocular",
-        "Ojo rojo",
-        "Ceguera súbita"
-    ],
-    "Oídos": [
-        "Niega otros síntomas",
-        "Otalgia",
-        "Otorrea unilateral",
-        "Otorrea bilateral",
-        "Otorraquia",
-        "Tinnitus",
-        "Hipoacusia",
-        "Plenitud ótica",
-        "Vértigo"
-    ],
-    "Nariz": [
-        "Niega otros síntomas",
-        "Rinorrea",
-        "Epistaxis",
-        "Obstrucción nasal",
-        "Congestión nasal",
-        "Hiposmia",
-        "Anosmia",
-        "Estornudos frecuentes"
-    ],
-    "Boca": [
-        "Niega otros síntomas",
-        "Odinofagia",
-        "Dolor dentario",
-        "Sangrado en la mucosa oral",
-        "Aftas",
-        "Glositis",
-        "Xerostomía",
-        "Halitosis",
-        "Disgeusia",
-        "Úlceras orales"
-    ],
-    "Cardiovascular": [
-        "Niega otros síntomas",
-        "Palpitaciones",
-        "Dolor torácico",
-        "Edema",
-        "Síncope",
-        "Ortopnea",
-        "Disnea paroxística nocturna",
-        "Claudicación intermitente"
-    ],
-    "Respiratorio": [
-        "Niega otros síntomas",
-        "Tos seca",
-        "Tos productiva",
-        "Disnea de esfuerzo",
-        "Disnea en reposo",
-        "Dolor torácico pleurítico",
-        "Hemoptisis",
-        "Sibilancias",
-        "Expectoración"
-    ],
-    "Digestivo": [
-        "Niega otros síntomas",
-        "Náuseas",
-        "Vómito",
-        "Dolor abdominal difuso",
-        "Dolor abdominal localizado",
-        "Diarrea",
-        "Estreñimiento",
-        "Distensión abdominal",
-        "Pirosis",
-        "Disfagia",
-        "Hematémesis",
-        "Melena",
-        "Rectorragia",
-        "Hematochezia"
-    ],
-    "Genitourinario": [
-        "Niega otros síntomas",
-        "Disuria",
-        "Poliuria",
-        "Polaquiuria",
-        "Nicturia",
-        "Hematuria",
-        "Tenesmo vesical",
-        "Incontinencia urinaria",
-        "Secreción uretral",
-        "Secreción vaginal",
-        "Dolor pélvico",
-        "Alteraciones menstruales",
-        "Impotencia sexual"
-    ],
-    "Neurológico": [
-        "Niega otros síntomas",
-        "Cefalea tensional",
-        "Cefalea frontal",
-        "Cefalea occipital",
-        "Cefalea en banda",
-        "Mareos",
-        "Vértigo",
-        "Convulsiones",
-        "Pérdida de conciencia",
-        "Parestesias",
-        "Debilidad focal",
-        "Alteraciones de la marcha",
-        "Alteraciones del lenguaje",
-        "Trastornos de memoria",
-        "Temblor"
-    ],
-    "Musculoesquelético": [
-        "Niega otros síntomas",
-        "Lumbalgia",
-        "Cervicalgia",
-        "Mialgias",
-        "Artralgias",
-        "Rigidez matutina",
-        "Limitación de la movilidad",
-        "Calambres musculares"
-    ],
-    "Piel y anexos": [
-        "Niega otros síntomas",
-        "Prurito",
-        "Cambios en la coloración de la piel",
-        "Lesiones dérmicas",
-        "Urticaria",
-        "Alopecia",
-        "Nódulos",
-        "Úlceras",
-        "Uñas frágiles"
-    ]
+    "Síntomas generales": ["Fiebre", "Escalofríos", "Pérdida de peso", "Sudoración nocturna"],
+    "Respiratorio": ["Tos", "Disnea", "Dolor torácico", "Hemoptisis"],
+    "Cardiovascular": ["Palpitaciones", "Edema", "Dolor precordial", "Síncope"],
+    "Digestivo": ["Náuseas", "Vómito", "Dolor abdominal", "Diarrea", "Estreñimiento"],
+    "Neurológico": ["Cefalea", "Convulsiones", "Mareos", "Pérdida de conciencia"],
 }
-
-
 
 def _panel_de_historia(hist: dict, index: int, refrescar_lista, page) -> ft.ExpansionPanel:
     panel_ref = ft.Ref[ft.ExpansionPanel]()
@@ -241,12 +98,6 @@ def _panel_de_historia(hist: dict, index: int, refrescar_lista, page) -> ft.Expa
         contenido_panel.insert(-1, ft.Text("Revisión por sistemas:", weight=ft.FontWeight.BOLD))
         for sistema, sintomas in hist["revision_por_sistemas"].items():
             contenido_panel.insert(-1, ft.Text(f"{sistema}: {', '.join(sintomas)}"))
-
-            # Mostrar nota si existe
-            nota = hist.get("revision_por_sistemas_notas", {}).get(sistema, "")
-            if nota:
-                contenido_panel.insert(-1, ft.Text(f"Nota en {sistema}: {nota}", italic=True))
-
 
     return ft.ExpansionPanel(
         ref=panel_ref,
@@ -393,43 +244,24 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
 
     # Diccionario de refs para guardar checkboxes
     checkbox_refs = {}
-    notas_refs = {}
+
     for sistema, sintomas in REVISION_POR_SISTEMAS.items():
         checks = []
         for sintoma in sintomas:
             ref_cb = ft.Ref[ft.Checkbox]()
+            # Marcar los que ya estaban guardados (si edición)
             valor_inicial = False
             if historia_existente.get("revision_por_sistemas", {}):
                 valor_inicial = sintoma in historia_existente["revision_por_sistemas"].get(sistema, [])
             checks.append(ft.Checkbox(label=sintoma, ref=ref_cb, value=valor_inicial))
             checkbox_refs[f"{sistema} - {sintoma}"] = ref_cb
 
-        # Campo de nota por sistema
-        nota_ref = ft.Ref[ft.TextField]()
-        nota_inicial = ""
-        if historia_existente.get("revision_por_sistemas_notas", {}):
-            nota_inicial = historia_existente["revision_por_sistemas_notas"].get(sistema, "")
-
-        notas_refs[sistema] = nota_ref
-
         revision_por_sistemas.controls.append(
             ft.ExpansionTile(
                 title=ft.Text(sistema),
-                controls=checks + [
-                    ft.Container(
-                        content=ft.TextField(
-                            label=f"Nota en {sistema}",
-                            ref=nota_ref,
-                            multiline=True,
-                            value=nota_inicial,
-                            width=400
-                        ),
-                        margin=ft.margin.only(top=15,bottom=15)  # <-- separación hacia abajo
-                    )
-                ]
+                controls=checks
             )
         )
-
 
     # Función para actualizar campos extra según formato
     def actualizar_campos_extra(ev):
@@ -472,7 +304,6 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
         actualizar_campos_extra(None)
 
     def guardar_click(ev):
-        # Guardar síntomas seleccionados
         revision_data = {}
         for key, ref_cb in checkbox_refs.items():
             if ref_cb.current and ref_cb.current.value:
@@ -480,13 +311,6 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
                 if sistema not in revision_data:
                     revision_data[sistema] = []
                 revision_data[sistema].append(sintoma)
-
-        # Guardar notas de cada sistema
-        revision_notas = {}
-        for sistema, nota_ref in notas_refs.items():
-            if nota_ref.current:
-                revision_notas[sistema] = (nota_ref.current.value or "").strip()
-
         historia = {
             "formato": formato_dropdown.value or "Medicina General",
             "nombre": (nombre_input.value or "").strip(),
@@ -507,7 +331,6 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
             "motivo": (motivo_input.value or "").strip(),
             "enfermedad actual": (enfermedadactual_input.value or "").strip(),
             "revision_por_sistemas":revision_data,
-            "revision_por_sistemas_notas": revision_notas,
             "fecha": str(date.today()),
             "extra": {}
         }
