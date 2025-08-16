@@ -1,7 +1,7 @@
 import os
 import json
 import flet as ft
-from datetime import date
+from datetime import date, datetime
 
 # Ruta de almacenamiento
 RUTA_HISTORIAS = os.path.abspath(
@@ -55,11 +55,26 @@ def _panel_de_historia(hist: dict, index: int, refrescar_lista, page) -> ft.Expa
 
     contenido_panel = [
         ft.Text(f"Fecha: {hist.get('fecha', 'N/A')}"),
+        ft.Text(f"Nombre del paciente: {hist.get('nombre', '')}"),
+        ft.Text(f"Iedntificación: {hist.get('identificacion', '')}"),
+        ft.Text(f"Estado civil: {hist.get('estado civil', '')}"),
+        ft.Text(f"Edad: {hist.get('edad', '')}"),
+        ft.Text(f"Fecha de nacimiento: {hist.get('fecha_nacimiento', '')}"),
+        ft.Text(f"Sexo: {hist.get('sexo', '')}"),
+        ft.Text(f"Hemoclasificación: {hist.get('hemoclasificacion', '')}"),
+        ft.Text(f"Escolaridad: {hist.get('escolaridad', '')}"),
+        ft.Text(f"Ocupación: {hist.get('ocupacion', '')}"),
+        ft.Text(f"Dirección de residencia: {hist.get('direccion', '')}"),
+        ft.Text(f"Nombre de acompañante: {hist.get('acomp_nombre', '')}"),
+        ft.Text(f"Parentesco con acompañante: {hist.get('acomp_parentesco', '')}"),
+        ft.Text(f"EPS: {hist.get('eps', '')}"),
+        ft.Text(f"Fuente información: {hist.get('fuente_info', '')}"),
+        ft.Text(f"Confianza de información: {hist.get('confianza_info', '')}"),
         ft.Text(f"Motivo de consulta: {hist.get('motivo', '')}"),
-        ft.Text(f"Resumen: {hist.get('resumen', '')}"),
+        ft.Text(f"Enfermedad actual: {hist.get('enfermedad actual', '')}"),
         ft.Row([
-            ft.ElevatedButton("✏️ Editar", on_click=editar_historia_click),
-            ft.ElevatedButton("🗑️ Borrar", on_click=borrar_historia_click, bgcolor="red", color="white")
+            ft.ElevatedButton("Editar", on_click=editar_historia_click),
+            ft.ElevatedButton("Borrar", on_click=borrar_historia_click, bgcolor="red", color="white")
         ])
     ]
 
@@ -83,6 +98,53 @@ def _panel_de_historia(hist: dict, index: int, refrescar_lista, page) -> ft.Expa
 def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, index=None):
     historia_existente = historia_existente or {}
 
+    # Campo de solo lectura para mostrar fecha
+    fecha_nacimiento_input = ft.TextField(
+        label="Fecha de nacimiento",
+        value=historia_existente.get("fecha_nacimiento", ""),
+        read_only=True,
+        width=True
+    )
+
+    # Ref del DatePicker
+    date_picker_ref = ft.Ref[ft.DatePicker]()
+
+
+
+    # Cuando se selecciona la fecha
+    def on_fecha_selected(e):
+        if e.data:
+            fecha_sel = datetime.fromisoformat(e.data).date()
+            fecha_str = fecha_sel.strftime("%Y-%m-%d")
+            fecha_nacimiento_input.value = fecha_str
+            # Calcular edad
+            hoy = date.today()
+            edad = hoy.year - fecha_sel.year - ((hoy.month, hoy.day) < (fecha_sel.month, fecha_sel.day))
+            edad_input.value = str(edad)
+            fecha_nacimiento_input.update()
+            edad_input.update()
+
+
+    # DatePicker
+    date_picker = ft.DatePicker(
+        ref=date_picker_ref,
+        on_change=on_fecha_selected
+    )
+
+    # Botón para abrir el DatePicker
+    def abrir_date_picker(e):
+        e.page.dialog = date_picker_ref.current
+        date_picker_ref.current.open = True
+        e.page.update()
+
+    boton_fecha = ft.ElevatedButton(
+        "Fecha de nacimiento",
+        icon=ft.Icons.CALENDAR_MONTH,
+        on_click=abrir_date_picker
+    )
+
+    page.overlay.append(date_picker)  # Necesario para que funcione el selector
+
     formato_dropdown = ft.Dropdown(
         label="Formato de historia clínica",
         options=[
@@ -90,25 +152,62 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
             ft.dropdown.Option("Pediatría"),
             ft.dropdown.Option("Ginecología"),
         ],
-        width=300,
+        width=450,
         value=historia_existente.get("formato")
     )
 
-    nombre_input = ft.TextField(label="Nombre del paciente", width=300, value=historia_existente.get("nombre", ""))
-    id_input = ft.TextField(label="Identificación", width=200, value=historia_existente.get("identificacion", ""))
-    motivo_input = ft.TextField(label="Motivo de consulta", multiline=True, width=400, value=historia_existente.get("motivo", ""))
-    resumen_input = ft.TextField(label="Resumen", multiline=True, width=400, value=historia_existente.get("resumen", ""))
+    # Campos adicionales de identificación
+    estado_civil_dropdown = ft.Dropdown(
+        label="Estado civil",
+        options=[ft.dropdown.Option(o) for o in ["Soltero", "Casado", "Divorciado", "Viudo", "Unión libre"]],
+        width=450,
+        value=historia_existente.get("estado civil", "")
+    )
+
+    edad_input = ft.TextField(label="Edad", read_only=True, value="", width=True)
+
+    sexo_dropdown = ft.Dropdown(
+        label="Sexo",
+        options=[ft.dropdown.Option(o) for o in ["Masculino", "Femenino", "Otro"]],
+        width=450,
+        value=historia_existente.get("sexo", "")
+    )
+
+    hemoclasificacion_dropdown = ft.Dropdown(
+        label="Hemoclasificación",
+        options=[ft.dropdown.Option(o) for o in ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]],
+        width=450,
+        value=historia_existente.get("hemoclasificacion", "")
+    )
+
+    escolaridad_input = ft.TextField(label="Escolaridad",width=True, value=historia_existente.get("escolaridad", ""))
+    direccion_input = ft.TextField(label="Dirección y Lugar de residencia",width=True, value=historia_existente.get("direccion", ""))
+    acomp_nombre_input = ft.TextField(label="Nombre Acompañante",width=True, value=historia_existente.get("acomp_nombre", ""))
+    acomp_parentesco_input = ft.TextField(label="Parentesco del acompañante",width=True, value=historia_existente.get("acomp_parentesco", ""))
+    ocupacion_input = ft.TextField(label="Ocupación", width=True, value=historia_existente.get("ocupacion", ""))
+
+    eps_dropdown = ft.Dropdown(
+        label="EPS",
+        options=[ft.dropdown.Option(o) for o in ["Nueva EPS", "Sura", "Sanitas"]],
+        width=450,
+        value=historia_existente.get("eps", "")
+    )
+
+    fuente_info_input = ft.TextField(label="Fuente de información", value=historia_existente.get("fuente_info", ""))
+    confianza_info_input = ft.TextField(label="Confiabilidad de información", value=historia_existente.get("confianza_info", ""))
+
+
+    nombre_input = ft.TextField(label="Nombre del paciente", value=historia_existente.get("nombre", ""))
+    id_input = ft.TextField(label="Identificación", value=historia_existente.get("identificacion", ""))
+    motivo_input = ft.TextField(label="Motivo de consulta", multiline=True, value=historia_existente.get("motivo", ""))
+    enfermedadactual_input = ft.TextField(label="Enfermedad actual", multiline=True, width=True, value=historia_existente.get("enfermedad actual", ""))
 
     campos_extra = ft.Column()
     extra_data = historia_existente.get("extra", {})
 
+    # Función para actualizar campos extra según formato
     def actualizar_campos_extra(ev):
-        # Guardar valores actuales antes de regenerar
-        valores_actuales = {}
-        for campo in campos_extra.controls:
-            if isinstance(campo, ft.TextField):
-                valores_actuales[campo.label] = campo.value or ""
-
+        valores_actuales = {campo.label: campo.value for campo in campos_extra.controls if isinstance(campo, ft.TextField)}
         campos_extra.controls.clear()
 
         def valor_guardado(clave):
@@ -116,34 +215,32 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
 
         if formato_dropdown.value == "Ginecología":
             campos_extra.controls.extend([
-                ft.TextField(label="Gestas", width=150, value=valor_guardado("Gestas")),
-                ft.TextField(label="Partos", width=150, value=valor_guardado("Partos")),
-                ft.TextField(label="Abortos", width=150, value=valor_guardado("Abortos")),
-                ft.TextField(label="Cesáreas", width=150, value=valor_guardado("Cesáreas")),
-                ft.TextField(label="FUM (Fecha Última Menstruación)", width=200, value=valor_guardado("FUM (Fecha Última Menstruación)")),
+                ft.TextField(label="Gestas", width=450, value=valor_guardado("Gestas")),
+                ft.TextField(label="Partos", width=450, value=valor_guardado("Partos")),
+                ft.TextField(label="Abortos", width=450, value=valor_guardado("Abortos")),
+                ft.TextField(label="Cesáreas", width=450, value=valor_guardado("Cesáreas")),
+                ft.TextField(label="FUM (Fecha Última Menstruación)", width=450, value=valor_guardado("FUM (Fecha Última Menstruación)")),
             ])
         elif formato_dropdown.value == "Pediatría":
             campos_extra.controls.extend([
-                ft.TextField(label="Edad gestacional al nacer", width=200, value=valor_guardado("Edad gestacional al nacer")),
-                ft.TextField(label="Peso al nacer", width=150, value=valor_guardado("Peso al nacer")),
-                ft.TextField(label="Talla al nacer", width=150, value=valor_guardado("Talla al nacer")),
-                ft.TextField(label="APGAR 1 min", width=150, value=valor_guardado("APGAR 1 min")),
-                ft.TextField(label="APGAR 5 min", width=150, value=valor_guardado("APGAR 5 min")),
+                ft.TextField(label="Edad gestacional al nacer", width=450, value=valor_guardado("Edad gestacional al nacer")),
+                ft.TextField(label="Peso al nacer", width=450, value=valor_guardado("Peso al nacer")),
+                ft.TextField(label="Talla al nacer", width=450, value=valor_guardado("Talla al nacer")),
+                ft.TextField(label="APGAR 1 min", width=450, value=valor_guardado("APGAR 1 min")),
+                ft.TextField(label="APGAR 5 min", width=450, value=valor_guardado("APGAR 5 min")),
             ])
         elif formato_dropdown.value == "Medicina General":
             campos_extra.controls.extend([
-                ft.TextField(label="Antecedentes personales", multiline=True, width=400, value=valor_guardado("Antecedentes personales")),
-                ft.TextField(label="Antecedentes familiares", multiline=True, width=400, value=valor_guardado("Antecedentes familiares")),
+                ft.TextField(label="Antecedentes personales", multiline=True, width=450, value=valor_guardado("Antecedentes personales")),
+                ft.TextField(label="Antecedentes familiares", multiline=True, width=450, value=valor_guardado("Antecedentes familiares")),
             ])
         elif formato_dropdown.value == "Otro":
             campos_extra.controls.append(
-                ft.TextField(label="Observaciones especiales", multiline=True, width=400, value=valor_guardado("Observaciones especiales"))
+                ft.TextField(label="Observaciones especiales", multiline=True, width=450, value=valor_guardado("Observaciones especiales"))
             )
 
-        # Solo actualizamos si el control ya está en pantalla
         if campos_extra.page is not None:
             campos_extra.update()
-
 
     formato_dropdown.on_change = actualizar_campos_extra
     if historia_existente:
@@ -154,8 +251,21 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
             "formato": formato_dropdown.value or "Medicina General",
             "nombre": (nombre_input.value or "").strip(),
             "identificacion": (id_input.value or "").strip(),
+            "estado civil": estado_civil_dropdown.value,
+            "edad": edad_input.value,
+            "sexo": sexo_dropdown.value,
+            "hemoclasificacion": hemoclasificacion_dropdown.value,
+            "escolaridad": escolaridad_input.value,
+            "ocupacion": ocupacion_input.value,
+            "direccion": direccion_input.value,
+            "acomp_nombre": acomp_nombre_input.value,
+            "acomp_parentesco": acomp_parentesco_input.value,
+            "eps": eps_dropdown.value,
+            "fuente_info": fuente_info_input.value,
+            "confianza_info": confianza_info_input.value,
+            "fecha_nacimiento": (fecha_nacimiento_input.value or "").strip(),
             "motivo": (motivo_input.value or "").strip(),
-            "resumen": (resumen_input.value or "").strip(),
+            "enfermedad actual": (enfermedadactual_input.value or "").strip(),
             "fecha": str(date.today()),
             "extra": {}
         }
@@ -179,17 +289,36 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
     dialogo = ft.AlertDialog(
         modal=True,
         title=ft.Text("Editar Historia Clínica" if historia_existente else "Nueva Historia Clínica"),
-        content=ft.Column(
-            controls=[
-                formato_dropdown,
-                nombre_input,
-                id_input,
-                motivo_input,
-                resumen_input,
-                campos_extra,
-            ],
-            tight=True,
-            scroll=ft.ScrollMode.AUTO,
+        content=ft.Container(
+            width=450,
+            height=450,
+            content=ft.Column(
+                controls=[
+                    formato_dropdown,
+                    nombre_input,
+                    id_input,
+                    estado_civil_dropdown,
+                    ft.Row([boton_fecha], alignment=ft.MainAxisAlignment.CENTER),
+                    fecha_nacimiento_input,
+                    edad_input,
+                    sexo_dropdown,
+                    hemoclasificacion_dropdown,
+                    escolaridad_input,
+                    ocupacion_input,
+                    direccion_input,
+                    acomp_nombre_input,
+                    acomp_parentesco_input,
+                    eps_dropdown,
+                    fuente_info_input,
+                    confianza_info_input,
+                    motivo_input,
+                    enfermedadactual_input,
+                    campos_extra
+                ],
+                tight=True,
+                scroll=ft.ScrollMode.AUTO,
+                expand=True
+            )
         ),
         actions=[
             ft.TextButton("Cancelar", on_click=lambda ev: page.close(dialogo)),
@@ -198,8 +327,10 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
         actions_alignment=ft.MainAxisAlignment.CENTER,
     )
 
+
     page.dialog = dialogo
     page.open(dialogo)
+
 
 def pantalla_historia_clinica(page: ft.Page):
     lista_panels = ft.ExpansionPanelList(expand_icon_color=ft.Colors.WHITE, elevation=8)
