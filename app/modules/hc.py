@@ -65,8 +65,8 @@ def _panel_de_historia(hist: dict, index: int, refrescar_lista, page) -> ft.Expa
         ft.Text(f"Escolaridad: {hist.get('escolaridad', '')}"),
         ft.Text(f"Ocupación: {hist.get('ocupacion', '')}"),
         ft.Text(f"Dirección de residencia: {hist.get('direccion', '')}"),
-        ft.Text(f"Nombre de acompañante: {hist.get('acomp_nombre', '')}"),
         ft.Text(f"Parentesco con acompañante: {hist.get('acomp_parentesco', '')}"),
+        ft.Text(f"Nombre de acompañante: {hist.get('acomp_nombre', '')}"),
         ft.Text(f"EPS: {hist.get('eps', '')}"),
         ft.Text(f"Fuente información: {hist.get('fuente_info', '')}"),
         ft.Text(f"Confianza de información: {hist.get('confianza_info', '')}"),
@@ -180,22 +180,42 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
         value=historia_existente.get("hemoclasificacion", "")
     )
 
-    escolaridad_input = ft.TextField(label="Escolaridad",width=True, value=historia_existente.get("escolaridad", ""))
+    escolaridad_dropdown = ft.Dropdown(
+        label="Escolaridad",
+        options=[ft.dropdown.Option(o) for o in ["Primaria", "Secundaria", "Bachiller", "Tecnico", "Universitario"]],
+        width=450,
+        value=historia_existente.get("escolaridad", "")
+    )
     direccion_input = ft.TextField(label="Dirección y Lugar de residencia",width=True, value=historia_existente.get("direccion", ""))
     acomp_nombre_input = ft.TextField(label="Nombre Acompañante",width=True, value=historia_existente.get("acomp_nombre", ""))
-    acomp_parentesco_input = ft.TextField(label="Parentesco del acompañante",width=True, value=historia_existente.get("acomp_parentesco", ""))
+    acomp_parentesco_dropdown = ft.Dropdown(
+        label="Parentesco del acompañante",
+        options=[ft.dropdown.Option(o) for o in ["Sin acompañante","Madre", "Padre", "Herman@", "Ti@", "Amig@", "Pareja", "Espos@"]],
+        width=450,
+        value=historia_existente.get("acomp_parentesco", "")
+    )
     ocupacion_input = ft.TextField(label="Ocupación", width=True, value=historia_existente.get("ocupacion", ""))
 
     eps_dropdown = ft.Dropdown(
         label="EPS",
-        options=[ft.dropdown.Option(o) for o in ["Nueva EPS", "Sura", "Sanitas"]],
+        options=[ft.dropdown.Option(o) for o in ["Nueva EPS", "Savia", "FOMAG", "Sura", "Sanitas"]],
         width=450,
         value=historia_existente.get("eps", "")
     )
 
-    fuente_info_input = ft.TextField(label="Fuente de información", value=historia_existente.get("fuente_info", ""))
-    confianza_info_input = ft.TextField(label="Confiabilidad de información", value=historia_existente.get("confianza_info", ""))
+    fuente_info_dropdown = ft.Dropdown(
+        label="Fuente de información",
+        options=[ft.dropdown.Option(o) for o in ["Paciente", "Acompañante"]],
+        width=450,
+        value=historia_existente.get("fuente_info", "")
+    )
 
+    confianza_info_dropdown = ft.Dropdown(
+        label="Confiabilidad de información",
+        options=[ft.dropdown.Option(o) for o in ["Buena", "Moderada", "Mala"]],
+        width=450,
+        value=historia_existente.get("confianza_info", "")
+    )
 
     nombre_input = ft.TextField(label="Nombre del paciente", value=historia_existente.get("nombre", ""))
     id_input = ft.TextField(label="Identificación", value=historia_existente.get("identificacion", ""))
@@ -219,7 +239,6 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
                 ft.TextField(label="Partos", width=450, value=valor_guardado("Partos")),
                 ft.TextField(label="Abortos", width=450, value=valor_guardado("Abortos")),
                 ft.TextField(label="Cesáreas", width=450, value=valor_guardado("Cesáreas")),
-                ft.TextField(label="FUM (Fecha Última Menstruación)", width=450, value=valor_guardado("FUM (Fecha Última Menstruación)")),
             ])
         elif formato_dropdown.value == "Pediatría":
             campos_extra.controls.extend([
@@ -255,14 +274,14 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
             "edad": edad_input.value,
             "sexo": sexo_dropdown.value,
             "hemoclasificacion": hemoclasificacion_dropdown.value,
-            "escolaridad": escolaridad_input.value,
+            "escolaridad": escolaridad_dropdown.value,
             "ocupacion": ocupacion_input.value,
             "direccion": direccion_input.value,
+            "acomp_parentesco": acomp_parentesco_dropdown.value,
             "acomp_nombre": acomp_nombre_input.value,
-            "acomp_parentesco": acomp_parentesco_input.value,
             "eps": eps_dropdown.value,
-            "fuente_info": fuente_info_input.value,
-            "confianza_info": confianza_info_input.value,
+            "fuente_info": fuente_info_dropdown.value,
+            "confianza_info": confianza_info_dropdown.value,
             "fecha_nacimiento": (fecha_nacimiento_input.value or "").strip(),
             "motivo": (motivo_input.value or "").strip(),
             "enfermedad actual": (enfermedadactual_input.value or "").strip(),
@@ -303,14 +322,14 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
                     edad_input,
                     sexo_dropdown,
                     hemoclasificacion_dropdown,
-                    escolaridad_input,
+                    escolaridad_dropdown,
                     ocupacion_input,
                     direccion_input,
+                    acomp_parentesco_dropdown,
                     acomp_nombre_input,
-                    acomp_parentesco_input,
                     eps_dropdown,
-                    fuente_info_input,
-                    confianza_info_input,
+                    fuente_info_dropdown,
+                    confianza_info_dropdown,
                     motivo_input,
                     enfermedadactual_input,
                     campos_extra
