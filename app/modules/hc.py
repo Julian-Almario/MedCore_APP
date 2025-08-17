@@ -73,17 +73,7 @@ def _panel_de_historia(hist: dict, index: int, refrescar_lista, page) -> ft.Expa
         ft.Text(f"Motivo de consulta: {hist.get('motivo', '')}"),
         ft.Text(f"Enfermedad actual: {hist.get('enfermedad actual', '')}"),
         ft.Divider(),
-        ft.Text(f"Revision por sistemas"),
-        ft.Text(f"Sintomas generales: {hist.get('sis_sintomas_generales', '')}"),
-        ft.Text(f"Ojos: {hist.get('sis_ojos', '')}"),
-        ft.Text(f"Nariz: {hist.get('sis_nariz', '')}"),
-        ft.Text(f"Boca: {hist.get('sis_boca', '')}"),
-        ft.Text(f"Oidos: {hist.get('sis_oidos', '')}"),
-        ft.Text(f"Cardiopulmonar: {hist.get('sis_cardiopulmonar', '')}"),
-        ft.Text(f"Gastrointestinal: {hist.get('sis_gastrointestinal', '')}"),
-        ft.Text(f"Genitourinario: {hist.get('sis_genitourinario', '')}"),
-        ft.Text(f"Neuromuscular: {hist.get('sis_neuromuscular', '')}"),
-        ft.Text(f"Piel y anexos: {hist.get('sis_pielanexos', '')}"),
+        ft.Text(f"Revision por sistemas: {hist.get('rev_sis', '')}"),
         ft.Row([
             ft.ElevatedButton("Editar", on_click=editar_historia_click),
             ft.ElevatedButton("Borrar", on_click=borrar_historia_click, bgcolor="red", color="white")
@@ -92,7 +82,6 @@ def _panel_de_historia(hist: dict, index: int, refrescar_lista, page) -> ft.Expa
 
     extra = hist.get("extra", {})
     if extra:
-        contenido_panel.insert(-1, ft.Text("Campos adicionales:", weight=ft.FontWeight.BOLD))
         for clave, valor in extra.items():
             contenido_panel.insert(-1, ft.Text(f"{clave}: {valor}"))
 
@@ -236,17 +225,8 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
 
 
     # Revision por sistemas
-    sis_sintomas_generales_input = ft.TextField(label="Sintomas generales", multiline=True, value=historia_existente.get("sis_sintomas_generales", ""))
-    sis_ojos_input = ft.TextField(label="Ojos", multiline=True, value=historia_existente.get("sis_ojos", ""))
-    sis_nariz_input = ft.TextField(label="Nariz", multiline=True, value=historia_existente.get("sis_nariz", ""))
-    sis_boca_input = ft.TextField(label="Boca", multiline=True, value=historia_existente.get("sis_boca", ""))
-    sis_oidos_input = ft.TextField(label="Oidos", multiline=True, value=historia_existente.get("sis_oidos", ""))
-    sis_cadiopulmonar_input = ft.TextField(label="Cardiopulmonar", multiline=True, value=historia_existente.get("sis_cardiopulmonar", ""))
-    sis_gastrointestinal_input = ft.TextField(label="Gastrointestinal", multiline=True, value=historia_existente.get("sis_gastrointestinal", ""))
-    sis_genitourinario_input = ft.TextField(label="Genitourinario", multiline=True, value=historia_existente.get("sis_genitourinario", ""))
-    sis_neuromuscular_input = ft.TextField(label="Neuromuscular", multiline=True, value=historia_existente.get("sis_neuromuscular", ""))
-    sis_pielanexos_input = ft.TextField(label="Piel y anexos", multiline=True, value=historia_existente.get("sis_pielanexos", ""))
-    
+    rev_sis_input = ft.TextField(label="Revision por sistemas", multiline=True, value=historia_existente.get("rev_sis", ""))
+
     campos_extra = ft.Column()
     extra_data = historia_existente.get("extra", {})
 
@@ -259,11 +239,58 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
             return valores_actuales.get(clave, extra_data.get(clave, ""))
 
         if formato_dropdown.value == "Ginecología":
+            peso_input = ft.TextField(label="Peso (kg)", width=450, value=valor_guardado("Peso"))
+            talla_input = ft.TextField(label="Talla (m)", width=450, value=valor_guardado("Talla"))
+            imc_input = ft.TextField(label="IMC", width=450, read_only=True, value=valor_guardado("IMC"))
+
+            # Función para calcular IMC automáticamente
+            def calcular_imc(e=None):
+                try:
+                    peso = float(peso_input.value)
+                    talla = float(talla_input.value)
+                    if talla > 0:
+                        imc = peso / (talla ** 2)
+                        imc_input.value = f"{imc:.2f}"
+                        imc_input.update()
+                except:
+                    imc_input.value = ""
+                    imc_input.update()
+
+            # Eventos para recalcular IMC
+            peso_input.on_change = calcular_imc
+            talla_input.on_change = calcular_imc
+            
             campos_extra.controls.extend([
+                ft.Text("Antecedentes", size=16, weight=ft.FontWeight.BOLD),
+                ft.TextField(label="Antecedentes Patologico", multiline=True, width=450, value=valor_guardado("Antecedentes Patologico")),
+                ft.TextField(label="Antecedentes Medicamentos", multiline=True, width=450, value=valor_guardado("Antecedentes Medicamentos")),
+                ft.Text("Antecedentes ginecologicos", size=16, weight=ft.FontWeight.BOLD),
                 ft.TextField(label="Gestas", width=450, value=valor_guardado("Gestas")),
                 ft.TextField(label="Partos", width=450, value=valor_guardado("Partos")),
                 ft.TextField(label="Abortos", width=450, value=valor_guardado("Abortos")),
                 ft.TextField(label="Cesáreas", width=450, value=valor_guardado("Cesáreas")),
+                ft.TextField(label="Antecedentes Hospitalizaciones", multiline=True, width=450, value=valor_guardado("Antecedentes Hospitalizaciones")),
+                ft.TextField(label="Antecedentes Cirugias", multiline=True, width=450, value=valor_guardado("Antecedentes Cirugias")),
+                ft.TextField(label="Antecedentes Traumaticos", multiline=True, width=450, value=valor_guardado("Antecedentes Traumaticos")),
+                ft.TextField(label="Antecedentes Transfusiones", multiline=True, width=450, value=valor_guardado("Antecedentes Transfusiones")),
+                ft.TextField(label="Antecedentes Alergicos", multiline=True, width=450, value=valor_guardado("Antecedentes Alergicos")),
+                ft.TextField(label="Antecedentes Toxicologicos", multiline=True, width=450, value=valor_guardado("Antecedentes Toxicologicos")),
+                ft.TextField(label="Antecedentes Familiares", multiline=True, width=450, value=valor_guardado("Antecedentes Familiares")),
+                ft.TextField(label="Antecedentes Socioeconomicos", multiline=True, width=450, value=valor_guardado("Antecedentes Socioeconomicos")),
+                ft.Divider(),
+                ft.Text("Signos Vitales", size=16, weight=ft.FontWeight.BOLD),
+                peso_input,
+                talla_input,
+                imc_input,
+                ft.TextField(label="Frecuencia cardíaca (lpm)", width=450, value=valor_guardado("Frecuencia cardíaca")),
+                ft.TextField(label="Frecuencia respiratoria (rpm)", width=450, value=valor_guardado("Frecuencia respiratoria")),
+                ft.TextField(label="Tensión arterial (mmHg)", width=450, value=valor_guardado("Tensión arterial")),
+                ft.TextField(label="Temperatura (°C)", width=450, value=valor_guardado("Temperatura")),
+                ft.TextField(label="Examen Fisico", multiline=True, width=450, value=valor_guardado("Examen Fisico")),
+                ft.Divider(),
+                ft.TextField(label="Analisis", width=450, value=valor_guardado("Analisis")),
+                ft.TextField(label="Impresion DX", width=450, value=valor_guardado("Impresion DX")),
+                ft.TextField(label="Tratamiento", width=450, value=valor_guardado("Tratamiento")),
             ])
         elif formato_dropdown.value == "Pediatría":
             campos_extra.controls.extend([
@@ -274,14 +301,55 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
                 ft.TextField(label="APGAR 5 min", width=450, value=valor_guardado("APGAR 5 min")),
             ])
         elif formato_dropdown.value == "Medicina General":
+            peso_input = ft.TextField(label="Peso (kg)", width=450, value=valor_guardado("Peso"))
+            talla_input = ft.TextField(label="Talla (m)", width=450, value=valor_guardado("Talla"))
+            imc_input = ft.TextField(label="IMC", width=450, read_only=True, value=valor_guardado("IMC"))
+
+            # Función para calcular IMC automáticamente
+            def calcular_imc(e=None):
+                try:
+                    peso = float(peso_input.value)
+                    talla = float(talla_input.value)
+                    if talla > 0:
+                        imc = peso / (talla ** 2)
+                        imc_input.value = f"{imc:.2f}"
+                        imc_input.update()
+                except:
+                    imc_input.value = ""
+                    imc_input.update()
+
+            # Eventos para recalcular IMC
+            peso_input.on_change = calcular_imc
+            talla_input.on_change = calcular_imc
+
             campos_extra.controls.extend([
-                ft.TextField(label="Antecedentes personales", multiline=True, width=450, value=valor_guardado("Antecedentes personales")),
-                ft.TextField(label="Antecedentes familiares", multiline=True, width=450, value=valor_guardado("Antecedentes familiares")),
+                ft.Text("Antecedentes", size=16, weight=ft.FontWeight.BOLD),
+                ft.TextField(label="Antecedentes Patologico", multiline=True, width=450, value=valor_guardado("Antecedentes Patologico")),
+                ft.TextField(label="Antecedentes Medicamentos", multiline=True, width=450, value=valor_guardado("Antecedentes Medicamentos")),
+                ft.TextField(label="Antecedentes Hospitalizaciones", multiline=True, width=450, value=valor_guardado("Antecedentes Hospitalizaciones")),
+                ft.TextField(label="Antecedentes Cirugias", multiline=True, width=450, value=valor_guardado("Antecedentes Cirugias")),
+                ft.TextField(label="Antecedentes Traumaticos", multiline=True, width=450, value=valor_guardado("Antecedentes Traumaticos")),
+                ft.TextField(label="Antecedentes Transfusiones", multiline=True, width=450, value=valor_guardado("Antecedentes Transfusiones")),
+                ft.TextField(label="Antecedentes Alergicos", multiline=True, width=450, value=valor_guardado("Antecedentes Alergicos")),
+                ft.TextField(label="Antecedentes Toxicologicos", multiline=True, width=450, value=valor_guardado("Antecedentes Toxicologicos")),
+                ft.TextField(label="Antecedentes Familiares", multiline=True, width=450, value=valor_guardado("Antecedentes Familiares")),
+                ft.TextField(label="Antecedentes Socioeconomicos", multiline=True, width=450, value=valor_guardado("Antecedentes Socioeconomicos")),
+                ft.Divider(),
+                ft.Text("Signos Vitales", size=16, weight=ft.FontWeight.BOLD),
+                peso_input,
+                talla_input,
+                imc_input,
+                ft.TextField(label="Frecuencia cardíaca (lpm)", width=450, value=valor_guardado("Frecuencia cardíaca")),
+                ft.TextField(label="Frecuencia respiratoria (rpm)", width=450, value=valor_guardado("Frecuencia respiratoria")),
+                ft.TextField(label="Tensión arterial (mmHg)", width=450, value=valor_guardado("Tensión arterial")),
+                ft.TextField(label="Temperatura (°C)", width=450, value=valor_guardado("Temperatura")),
+                ft.TextField(label="Examen Fisico", multiline=True, width=450, value=valor_guardado("Examen Fisico")),
+                ft.Divider(),
+                ft.TextField(label="Analisis", width=450, value=valor_guardado("Analisis")),
+                ft.TextField(label="Impresion DX", width=450, value=valor_guardado("Impresion DX")),
+                ft.TextField(label="Tratamiento", width=450, value=valor_guardado("Tratamiento")),
             ])
-        elif formato_dropdown.value == "Otro":
-            campos_extra.controls.append(
-                ft.TextField(label="Observaciones especiales", multiline=True, width=450, value=valor_guardado("Observaciones especiales"))
-            )
+
 
         if campos_extra.page is not None:
             campos_extra.update()
@@ -310,16 +378,7 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
             "fecha_nacimiento": (fecha_nacimiento_input.value or "").strip(),
             "motivo": (motivo_input.value or "").strip(),
             "enfermedad actual": (enfermedadactual_input.value or "").strip(),
-            "sintomas_generales": (sis_sintomas_generales_input.value or "").strip(),
-            "sis_ojos": (sis_ojos_input.value or "").strip(),
-            "sis_nariz": (sis_nariz_input.value or "").strip(),
-            "sis_boca": (sis_boca_input.value or "").strip(),
-            "sis_oidos": (sis_oidos_input.value or "").strip(),
-            "sis_cardiopulmonar": (sis_cadiopulmonar_input.value or "").strip(),
-            "sis_gastrointestinal": (sis_gastrointestinal_input.value or "").strip(),
-            "sis_genitourinario": (sis_genitourinario_input.value or "").strip(),
-            "sis_neuromuscular": (sis_neuromuscular_input.value or "").strip(),
-            "sis_pielanexos": (sis_pielanexos_input.value or "").strip(),
+            "rev_sis": (rev_sis_input.value or "").strip(),
             "fecha": str(date.today()),
             "extra": {}
         }
@@ -368,16 +427,7 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
                     motivo_input,
                     enfermedadactual_input,
                     ft.Divider(),
-                    sis_sintomas_generales_input,
-                    sis_ojos_input,
-                    sis_nariz_input,
-                    sis_boca_input,
-                    sis_oidos_input,
-                    sis_cadiopulmonar_input,
-                    sis_gastrointestinal_input,
-                    sis_genitourinario_input,
-                    sis_neuromuscular_input,
-                    sis_pielanexos_input,
+                    rev_sis_input,
                     ft.Divider(),
                     campos_extra
                 ],
