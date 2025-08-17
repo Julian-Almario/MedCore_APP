@@ -443,12 +443,52 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
 
 
         elif formato_dropdown.value == "Pediatría":
+            peso_input = ft.TextField(label="Peso (kg)", width=450, value=valor_guardado("Peso"))
+            talla_input = ft.TextField(label="Talla (m)", width=450, value=valor_guardado("Talla"))
+            imc_input = ft.TextField(label="IMC", width=450, read_only=True, value=valor_guardado("IMC"))
+
+            # Función para calcular IMC automáticamente
+            def calcular_imc(e=None):
+                try:
+                    peso = float(peso_input.value)
+                    talla = float(talla_input.value)
+                    if talla > 0:
+                        imc = peso / (talla ** 2)
+                        imc_input.value = f"{imc:.2f}"
+                        imc_input.update()
+                except:
+                    imc_input.value = ""
+                    imc_input.update()
+
+            # Eventos para recalcular IMC
+            peso_input.on_change = calcular_imc
+            talla_input.on_change = calcular_imc
             campos_extra.controls.extend([
+                ft.Text("Antecedentes", size=16, weight=ft.FontWeight.BOLD),
+                ft.TextField(label="Antecedentes Patologico", multiline=True, width=450, value=valor_guardado("Antecedentes Patologico")),
+                ft.TextField(label="Antecedentes Medicamentos", multiline=True, width=450, value=valor_guardado("Antecedentes Medicamentos")),
+                ft.TextField(label="Antecedentes Hospitalizaciones", multiline=True, width=450, value=valor_guardado("Antecedentes Hospitalizaciones")),
+                ft.TextField(label="Antecedentes Cirugias", multiline=True, width=450, value=valor_guardado("Antecedentes Cirugias")),
+                ft.TextField(label="Antecedentes Traumaticos", multiline=True, width=450, value=valor_guardado("Antecedentes Traumaticos")),
+                ft.TextField(label="Antecedentes Transfusiones", multiline=True, width=450, value=valor_guardado("Antecedentes Transfusiones")),
+                ft.TextField(label="Antecedentes Alergicos", multiline=True, width=450, value=valor_guardado("Antecedentes Alergicos")),
+                ft.TextField(label="Antecedentes Toxicologicos", multiline=True, width=450, value=valor_guardado("Antecedentes Toxicologicos")),
+                ft.TextField(label="Antecedentes Familiares", multiline=True, width=450, value=valor_guardado("Antecedentes Familiares")),
+                ft.TextField(label="Antecedentes Socioeconomicos", multiline=True, width=450, value=valor_guardado("Antecedentes Socioeconomicos")),
                 ft.TextField(label="Edad gestacional al nacer", width=450, value=valor_guardado("Edad gestacional al nacer")),
-                ft.TextField(label="Peso al nacer", width=450, value=valor_guardado("Peso al nacer")),
-                ft.TextField(label="Talla al nacer", width=450, value=valor_guardado("Talla al nacer")),
-                ft.TextField(label="APGAR 1 min", width=450, value=valor_guardado("APGAR 1 min")),
-                ft.TextField(label="APGAR 5 min", width=450, value=valor_guardado("APGAR 5 min")),
+                ft.Text("Signos Vitales", size=16, weight=ft.FontWeight.BOLD),
+                peso_input,
+                talla_input,
+                imc_input,
+                ft.TextField(label="Frecuencia cardíaca (lpm)", width=450, value=valor_guardado("Frecuencia cardíaca")),
+                ft.TextField(label="Frecuencia respiratoria (rpm)", width=450, value=valor_guardado("Frecuencia respiratoria")),
+                ft.TextField(label="Tensión arterial (mmHg)", width=450, value=valor_guardado("Tensión arterial")),
+                ft.TextField(label="Temperatura (°C)", width=450, value=valor_guardado("Temperatura")),
+                ft.TextField(label="Examen Fisico", multiline=True, width=450, value=valor_guardado("Examen Fisico")),
+                ft.Divider(),
+                ft.TextField(label="Analisis", width=450, value=valor_guardado("Analisis")),
+                ft.TextField(label="Impresion DX", width=450, value=valor_guardado("Impresion DX")),
+                ft.TextField(label="Tratamiento", width=450, value=valor_guardado("Tratamiento")),
             ])
         elif formato_dropdown.value == "Medicina General":
             peso_input = ft.TextField(label="Peso (kg)", width=450, value=valor_guardado("Peso"))
