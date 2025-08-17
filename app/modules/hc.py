@@ -1,7 +1,7 @@
 import os
 import json
 import flet as ft
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 # Ruta de almacenamiento
 RUTA_HISTORIAS = os.path.abspath(
@@ -156,6 +156,55 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
         width=450,
         value=historia_existente.get("formato")
     )
+    # Campo de solo lectura para mostrar la fecha de la historia
+    fecha_input = ft.TextField(
+        label="Fecha de la historia",
+        value=historia_existente.get("fecha", ""),
+        read_only=True,
+        width=True
+    )
+
+    # Ref del DatePicker
+    fecha_historia_ref = ft.Ref[ft.DatePicker]()
+
+    # Cuando se selecciona la fecha
+    fecha_historia_change_callbacks = []
+
+    def on_fecha_historia_selected(e):
+        if e.data:
+            fecha_sel = datetime.fromisoformat(e.data).date()
+            fecha_str = fecha_sel.strftime("%Y-%m-%d")
+            fecha_input.value = fecha_str
+            fecha_input.update()
+            # ejecutar callbacks (por ejemplo: recalcular EG)
+            for cb in fecha_historia_change_callbacks:
+                try:
+                    cb()
+                except Exception:
+                    pass
+            page.update()
+
+    # DatePicker
+    date_picker_historia = ft.DatePicker(
+        ref=fecha_historia_ref,
+        on_change=on_fecha_historia_selected
+    )
+
+    # Botón para abrir el DatePicker
+    def abrir_date_picker_historia(e):
+        e.page.dialog = fecha_historia_ref.current
+        fecha_historia_ref.current.open = True
+        e.page.update()
+
+    boton_fecha_historia = ft.ElevatedButton(
+        "Seleccionar fecha historia",
+        icon=ft.Icons.CALENDAR_MONTH,
+        on_click=abrir_date_picker_historia
+    )
+
+    page.overlay.append(date_picker_historia)
+
+
 
     # Campos adicionales de identificación
     estado_civil_dropdown = ft.Dropdown(
@@ -239,11 +288,100 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
             return valores_actuales.get(clave, extra_data.get(clave, ""))
 
         if formato_dropdown.value == "Ginecología":
+            # --- Calculadora de Edad Gestacional por ecografía ---
+            fecha_eco_input = ft.TextField(
+                label="Fecha primera ecografía",
+                value=valor_guardado("Fecha primera ecografía"),
+                read_only=True,
+                width=450
+            )
+
+            eg_semanas_input = ft.TextField(label="Semanas (EG ecografía)", width=450, value=valor_guardado("EG Semanas"))
+            eg_dias_input = ft.TextField(label="Días (0-6)", width=450, value=valor_guardado("EG Días"))
+            fur_output = ft.TextField(label="Fecha última menstruación (estimada)", width=450, read_only=True, value=valor_guardado("FUR estimada"))
+            eg_actual_output = ft.TextField(label="Edad gestacional actual", width=450, read_only=True, value=valor_guardado("Edad gestacional actual"))
+            fpp_output = ft.TextField(label="Fecha probable de parto", width=450, read_only=True, value=valor_guardado("Fecha probable de parto"))
+
+            # Ref para el DatePicker de ecografía
+            date_picker_eco_ref = ft.Ref[ft.DatePicker]()
+
+            # --- función que calcula EG usando la fecha de la historia (fecha_input) como "hoy" ---
+            def calcular_eg(e=None):
+                try:
+                    # necesitamos BOTH: fecha de ecografía y fecha de historia
+                    if not fecha_eco_input.value or not fecha_input.value:
+                        return
+
+                    # parseos seguros
+                    fecha_eco = datetime.strptime(fecha_eco_input.value, "%Y-%m-%d").date()
+                    hoy = datetime.strptime(fecha_input.value, "%Y-%m-%d").date()
+
+                    semanas = int(eg_semanas_input.value.strip()) if eg_semanas_input.value.strip().isdigit() else 0
+                    dias = int(eg_dias_input.value.strip()) if eg_dias_input.value.strip().isdigit() else 0
+                    if dias < 0 or dias > 6:
+                        dias = 0
+
+                    # estimamos FUR a partir de la eco
+                    fur_estimada = fecha_eco - timedelta(weeks=semanas, days=dias)
+                    fur_output.value = fur_estimada.strftime("%Y-%m-%d")
+
+                    # edad gestacional en dias desde FUR hasta 'hoy' (fecha de la historia)
+                    dias_gestacion = (hoy - fur_estimada).days
+                    if dias_gestacion < 0:
+                        # fecha de historia anterior a la FUR estimada → no tiene sentido
+                        eg_actual_output.value = "EG: datos inconsistentes"
+                        fpp_output.value = "-"
+                    else:
+                        semanas_gestacion = dias_gestacion // 7
+                        dias_restantes = dias_gestacion % 7
+                        eg_actual_output.value = f"{semanas_gestacion} semanas + {dias_restantes} días"
+                        fpp_output.value = (fur_estimada + timedelta(weeks=40)).strftime("%Y-%m-%d")
+
+                except Exception as ex:
+                    eg_actual_output.value = "Error en datos"
+                    fpp_output.value = "-"
+                    fur_output.value = "-"
+
+                # refrescar controles y página
+                fur_output.update()
+                eg_actual_output.update()
+                fpp_output.update()
+                page.update()
+
+            # Cuando selecciono fecha en el DatePicker de la ecografía
+            def on_fecha_eco_selected(e):
+                if e.data:
+                    fecha_sel = datetime.fromisoformat(e.data).date()
+                    fecha_eco_input.value = fecha_sel.strftime("%Y-%m-%d")
+                    fecha_eco_input.update()
+                    calcular_eg()
+
+            # DatePicker de ecografía y botón para abrirlo usando pick_date()
+            date_picker_eco = ft.DatePicker(ref=date_picker_eco_ref, on_change=on_fecha_eco_selected)
+
+            def abrir_date_picker_eco(e):
+                try:
+                    date_picker_eco_ref.current.pick_date()
+                except Exception:
+                    e.page.dialog = date_picker_eco_ref.current
+                    date_picker_eco_ref.current.open = True
+                    e.page.update()
+
+            boton_fecha_eco = ft.ElevatedButton(
+                "Seleccionar fecha de la ecografía",
+                icon=ft.Icons.CALENDAR_MONTH,
+                on_click=abrir_date_picker_eco
+            )
+
+            # Recalcular cuando cambian semanas/días manualmente
+            eg_semanas_input.on_change = calcular_eg
+            eg_dias_input.on_change = calcular_eg
+
+            # ---- Ahora los demás campos ginecológicos e integración ----
             peso_input = ft.TextField(label="Peso (kg)", width=450, value=valor_guardado("Peso"))
             talla_input = ft.TextField(label="Talla (m)", width=450, value=valor_guardado("Talla"))
             imc_input = ft.TextField(label="IMC", width=450, read_only=True, value=valor_guardado("IMC"))
 
-            # Función para calcular IMC automáticamente
             def calcular_imc(e=None):
                 try:
                     peso = float(peso_input.value)
@@ -251,24 +389,34 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
                     if talla > 0:
                         imc = peso / (talla ** 2)
                         imc_input.value = f"{imc:.2f}"
-                        imc_input.update()
                 except:
                     imc_input.value = ""
-                    imc_input.update()
+                imc_input.update()
 
-            # Eventos para recalcular IMC
             peso_input.on_change = calcular_imc
             talla_input.on_change = calcular_imc
-            
+
             campos_extra.controls.extend([
                 ft.Text("Antecedentes", size=16, weight=ft.FontWeight.BOLD),
                 ft.TextField(label="Antecedentes Patologico", multiline=True, width=450, value=valor_guardado("Antecedentes Patologico")),
                 ft.TextField(label="Antecedentes Medicamentos", multiline=True, width=450, value=valor_guardado("Antecedentes Medicamentos")),
-                ft.Text("Antecedentes ginecologicos", size=16, weight=ft.FontWeight.BOLD),
+                ft.Text("Antecedentes ginecológicos", size=16, weight=ft.FontWeight.BOLD),
                 ft.TextField(label="Gestas", width=450, value=valor_guardado("Gestas")),
                 ft.TextField(label="Partos", width=450, value=valor_guardado("Partos")),
                 ft.TextField(label="Abortos", width=450, value=valor_guardado("Abortos")),
                 ft.TextField(label="Cesáreas", width=450, value=valor_guardado("Cesáreas")),
+                ft.Divider(),
+                ft.Text("Cálculo Edad Gestacional por Ecografía", size=16, weight=ft.FontWeight.BOLD),
+                ft.Row([boton_fecha_eco], alignment=ft.MainAxisAlignment.CENTER),
+                fecha_eco_input,
+                eg_semanas_input,
+                eg_dias_input,
+                fur_output,
+                eg_actual_output,
+                fpp_output,
+                ft.Divider(),
+                date_picker_eco,
+                ft.Divider(),
                 ft.TextField(label="Antecedentes Hospitalizaciones", multiline=True, width=450, value=valor_guardado("Antecedentes Hospitalizaciones")),
                 ft.TextField(label="Antecedentes Cirugias", multiline=True, width=450, value=valor_guardado("Antecedentes Cirugias")),
                 ft.TextField(label="Antecedentes Traumaticos", multiline=True, width=450, value=valor_guardado("Antecedentes Traumaticos")),
@@ -292,6 +440,8 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
                 ft.TextField(label="Impresion DX", width=450, value=valor_guardado("Impresion DX")),
                 ft.TextField(label="Tratamiento", width=450, value=valor_guardado("Tratamiento")),
             ])
+
+
         elif formato_dropdown.value == "Pediatría":
             campos_extra.controls.extend([
                 ft.TextField(label="Edad gestacional al nacer", width=450, value=valor_guardado("Edad gestacional al nacer")),
@@ -379,7 +529,7 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
             "motivo": (motivo_input.value or "").strip(),
             "enfermedad actual": (enfermedadactual_input.value or "").strip(),
             "rev_sis": (rev_sis_input.value or "").strip(),
-            "fecha": str(date.today()),
+            "fecha": (fecha_input.value or "").strip(),
             "extra": {}
         }
 
@@ -408,6 +558,8 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
             content=ft.Column(
                 controls=[
                     formato_dropdown,
+                    ft.Row([boton_fecha_historia], alignment=ft.MainAxisAlignment.CENTER),
+                    fecha_input,
                     nombre_input,
                     id_input,
                     estado_civil_dropdown,
