@@ -16,7 +16,7 @@ def info_page(page: ft.Page):
         spacing=20,
     )
     
-    # Informacion del desarrollo
+    #Informacion del desarrollo
     creador_info = ft.Column(
         controls=[
             ft.Text("Created by Julian Almario Loaiza", size=18),
@@ -26,7 +26,7 @@ def info_page(page: ft.Page):
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
-    # Lista de referencias
+    #Lista de referencias
     referencias = [
         "- Huerta Aragonés J, Cela de Julián E. Hematología práctica: interpretación del hemograma y de las pruebas de coagulación. En: AEPap (ed.). Curso de Actualización Pediatría 2018. Madrid: Lúa Ediciones 3.0; 2018. p. 507-526.",
         "- Singer M, Deutschman CS, Seymour CW, et al. The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3). JAMA. 2016;315(8):801–810. doi:10.1001/jama.2016.0287",
@@ -35,7 +35,7 @@ def info_page(page: ft.Page):
         "- Interpretación del líquido cefalorraquídeo. (n.d.). Retrieved June 3, 2025, from https://www.elsevier.es/es-revista-anales-pediatria-continuada-51-pdf-S1696281814701647"
     ]
 
-    # Informacion de referencias, terminos y condicones, y privacidad
+    #Informacion de referencias, terminos y condiciones, y privacidad
     info_panel = ft.ExpansionPanelList(
         expand_icon_color=ft.Colors.WHITE,
         elevation=8,

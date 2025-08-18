@@ -30,7 +30,6 @@ def qsofa():
         resultado_qsofa.update()
         interpretacion_qsofa.update()
 
-    # Conectar eventos
     check_frecuencia.on_change = calcular_qsofa
     check_presion.on_change = calcular_qsofa
     check_estado_mental.on_change = calcular_qsofa

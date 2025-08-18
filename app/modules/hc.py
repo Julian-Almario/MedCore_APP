@@ -176,7 +176,7 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
             fecha_str = fecha_sel.strftime("%Y-%m-%d")
             fecha_input.value = fecha_str
             fecha_input.update()
-            # ejecutar callbacks (por ejemplo: recalcular EG)
+            
             for cb in fecha_historia_change_callbacks:
                 try:
                     cb()
@@ -206,7 +206,7 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
 
 
 
-    # Campos adicionales de identificación
+    # Campos de identificacion
     estado_civil_dropdown = ft.Dropdown(
         label="Estado civil",
         options=[ft.dropdown.Option(o) for o in ["Soltero", "Casado", "Divorciado", "Viudo", "Unión libre"]],
@@ -305,14 +305,13 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
             # Ref para el DatePicker de ecografía
             date_picker_eco_ref = ft.Ref[ft.DatePicker]()
 
-            # --- función que calcula EG usando la fecha de la historia (fecha_input) como "hoy" ---
+            
             def calcular_eg(e=None):
                 try:
-                    # necesitamos BOTH: fecha de ecografía y fecha de historia
                     if not fecha_eco_input.value or not fecha_input.value:
                         return
 
-                    # parseos seguros
+
                     fecha_eco = datetime.strptime(fecha_eco_input.value, "%Y-%m-%d").date()
                     hoy = datetime.strptime(fecha_input.value, "%Y-%m-%d").date()
 
@@ -342,7 +341,7 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
                     fpp_output.value = "-"
                     fur_output.value = "-"
 
-                # refrescar controles y página
+                # Refrescar controles y página
                 fur_output.update()
                 eg_actual_output.update()
                 fpp_output.update()
@@ -377,7 +376,6 @@ def mostrar_formulario_historia(page, refrescar_lista, historia_existente=None, 
             eg_semanas_input.on_change = calcular_eg
             eg_dias_input.on_change = calcular_eg
 
-            # ---- Ahora los demás campos ginecológicos e integración ----
             peso_input = ft.TextField(label="Peso (kg)", width=450, value=valor_guardado("Peso"))
             talla_input = ft.TextField(label="Talla (m)", width=450, value=valor_guardado("Talla"))
             imc_input = ft.TextField(label="IMC", width=450, read_only=True, value=valor_guardado("IMC"))

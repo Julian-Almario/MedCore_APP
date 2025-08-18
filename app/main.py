@@ -1,7 +1,6 @@
 import flet as ft
 import os
 import json
-from modules.guias import *
 from modules.cal import *
 from modules.info import *
 from modules.hc import *
@@ -11,6 +10,7 @@ def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
     page.adaptive = True
     page.title = "MedCore"
+    #SCROLL PERSONALIZATION
     page.theme = ft.Theme(
         scrollbar_theme=ft.ScrollbarTheme(
             thickness=0,
@@ -103,10 +103,12 @@ def main(page: ft.Page):
         )
 
 # -------------------------------------------------------------------------------
-# page de medicamentos
+# Pagina de medicamentos
+    #Ruta de medicamentos
     RUTA_MEDS = os.path.abspath(os.path.join(os.path.dirname(__file__), "storage", "data", "meds"))
-    os.makedirs(RUTA_MEDS, exist_ok=True)
+    os.makedirs(RUTA_MEDS, exist_ok=True) #Confirmacion de que existe el .json
 
+    #Generacion de panel por cada item de la Base de datos .json
     def crear_panel_medicamento(med: dict):
         panel_ref = ft.Ref[ft.ExpansionPanel]()
 
@@ -129,6 +131,7 @@ def main(page: ft.Page):
                 spacing=10
             )
 
+        #Datos que se extrain y se muestran del .json
         contenido_panel = ft.Column(
             controls=[
                 fila_info("Mecanismo de acción:", med["mecanismo"]),
@@ -205,12 +208,13 @@ def main(page: ft.Page):
                 ),
             ],
         )
-#---------------------------------------------------
 
+# Pagian de algoritmos
+    #Ruta de almacenamiento de algoritmos
     RUTA_ALGO = os.path.abspath(os.path.join(os.path.dirname(__file__), "storage", "data", "algoritmos"))
-    os.makedirs(RUTA_ALGO, exist_ok=True)
+    os.makedirs(RUTA_ALGO, exist_ok=True) #Confirmacion de que exista el .json
 
-    # Extensiones válidas de imagen
+    #Extensiones de imagenes validas
     EXTENSIONES_VALIDAS = [".jpg", ".jpeg", ".png", ".webp", ".bmp", ".gif"]
 
     def es_imagen_valida(ruta_imagen):
@@ -252,6 +256,7 @@ def main(page: ft.Page):
                 )
             )
 
+        #INformacion presentada en las pestañas de la lista
         return {
             "titulo": algo["nombre"],
             "tags": algo["tags"],
@@ -277,6 +282,7 @@ def main(page: ft.Page):
             )
         }
 
+    #Paginacion global de los algoritmos
     def pagina_algoritmos(page: ft.Page):
         list_data = cargar_algoritmos_desde_json(os.path.join(RUTA_ALGO, "algoritmos.json"))
         buscar = "Buscar algoritmos..."
@@ -308,7 +314,9 @@ def main(page: ft.Page):
                 ),
             ],
         )
+
 #-------------------------------------------
+#Contenido disponible
     def show_cals():
         main_content.controls.clear()
         main_content.controls.append(build_fixed_page(calculadoras, "Buscar calculadora..."))
@@ -339,9 +347,7 @@ def main(page: ft.Page):
         main_content.controls.append(info_page(page))
         page.update()
 
-
-# -------------------------------------------------------------------------------
-# Barra de navegación personalizada
+#Barra de navegacion personalizada
     def cambiar_pagina(index):
         nonlocal current_page_index
         current_page_index = index
@@ -356,6 +362,7 @@ def main(page: ft.Page):
             expand=True,
             spacing=10,
             controls=[
+                #Botones de la barra de navegacion (para crear mas no se te olvide especificar y/o cambia la pagina a la cual apunta)
                 ft.TextButton(
                     text="Calculadoras",
                     icon=ft.Icons.CALCULATE_OUTLINED,
@@ -396,6 +403,7 @@ def main(page: ft.Page):
             ]
         )
 
+#Navegacion superior
     navigation_container = ft.Container(
         expand=False,
         width=page.width,
@@ -407,8 +415,7 @@ def main(page: ft.Page):
         )
     )
 
-# -------------------------------------------------------------------------------
-
+#Paginacion de cada pestaña
     def load_current_page():
         if current_page_index == 0:
             show_cals()

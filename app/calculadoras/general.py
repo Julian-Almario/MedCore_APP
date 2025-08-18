@@ -41,7 +41,6 @@ def imc():
         resultado_imc.update()
         categoria_imc.update()
 
-    # Eventos de cambio
     peso_field.on_change = calcular_imc
     talla_field.on_change = calcular_imc
 
