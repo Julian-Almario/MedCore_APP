@@ -21,7 +21,7 @@ def info_page(page: ft.Page):
         controls=[
             ft.Text("Created by Julian Almario Loaiza", size=18),
             images_row,
-            ft.Text("Versión: 0.2.0 (Agosto 2025)", size=14, color=ft.Colors.OUTLINE),
+            ft.Text("Versión: 0.2.1 (Octubre 2025)", size=14, color=ft.Colors.OUTLINE),
         ],
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
