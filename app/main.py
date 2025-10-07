@@ -10,7 +10,7 @@ def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
     page.adaptive = True
     page.title = "MedCore"
-    #SCROLL PERSONALIZATION
+    #SCROLL PERSONALIZADO
     page.theme = ft.Theme(
         scrollbar_theme=ft.ScrollbarTheme(
             thickness=0,
@@ -364,28 +364,34 @@ def main(page: ft.Page):
             controls=[
                 #Botones de la barra de navegacion (para crear mas no se te olvide especificar y/o cambia la pagina a la cual apunta)
                 ft.TextButton(
-                    text="Calculadoras",
+                    text="Perlas",
                     icon=ft.Icons.CALCULATE_OUTLINED,
                     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 0 else SELECT_COLOR),
                     on_click=lambda e: cambiar_pagina(0),
                 ),
                 ft.TextButton(
-                    text="Medicamentos",
-                    icon=ft.Icons.LOCAL_PHARMACY_OUTLINED,
+                    text="Calculadoras",
+                    icon=ft.Icons.CALCULATE_OUTLINED,
                     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 1 else SELECT_COLOR),
                     on_click=lambda e: cambiar_pagina(1),
                 ),
                 ft.TextButton(
-                    text="Laboratorios",
-                    icon=ft.Icons.BIOTECH_OUTLINED,
+                    text="Medicamentos",
+                    icon=ft.Icons.LOCAL_PHARMACY_OUTLINED,
                     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 2 else SELECT_COLOR),
                     on_click=lambda e: cambiar_pagina(2),
                 ),
                 ft.TextButton(
-                    text="Info",
-                    icon=ft.Icons.INFO_OUTLINED,
+                    text="Laboratorios",
+                    icon=ft.Icons.BIOTECH_OUTLINED,
                     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 3 else SELECT_COLOR),
                     on_click=lambda e: cambiar_pagina(3),
+                ),
+                ft.TextButton(
+                    text="Info",
+                    icon=ft.Icons.INFO_OUTLINED,
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 4 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(4),
                 )
 
             ]
@@ -406,14 +412,15 @@ def main(page: ft.Page):
 #Paginacion de cada pestaña
     def load_current_page():
         if current_page_index == 0:
-            show_cals()
+            pagina_guias(page)
         elif current_page_index == 1:
-            show_meds()
+            show_cals()
         elif current_page_index == 2:
-            show_labs()
+            show_meds()
         elif current_page_index == 3:
+            show_labs()
+        elif current_page_index == 4:
             show_info()
-
 
 
 
