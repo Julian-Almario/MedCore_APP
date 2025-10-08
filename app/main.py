@@ -5,12 +5,14 @@ from modules.cal import *
 from modules.info import *
 from modules.hc import *
 from modules.labs import *
+from modules.home import *
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
     page.adaptive = True
     page.title = "MedCore"
-    #SCROLL PERSONALIZADO
+
+    # Scroll personalizado
     page.theme = ft.Theme(
         scrollbar_theme=ft.ScrollbarTheme(
             thickness=0,
@@ -326,6 +328,11 @@ def main(page: ft.Page):
         main_content.controls.clear()
         main_content.controls.append(pagina_medicamentos(page))
         page.update()
+    
+    def show_pearls():
+        main_content.controls.clear()
+        main_content.controls.append(pantalla_home(page))
+        page.update()
 
     def show_labs():
         main_content.controls.clear()
@@ -365,7 +372,7 @@ def main(page: ft.Page):
                 #Botones de la barra de navegacion (para crear mas no se te olvide especificar y/o cambia la pagina a la cual apunta)
                 ft.TextButton(
                     text="Perlas",
-                    icon=ft.Icons.CALCULATE_OUTLINED,
+                    icon=ft.Icons.NEWSPAPER,
                     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 0 else SELECT_COLOR),
                     on_click=lambda e: cambiar_pagina(0),
                 ),
@@ -412,7 +419,7 @@ def main(page: ft.Page):
 #Paginacion de cada pestaña
     def load_current_page():
         if current_page_index == 0:
-            pagina_guias(page)
+            show_pearls()
         elif current_page_index == 1:
             show_cals()
         elif current_page_index == 2:
