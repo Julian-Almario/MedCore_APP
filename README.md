@@ -32,7 +32,7 @@
   - CKD-EPI 2021
   - Anion Gap and Corrected Sodium
   - **And more!**
-- 🧪 **Normal lab reference values** organized by age and test type
+- **Normal lab reference values** organized by age and test type
 - **Medical record creator** with export and editing
 - **Local storage** with full offline access
 - **Modern, fluid, and responsive interface**
