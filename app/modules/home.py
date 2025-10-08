@@ -81,18 +81,17 @@ def pantalla_home(page: ft.Page):
             filled=False,
             dense=True,
             content_padding=ft.padding.symmetric(horizontal=12, vertical=10),
-            width=300,
+            width=400,
+            expand=True,
         )
 
         construir_tarjetas()
 
-        barra_superior = ft.Row(
-            controls=[
-                ft.Container(content=search_bar),
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-            vertical_alignment=ft.CrossAxisAlignment.CENTER,
-            expand=True
+        # Barra de búsqueda igual que en main.py
+        barra_superior = ft.Container(
+            content=search_bar,
+            padding=ft.padding.symmetric(horizontal=40, vertical=10),
+            alignment=ft.alignment.center,
         )
 
         contenido_principal.controls.extend([
