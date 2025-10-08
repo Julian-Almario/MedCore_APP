@@ -87,7 +87,6 @@ def pantalla_home(page: ft.Page):
 
         construir_tarjetas()
 
-        # Barra de búsqueda igual que en main.py
         barra_superior = ft.Container(
             content=search_bar,
             padding=ft.padding.symmetric(horizontal=40, vertical=10),
