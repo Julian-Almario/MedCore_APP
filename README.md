@@ -12,17 +12,17 @@
 
 **MedCore** is a cross-platform application for **mobile, web, and desktop**, developed in Python using the [Flet](https://flet.dev) framework. Its goal is to centralize clinical calculators, reference lab values, and other useful resources in an intuitive, modular, and efficient platform.
 
-## 🎬 Demo
+## Demo
 
 <p align="center">
   <img src="img/demo.gif" alt="MedCore Demo" width="400"/>
 </p>
 
-## 🩺 Features
+## Features
 
-- 🚀 **Immediate use without login**
-- 🔎 **Interactive search** by name or tags
-- 🧮 **Frequently used medical calculators**:
+- **Immediate use without login**
+- **Interactive search** by name or tags
+- **Frequently used medical calculators**:
   - Body Mass Index (BMI)
   - Rule of Three (Direct)
   - Mid-parental height
@@ -33,19 +33,19 @@
   - Anion Gap and Corrected Sodium
   - **And more!**
 - 🧪 **Normal lab reference values** organized by age and test type
-- 📝 **Medical record creator** with export and editing
-- 📦 **Local storage** with full offline access
-- 💻 **Modern, fluid, and responsive interface**
-- 🌙 **Permanent dark mode**
-- 🧩 **Modular and expandable design**
+- **Medical record creator** with export and editing
+- **Local storage** with full offline access
+- **Modern, fluid, and responsive interface**
+- **Permanent dark mode**
+- **Modular and expandable design**
 
-## 🧰 Technologies Used
+## Technologies Used
 
 - **Python 3.10+**
 - **[Flet](https://flet.dev/)** – Web and desktop UI framework
 - **Modular and scalable architecture**
 
-## 🚀 Installation and Execution
+## Installation and Execution
 
 1. **Clone the repository:**
     ```bash
@@ -62,7 +62,7 @@
     ```
 > **Note:** Using a virtual environment is recommended.
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 app/
@@ -82,7 +82,7 @@ app/
 │       └── meds.json
 ```
 
-## 🧪 Current Status
+## Current Status
 
 * [x] Full offline access
 * Normal lab reference values:
@@ -106,11 +106,11 @@ app/
 * [x] Interactive search
 * [x] Medical record creator
 
-## 📌 Objective
+## Objective
 
 **MedCore** aims to be a reference tool for medical students, general practitioners, and specialists by centralizing calculations, normal values, and key parameters to speed up clinical decision-making.
 
-## ❓ Frequently Asked Questions
+## Frequently Asked Questions
 
 **Can I use MedCore without an internet connection?**
 Yes! All main features are available offline.
@@ -118,15 +118,15 @@ Yes! All main features are available offline.
 **How can I report a bug or suggest an improvement?**
 Open an [issue here](https://github.com/Julian-Almario/medcore_app/issues).
 
-## 🙌 Contributions
+## Contributions
 
 Contributions are welcome! Check out the [contribution guide](CONTRIBUTING.md) or open a [pull request](https://github.com/Julian-Almario/medcore_app/pulls).
 
-## 📄 License
+## License
 
 This project is licensed under the **GNU GPL v3**. See the [`LICENSE`](LICENSE) file for more details.
 
-## 🌟 Acknowledgements
+## Acknowledgements
 
 * Thanks to the Flet community and all contributors.
 * Inspired by the need for accessible and modern medical tools.
