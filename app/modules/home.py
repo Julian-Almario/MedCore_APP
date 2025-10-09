@@ -1,9 +1,12 @@
 import os
 import flet as ft
+import requests  # Agrega esta importación
 
 # Carpeta donde se almacenan los archivos Markdown
 RUTA_MDS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "storage", "data", "guias"))
 os.makedirs(RUTA_MDS, exist_ok=True)
+
+BACKEND_URL = "http://localhost:8000"  # Cambia la URL según tu backend
 
 def listar_mds():
     return [f for f in os.listdir(RUTA_MDS) if f.lower().endswith(".md")]
@@ -69,6 +72,50 @@ def pantalla_home(page: ft.Page):
         filtro = e.control.value
         construir_tarjetas(filtro)
 
+    def descargar_md_desde_backend(e):
+        try:
+            resp = requests.get(f"{BACKEND_URL}/pearls")
+            resp.raise_for_status()
+            archivos = resp.json().get("pearls", [])
+            descargados = 0
+
+            for archivo in archivos:
+                archivo_url = f"{BACKEND_URL}/pearls/{archivo}"
+                r = requests.get(archivo_url)
+                if r.status_code == 200:
+                    with open(os.path.join(RUTA_MDS, archivo), "w", encoding="utf-8") as f:
+                        f.write(r.text)
+                    descargados += 1
+
+            # Crear un diálogo de éxito
+            dlg_exito = ft.AlertDialog(
+                title=ft.Text("Descarga completada"),
+                content=ft.Text(f"Se Actualizacon las guias"),
+                actions=[
+                    ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_exito))
+                ],
+                actions_alignment=ft.MainAxisAlignment.END,
+            )
+            page.dialog = dlg_exito
+            page.open(dlg_exito)
+
+            construir_tarjetas()
+
+        except Exception as ex:
+            # Crear un diálogo de error
+            dlg_error = ft.AlertDialog(
+                title=ft.Text("Error"),
+                content=ft.Text("Ocurrió un error al descargar los archivos."),
+                actions=[
+                    ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_error))
+                ],
+                actions_alignment=ft.MainAxisAlignment.END,
+            )
+            page.dialog = dlg_error
+            page.open(dlg_error)
+
+
+
     def mostrar_lista():
         contenido_principal.controls.clear()
 
@@ -85,16 +132,29 @@ def pantalla_home(page: ft.Page):
             expand=True,
         )
 
+        btn_descargar = ft.ElevatedButton(
+            text="Descargar pearls del servidor",
+            icon=ft.Icons.DOWNLOAD,
+            on_click=descargar_md_desde_backend,
+            style=ft.ButtonStyle(padding=ft.padding.symmetric(horizontal=20, vertical=10)),
+        )
+
         construir_tarjetas()
 
-        barra_superior = ft.Container(
-            content=search_bar,
-            padding=ft.padding.symmetric(horizontal=40, vertical=10),
-            alignment=ft.alignment.center,
+        barra_superior = ft.Row(
+            controls=[
+                ft.Container(content=search_bar, expand=True),
+                btn_descargar
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
         )
 
         contenido_principal.controls.extend([
-            barra_superior,
+            ft.Container(
+                content=barra_superior,
+                padding=ft.padding.symmetric(horizontal=40, vertical=10),
+                alignment=ft.alignment.center,
+            ),
             lista_tarjetas
         ])
         page.update()
