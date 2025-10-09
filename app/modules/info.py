@@ -5,13 +5,23 @@ def info_page(page: ft.Page):
     def web(e):
         page.launch_url("https://www.julianalmario.social/")
 
+    def repo(e):
+        page.launch_url("https://github.com/Julian-Almario/MedCore_APP")
+
+
     my_web = ft.GestureDetector(
         content=ft.Image(src="../assets/myweb.png", width=150, height=50),
         on_tap=web,
     )
 
+    repo_project = ft.GestureDetector(
+        content=ft.Image(src="../assets/repository.png", width=150, height=50),
+        on_tap=repo,
+    )
+
+
     images_row = ft.Row(
-        controls=[my_web],
+        controls=[my_web, repo_project],
         alignment=ft.MainAxisAlignment.CENTER,
         spacing=20,
     )
