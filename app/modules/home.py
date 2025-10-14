@@ -6,20 +6,12 @@ import requests  # Agrega esta importación
 RUTA_MDS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "storage", "data", "guias"))
 os.makedirs(RUTA_MDS, exist_ok=True)
 
-BACKEND_URL = "http://localhost:8000"  # Cambia la URL según tu backend
+BACKEND_URL = "http://localhost:8000"  # backend URL
 
 def listar_mds():
     return [f for f in os.listdir(RUTA_MDS) if f.lower().endswith(".md")]
 
 def pantalla_home(page: ft.Page):
-    # Column principal con scroll en el borde de la pantalla
-    contenido_principal = ft.Column(
-        controls=[],  # Se llenará dinámicamente
-        expand=True,
-        scroll=ft.ScrollMode.AUTO,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-    )
-
     lista_tarjetas = ft.Column(spacing=10, expand=True)
 
     def construir_tarjetas(filtro=""):
@@ -33,7 +25,7 @@ def pantalla_home(page: ft.Page):
                 ft.Container(
                     content=ft.Text("No tienes archivos Markdown subidos", size=16, color=ft.Colors.RED, text_align=ft.TextAlign.CENTER),
                     alignment=ft.alignment.center,
-                    height=120  # Altura mínima para mantener el layout
+                    height=120
                 )
             )
         else:
@@ -42,15 +34,21 @@ def pantalla_home(page: ft.Page):
                 if filtro in nombre_sin_ext.lower():
                     card = ft.Card(
                         content=ft.Container(
-                            content=ft.Text(
-                                nombre_sin_ext,
-                                size=18,
-                                text_align=ft.TextAlign.CENTER,
+                            content=ft.Row(
+                                controls=[
+                                    ft.Text(
+                                        nombre_sin_ext,
+                                        size=18,
+                                        text_align=ft.TextAlign.CENTER,
+                                    )
+                                ],
+                                alignment=ft.MainAxisAlignment.CENTER,
+                                vertical_alignment=ft.CrossAxisAlignment.CENTER,
                             ),
-                            padding=20,  # Más espacio interno
-                            width=350,   # Ajusta el ancho del card
-                            height=80,   # Ajusta el alto del card
-                            alignment=ft.alignment.center,  # Centra el contenido dentro del container
+                            padding=20,
+                            width=True,
+                            height=80,
+                            alignment=ft.alignment.center,
                             on_click=lambda e, a=archivo: ver_md(a),
                         ),
                         margin=ft.margin.symmetric(vertical=8, horizontal=16),
@@ -63,7 +61,7 @@ def pantalla_home(page: ft.Page):
                     ft.Container(
                         content=ft.Text("No se encontraron resultados.", size=16, color=ft.Colors.OUTLINE, text_align=ft.TextAlign.CENTER),
                         alignment=ft.alignment.center,
-                        height=120  # Altura mínima para mantener el layout
+                        height=120
                     )
                 )
         page.update()
@@ -117,46 +115,7 @@ def pantalla_home(page: ft.Page):
 
 
     def mostrar_lista():
-        contenido_principal.controls.clear()
-
-        search_bar = ft.TextField(
-            label="Buscar pearls...",
-            on_change=filtrar_md,
-            border=ft.InputBorder.UNDERLINE,
-            border_color=ft.Colors.OUTLINE,
-            bgcolor=ft.Colors.TRANSPARENT,
-            filled=False,
-            dense=True,
-            content_padding=ft.padding.symmetric(horizontal=12, vertical=10),
-            width=400,
-            expand=True,
-        )
-
-        btn_descargar = ft.ElevatedButton(
-            text="Descargar pearls del servidor",
-            icon=ft.Icons.DOWNLOAD,
-            on_click=descargar_md_desde_backend,
-            style=ft.ButtonStyle(padding=ft.padding.symmetric(horizontal=20, vertical=10)),
-        )
-
         construir_tarjetas()
-
-        barra_superior = ft.Row(
-            controls=[
-                ft.Container(content=search_bar, expand=True),
-                btn_descargar
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-        )
-
-        contenido_principal.controls.extend([
-            ft.Container(
-                content=barra_superior,
-                padding=ft.padding.symmetric(horizontal=40, vertical=10),
-                alignment=ft.alignment.center,
-            ),
-            lista_tarjetas
-        ])
         page.update()
 
     def ver_md(nombre_md):
@@ -187,5 +146,52 @@ def pantalla_home(page: ft.Page):
         ])
         page.update()
 
+    # Barra superior: search bar y botón
+    search_bar = ft.TextField(
+        label="Buscar pearls...",
+        on_change=filtrar_md,
+        border=ft.InputBorder.UNDERLINE,
+        border_color=ft.Colors.OUTLINE,
+        bgcolor=ft.Colors.TRANSPARENT,
+        filled=False,
+        dense=True,
+        content_padding=ft.padding.symmetric(horizontal=12, vertical=10),
+        width=400,
+        expand=True,
+    )
+
+    btn_descargar = ft.ElevatedButton(
+        text="Actualizar perlas",
+        icon=ft.Icons.DOWNLOAD,
+        on_click=descargar_md_desde_backend,
+        style=ft.ButtonStyle(padding=ft.padding.symmetric(horizontal=20, vertical=10)),
+    )
+
+    barra_superior = ft.Container(
+        content=ft.Row(
+            controls=[search_bar, btn_descargar],
+            alignment=ft.MainAxisAlignment.CENTER,
+        ),
+        padding=ft.padding.symmetric(horizontal=40, vertical=10),
+        alignment=ft.alignment.center,
+    )
+
+    # Área con scroll solo para las tarjetas
+    area_scroll = ft.Container(
+        expand=True,
+        content=ft.ListView(
+            controls=[lista_tarjetas],
+            expand=True,
+            padding=ft.padding.symmetric(horizontal=10, vertical=5),
+        ),
+    )
+
     mostrar_lista()
-    return contenido_principal
+
+    return ft.Column(
+        expand=True,
+        controls=[
+            barra_superior,
+            area_scroll
+        ]
+    )

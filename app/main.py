@@ -264,23 +264,23 @@ def main(page: ft.Page):
                     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 1 else SELECT_COLOR),
                     on_click=lambda e: cambiar_pagina(1),
                 ),
-               # ft.TextButton(
-                #    text="Medicamentos",
-                #    icon=ft.Icons.LOCAL_PHARMACY_OUTLINED,
-                #    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 2 else SELECT_COLOR),
-                #    on_click=lambda e: cambiar_pagina(2),
-               # ),
-                #ft.TextButton(
-                #    text="Laboratorios",
-               #     icon=ft.Icons.BIOTECH_OUTLINED,
-               #     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 3 else SELECT_COLOR),
-               #     on_click=lambda e: cambiar_pagina(3),
-               # ),
+                ft.TextButton(
+                    text="Medicamentos",
+                    icon=ft.Icons.LOCAL_PHARMACY_OUTLINED,
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 2 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(2),
+                ),
+                ft.TextButton(
+                    text="Laboratorios",
+                    icon=ft.Icons.BIOTECH_OUTLINED,
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 3 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(3),
+                ),
                 ft.TextButton(
                     text="Info",
                     icon=ft.Icons.INFO_OUTLINED,
-                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 2 else SELECT_COLOR),
-                    on_click=lambda e: cambiar_pagina(2),
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 4 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(4),
                 )
 
             ]
@@ -304,11 +304,11 @@ def main(page: ft.Page):
             show_pearls()
         elif current_page_index == 1:
             show_cals()
-        elif current_page_index == 10:
-            show_meds()
-        elif current_page_index == 10:
-            show_labs()
         elif current_page_index == 2:
+            show_meds()
+        elif current_page_index == 3:
+            show_labs()
+        elif current_page_index == 4:
             show_info()
 
 
