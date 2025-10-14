@@ -1,4 +1,47 @@
+import os
+import requests
 import flet as ft
+
+RUTA_MDS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "storage", "data", "guias"))
+BACKEND_URL = "http://localhost:8000"
+
+def descargar_md_desde_backend(page: ft.Page):
+    try:
+        resp = requests.get(f"{BACKEND_URL}/pearls")
+        resp.raise_for_status()
+        archivos = resp.json().get("pearls", [])
+        descargados = 0
+
+        for archivo in archivos:
+            archivo_url = f"{BACKEND_URL}/pearls/{archivo}"
+            r = requests.get(archivo_url)
+            if r.status_code == 200:
+                with open(os.path.join(RUTA_MDS, archivo), "w", encoding="utf-8") as f:
+                    f.write(r.text)
+                descargados += 1
+
+        dlg_exito = ft.AlertDialog(
+            title=ft.Text("Descarga completada"),
+            content=ft.Text(f"Se actualizaron las guías ({descargados})"),
+            actions=[
+                ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_exito))
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+        page.dialog = dlg_exito
+        page.open(dlg_exito)
+
+    except Exception as ex:
+        dlg_error = ft.AlertDialog(
+            title=ft.Text("Error"),
+            content=ft.Text("Ocurrió un error al descargar los archivos."),
+            actions=[
+                ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_error))
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+        page.dialog = dlg_error
+        page.open(dlg_error)
 
 def info_page(page: ft.Page):
 
@@ -113,12 +156,23 @@ def info_page(page: ft.Page):
             ),
         ]
     )
+    btn_actualizar = ft.ElevatedButton(
+        text="Actualizar Bases de datos",
+        icon=ft.Icons.AUTORENEW,
+        icon_color=ft.Colors.BLUE_400,
+        on_click=lambda e: descargar_md_desde_backend(page),
+        style=ft.ButtonStyle(
+            padding=ft.padding.symmetric(horizontal=20, vertical=10),
+        ),
+    )
+
     return ft.Column(
         scroll=ft.ScrollMode.AUTO,
         expand=True,
         controls=[
             ft.Container(height=20),
             ft.Container(content=creador_info),
+            ft.Row([btn_actualizar], alignment=ft.MainAxisAlignment.CENTER),
             ft.Container(content=ft.Divider(thickness=1)),
             ft.Container(content=info_panel, padding=ft.padding.symmetric(horizontal=20)),
         ],
