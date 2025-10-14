@@ -691,5 +691,126 @@
     "interacciones": "• Potencia efecto hipotensor con otros vasodilatadores.\n• Incompatible con sildenafilo (riesgo de colapso cardiovascular).",
     "toxicidad": "• Cefalea, hipotensión, taquicardia refleja.\n• Raro: metahemoglobinemia.",
     "tags": ["nitrato", "antianginoso", "vasodilatador", "isquemia", "infarto"]
+  },
+    {
+    "nombre": "Apixabán",
+    "mecanismo": "Anticoagulante oral directo que inhibe de forma reversible y selectiva el factor Xa, impidiendo la conversión de protrombina en trombina y la formación de coágulos.",
+    "indicaciones": "• Prevención de accidente cerebrovascular en fibrilación auricular no valvular\n• Tromboembolismo venoso (profilaxis y tratamiento)\n• Prevención postoperatoria tras cirugía ortopédica mayor",
+    "dosis": "• Adultos: 5 mg VO cada 12 h.\n• En ancianos o insuficiencia renal moderada: 2.5 mg cada 12 h.",
+    "contraindicaciones": "• Sangrado activo\n• Insuficiencia hepática severa\n• Hipersensibilidad al fármaco",
+    "observaciones": "• No requiere control rutinario de INR.\n• Menor riesgo de hemorragia intracraneal comparado con warfarina.",
+    "interacciones": "• Inhibidores potentes de CYP3A4 o P-gp (ketoconazol, claritromicina) aumentan su concentración.\n• Evitar uso concomitante con otros anticoagulantes.",
+    "toxicidad": "• Hemorragias, anemia, náuseas.\n• Antídoto: andexanet alfa.",
+    "tags": ["anticoagulante", "factor Xa", "fibrilación auricular", "Trombosis", "profilaxis"]
+  },
+  {
+    "nombre": "Rivaroxabán",
+    "mecanismo": "Inhibidor directo del factor Xa que bloquea la generación de trombina y la formación de fibrina. Actúa de forma predecible y no requiere control de laboratorio rutinario.",
+    "indicaciones": "• Prevención y tratamiento de trombosis venosa profunda y embolia pulmonar\n• Prevención de ictus en fibrilación auricular no valvular\n• Prevención secundaria post-síndrome coronario agudo",
+    "dosis": "• Adultos: 10–20 mg VO una vez al día según indicación.",
+    "contraindicaciones": "• Sangrado activo\n• Insuficiencia hepática severa\n• Embarazo o lactancia",
+    "observaciones": "• Administrar con alimentos para mejorar absorción.\n• Efecto rápido (2–4 h) y vida media corta (~9 h).",
+    "interacciones": "• Potenciado por inhibidores de CYP3A4 y P-gp.\n• Evitar combinación con otros anticoagulantes.",
+    "toxicidad": "• Hemorragia, mareos, anemia.\n• Antídoto: andexanet alfa o carbón activado si ingestión reciente.",
+    "tags": ["anticoagulante", "factor Xa", "fibrilación auricular", "trombosis", "oral"]
+  },
+  {
+    "nombre": "Dabigatrán",
+    "mecanismo": "Anticoagulante oral directo que inhibe de forma competitiva la trombina (factor IIa), previniendo la conversión de fibrinógeno en fibrina.",
+    "indicaciones": "• Prevención de ictus en fibrilación auricular no valvular\n• Prevención y tratamiento de trombosis venosa profunda y embolia pulmonar",
+    "dosis": "• Adultos: 150 mg VO cada 12 h.\n• En insuficiencia renal moderada: 110 mg cada 12 h.",
+    "contraindicaciones": "• Insuficiencia renal severa (TFG <30 ml/min)\n• Sangrado activo\n• Uso concomitante con rifampicina",
+    "observaciones": "• Cápsulas deben tragarse enteras (sensible a humedad).\n• No requiere control de INR.",
+    "interacciones": "• Potenciado por inhibidores de P-gp (amiodarona, verapamilo).\n• Antagonizado por inductores de P-gp (rifampicina).",
+    "toxicidad": "• Hemorragias, dispepsia.\n• Antídoto: idarucizumab.",
+    "tags": ["anticoagulante", "trombina", "fibrilación auricular", "Trombosis", "oral"]
+  },
+  {
+    "nombre": "Ticagrelor",
+    "mecanismo": "Inhibidor reversible del receptor plaquetario P2Y12 de ADP, que impide la activación plaquetaria y la agregación. No requiere activación metabólica.",
+    "indicaciones": "• Síndrome coronario agudo\n• Prevención secundaria tras infarto de miocardio o angioplastia con stent",
+    "dosis": "• Dosis de carga: 180 mg VO, luego 90 mg cada 12 h.",
+    "contraindicaciones": "• Sangrado activo\n• Historia de hemorragia intracraneal\n• Insuficiencia hepática grave",
+    "observaciones": "• Más rápido y potente que clopidogrel.\n• Asociar con aspirina (doble antiagregación).",
+    "interacciones": "• Metabolismo por CYP3A4: evitar con ketoconazol o rifampicina.\n• Potencia riesgo de sangrado con AINEs o anticoagulantes.",
+    "toxicidad": "• Disnea leve transitoria, hemorragia, bradicardia.",
+    "tags": ["antiagregante", "P2Y12", "síndrome coronario", "stent", "infarto"]
+  },
+    {
+    "nombre": "Diazepam",
+    "mecanismo": "Benzodiacepina que potencia la acción del GABA al aumentar la frecuencia de apertura del canal de cloro del receptor GABA-A, produciendo efectos ansiolíticos, sedantes, anticonvulsivos y relajantes musculares.",
+    "indicaciones": "• Ansiedad generalizada\n• Espasmos musculares\n• Crisis epilépticas (estatus epiléptico)\n• Abstinencia alcohólica",
+    "dosis": "• Adultos: 5–10 mg VO cada 8–12 h (máx: 30 mg/día).\n• IV: 5–10 mg lento, repetir cada 10–15 min hasta control de crisis.",
+    "contraindicaciones": "• Miastenia gravis\n• Insuficiencia respiratoria severa\n• Glaucoma de ángulo cerrado\n• Embarazo y lactancia",
+    "observaciones": "• Uso a corto plazo; riesgo de dependencia física y tolerancia.\n• Evitar mezclar con alcohol u otros depresores del SNC.",
+    "interacciones": "• Potencia sedación con opioides, antihistamínicos y alcohol.\n• Metabolismo hepático (CYP3A4 y 2C19).",
+    "toxicidad": "• Somnolencia, ataxia, confusión, depresión respiratoria (dosis altas).",
+    "tags": ["ansiolítico", "benzodiacepina", "anticonvulsivo", "relajante muscular", "sedante"]
+  },
+  {
+    "nombre": "Clonazepam",
+    "mecanismo": "Benzodiacepina de acción prolongada que potencia el efecto inhibidor del GABA sobre el sistema nervioso central.",
+    "indicaciones": "• Crisis epilépticas (ausencias, mioclonías)\n• Trastornos de ansiedad y pánico\n• Síndrome de piernas inquietas",
+    "dosis": "• Adultos: iniciar con 0.5 mg VO cada 12 h, aumentar gradualmente hasta 1–4 mg/día.\n• Niños: 0.01–0.03 mg/kg/día en 2–3 dosis.",
+    "contraindicaciones": "• Insuficiencia hepática severa\n• Glaucoma de ángulo cerrado\n• Miastenia gravis",
+    "observaciones": "• Evitar suspensión brusca (riesgo de convulsiones).\n• Puede causar tolerancia con uso prolongado.",
+    "interacciones": "• Potencia efectos de depresores del SNC.\n• Metabolizado por CYP3A4.",
+    "toxicidad": "• Somnolencia, mareo, alteración de la coordinación, dependencia.",
+    "tags": ["benzodiacepina", "anticonvulsivo", "ansiolítico", "pánico", "mioclonía"]
+  },
+  {
+    "nombre": "Sertralina",
+    "mecanismo": "Inhibidor selectivo de la recaptura de serotonina (ISRS) que aumenta los niveles sinápticos de serotonina, mejorando el estado de ánimo y reduciendo la ansiedad.",
+    "indicaciones": "• Depresión mayor\n• Trastorno de ansiedad generalizada\n• Trastorno obsesivo-compulsivo\n• Estrés postraumático y pánico",
+    "dosis": "• Adultos: 50–200 mg VO una vez al día.\n• Niños (TOC): iniciar con 25 mg/día, ajustar según respuesta.",
+    "contraindicaciones": "• Uso concomitante con IMAO o linezolid\n• Hipersensibilidad al fármaco",
+    "observaciones": "• Inicio de acción: 2–4 semanas.\n• Menor riesgo de sedación o aumento de peso que otros ISRS.",
+    "interacciones": "• Riesgo de síndrome serotoninérgico con triptanos, tramadol o IMAO.\n• Inhibidor moderado de CYP2D6.",
+    "toxicidad": "• Náuseas, insomnio, disfunción sexual, ansiedad inicial.",
+    "tags": ["antidepresivo", "ISRS", "ansiedad", "TOC", "depresión"]
+  },
+  {
+    "nombre": "Fluoxetina",
+    "mecanismo": "ISRS que inhibe selectivamente la recaptura de serotonina, incrementando su concentración sináptica y mejorando el ánimo.",
+    "indicaciones": "• Depresión\n• Bulimia nerviosa\n• TOC\n• Trastorno disfórico premenstrual",
+    "dosis": "• Adultos: 20–80 mg VO/día.\n• Niños (TOC): 10–20 mg/día.",
+    "contraindicaciones": "• Uso con IMAO o tioridazina\n• Epilepsia no controlada",
+    "observaciones": "• Vida media larga (4–6 días), útil en adherencia irregular.\n• Puede causar activación inicial (insomnio).",
+    "interacciones": "• Potencia riesgo de síndrome serotoninérgico con otros serotoninérgicos.\n• Inhibidor potente de CYP2D6.",
+    "toxicidad": "• Ansiedad, insomnio, disfunción sexual, pérdida de peso.",
+    "tags": ["antidepresivo", "ISRS", "TOC", "bulimia", "serotonina"]
+  },
+  {
+    "nombre": "Quetiapina",
+    "mecanismo": "Antipsicótico atípico que bloquea receptores dopaminérgicos D2 y serotoninérgicos 5-HT2A, con menor riesgo de efectos extrapiramidales.",
+    "indicaciones": "• Esquizofrenia\n• Trastorno bipolar (episodios maníacos y depresivos)\n• Depresión mayor resistente (adjunto)",
+    "dosis": "• Adultos: 50–800 mg VO/día en una o dos dosis.",
+    "contraindicaciones": "• Hipersensibilidad\n• Uso concomitante con depresores del SNC\n• Hipotensión ortostática severa",
+    "observaciones": "• Efecto sedante útil en insomnio asociado a trastornos psiquiátricos.\n• Bajo riesgo de síntomas extrapiramidales.",
+    "interacciones": "• Potenciada sedación con alcohol o benzodiacepinas.\n• Metabolismo hepático por CYP3A4.",
+    "toxicidad": "• Sedación, aumento de peso, hipotensión, dislipidemia.",
+    "tags": ["antipsicótico", "atípico", "bipolar", "depresión", "dopamina"]
+  },
+  {
+    "nombre": "Haloperidol",
+    "mecanismo": "Antipsicótico típico que bloquea fuertemente los receptores dopaminérgicos D2 en el sistema mesolímbico, reduciendo síntomas psicóticos positivos.",
+    "indicaciones": "• Esquizofrenia\n• Psicosis aguda\n• Delirium\n• Tics y síndrome de Tourette",
+    "dosis": "• Adultos: 2–10 mg VO cada 8–12 h (máx: 30 mg/día).\n• IM: 5–10 mg en crisis aguda.",
+    "contraindicaciones": "• Enfermedad de Parkinson\n• Depresión del SNC\n• Prolongación del QT",
+    "observaciones": "• Alta potencia antipsicótica, alto riesgo de efectos extrapiramidales.\n• Útil en cuadros agudos por vía IM.",
+    "interacciones": "• Potencia sedación con otros depresores del SNC.\n• Riesgo de prolongación del QT con antiarrítmicos o macrólidos.",
+    "toxicidad": "• Distonías agudas, rigidez, discinesia tardía, hiperprolactinemia.",
+    "tags": ["antipsicótico", "típico", "esquizofrenia", "delirium", "dopamina"]
+  },
+  {
+    "nombre": "Valproato de sodio",
+    "mecanismo": "Aumenta los niveles de GABA al inhibir su degradación y bloquear los canales de sodio y calcio, estabilizando la actividad neuronal.",
+    "indicaciones": "• Epilepsia generalizada o parcial\n• Trastorno bipolar\n• Migraña (profilaxis)",
+    "dosis": "• Adultos: 10–15 mg/kg/día VO, ajustar hasta 60 mg/kg/día.\n• IV: 15–45 mg/kg/día en casos severos.",
+    "contraindicaciones": "• Enfermedad hepática\n• Embarazo (teratogénico)\n• Trastornos del ciclo de la urea",
+    "observaciones": "• Controlar enzimas hepáticas y amonio.\n• Evitar en mujeres en edad fértil si hay alternativas.",
+    "interacciones": "• Aumenta niveles de lamotrigina y fenitoína.\n• Riesgo de hepatotoxicidad con otros anticonvulsivos.",
+    "toxicidad": "• Náuseas, aumento de peso, alopecia, temblores, hepatotoxicidad.",
+    "tags": ["antiepiléptico", "bipolar", "migraña", "GABA", "hepatotoxicidad"]
   }
 ]
