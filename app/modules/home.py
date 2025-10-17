@@ -1,5 +1,6 @@
 import os
 import flet as ft
+import re
 
 # Carpeta donde se almacenan los archivos Markdown
 RUTA_MDS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "storage", "data", "guias"))
@@ -21,6 +22,20 @@ def pantalla_home(page: ft.Page):
 
     # Layout principal
     layout_principal = ft.Column(expand=True)
+
+    # Search bar unificado (debe definirse antes de las funciones que lo usan)
+    search_bar = ft.TextField(
+        label="Buscar pearls...",
+        on_change=lambda e: filter_current_value(e),
+        border=ft.InputBorder.UNDERLINE,
+        border_color=ft.Colors.OUTLINE,
+        bgcolor=ft.Colors.TRANSPARENT,
+        filled=False,
+        dense=True,
+        content_padding=ft.padding.symmetric(horizontal=12, vertical=10),
+        width=400,
+        expand=True,
+    )
 
     # --- Perlas ---
     def construir_tarjetas(filtro=""):
@@ -139,6 +154,122 @@ def pantalla_home(page: ft.Page):
         actualizar_layout()
 
     # --- Notas internas ---
+    # helper: slugify para nombres de archivo seguros
+    def slugify(text: str) -> str:
+        text = text.strip().lower()
+        text = re.sub(r"[^\w\s-]", "", text)
+        text = re.sub(r"[\s]+", "_", text)
+        return text or "nota"
+
+    # ---- Editor de notas (crear / editar) ----
+    def open_note_editor(page: ft.Page, filename: str = None):
+        # filename: nombre del archivo con extensión o None para nueva nota
+        is_new = filename is None
+        title_val = ""
+        content_val = ""
+        if not is_new:
+            ruta = os.path.join(RUTA_NOTAS, filename)
+            try:
+                title_val = os.path.splitext(filename)[0]
+                with open(ruta, "r", encoding="utf-8") as f:
+                    content_val = f.read()
+            except Exception:
+                title_val = os.path.splitext(filename)[0]
+                content_val = ""
+
+        tf_title = ft.TextField(label="Título", value=title_val, expand=True)
+        tf_content = ft.TextField(label="Contenido (Markdown)", value=content_val, expand=True, multiline=True)
+
+        # Scroll interno para evitar recortes
+        content_list = ft.ListView(
+            expand=True,
+            padding=ft.padding.all(8),
+            spacing=8,
+            controls=[tf_title, tf_content],
+        )
+
+        def guardar(e):
+            titulo = (tf_title.value or "").strip()
+            if not titulo:
+                dlg_err = ft.AlertDialog(
+                    title=ft.Text("Error"),
+                    content=ft.Text("El título es obligatorio."),
+                    actions=[ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_err))],
+                    modal=True,
+                )
+                page.open(dlg_err)
+                return
+
+            base_name = slugify(titulo)
+            destino = base_name + ".md"
+            # si es nueva nota y ya existe, añadir sufijo incremental
+            if is_new:
+                i = 1
+                while os.path.exists(os.path.join(RUTA_NOTAS, destino)):
+                    destino = f"{base_name}_{i}.md"
+                    i += 1
+            else:
+                # si renombró el título, actualizar nombre; evitar sobrescribir otra nota
+                if destino != filename:
+                    # si destino existe y no es el mismo archivo, evitar sobrescribir: añadir sufijo
+                    if os.path.exists(os.path.join(RUTA_NOTAS, destino)):
+                        i = 1
+                        new_dest = f"{base_name}_{i}.md"
+                        while os.path.exists(os.path.join(RUTA_NOTAS, new_dest)):
+                            i += 1
+                            new_dest = f"{base_name}_{i}.md"
+                        destino = new_dest
+
+            try:
+                os.makedirs(RUTA_NOTAS, exist_ok=True)
+                with open(os.path.join(RUTA_NOTAS, destino), "w", encoding="utf-8") as f:
+                    f.write(tf_content.value or "")
+                # si se renombró (editar con cambio de nombre), remover el antiguo
+                if not is_new and filename and destino != filename:
+                    try:
+                        os.remove(os.path.join(RUTA_NOTAS, filename))
+                    except Exception:
+                        pass
+                page.close(dlg)
+                construir_notas()
+                mostrar_lista()
+            except Exception as ex:
+                dlg_err = ft.AlertDialog(
+                    title=ft.Text("Error"),
+                    content=ft.Text("No se pudo guardar la nota."),
+                    actions=[ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_err))],
+                    modal=True,
+                )
+                page.open(dlg_err)
+
+        dlg = ft.AlertDialog(
+            title=ft.Text("Nueva nota" if is_new else f"Editar nota: {os.path.splitext(filename)[0]}"),
+            content=ft.Container(content=content_list, width=700, height=480),
+            actions=[ft.TextButton("Cancelar", on_click=lambda e: page.close(dlg)), ft.ElevatedButton("Guardar", on_click=guardar)],
+            modal=True,
+        )
+        page.open(dlg)
+
+    # ---- Confirmar y eliminar nota ----
+    def confirm_delete_note(page: ft.Page, filename: str):
+        def eliminar(e):
+            try:
+                os.remove(os.path.join(RUTA_NOTAS, filename))
+            except Exception:
+                pass
+            page.close(dlg)
+            construir_notas()
+            mostrar_lista()
+
+        dlg = ft.AlertDialog(
+            title=ft.Text("Confirmar eliminación"),
+            content=ft.Text(f"¿Eliminar la nota '{os.path.splitext(filename)[0]}'?"),
+            actions=[ft.TextButton("Cancelar", on_click=lambda e: page.close(dlg)), ft.TextButton("Eliminar", on_click=eliminar)],
+            actions_alignment=ft.MainAxisAlignment.END,
+            modal=True,
+        )
+        page.open(dlg)
+
     def construir_notas(filtro=""):
         lista_notas.controls.clear()
         archivos = listar_notas()
@@ -157,7 +288,6 @@ def pantalla_home(page: ft.Page):
             for archivo in sorted(archivos, key=lambda x: x.lower()):
                 nombre_sin_ext = os.path.splitext(archivo)[0]
                 if filtro in nombre_sin_ext.lower():
-                    # usar mismo estilo que las perlas: tamaño, centrado y padding iguales
                     card = ft.Card(
                         content=ft.Container(
                             content=ft.Row(
@@ -210,6 +340,10 @@ def pantalla_home(page: ft.Page):
                     on_click=lambda e: mostrar_lista()
                 ),
                 ft.Text(os.path.splitext(nombre_md)[0], size=22),
+                # botones editar / eliminar en la cabecera de la nota
+                ft.Container( expand=True ),
+                ft.IconButton( ft.Icons.EDIT, tooltip="Editar", on_click=lambda e, a=nombre_md: open_note_editor(page, filename=a) ),
+                ft.IconButton( ft.Icons.DELETE, tooltip="Eliminar", on_click=lambda e, a=nombre_md: confirm_delete_note(page, filename=a), icon_color=ft.Colors.RED_700),
             ], alignment=ft.MainAxisAlignment.START),
             ft.Container(
                 ft.Markdown(
@@ -225,21 +359,15 @@ def pantalla_home(page: ft.Page):
         ])
         actualizar_layout()
 
-    # Buscador unificado (usado para Perlas y Notas según la pestaña)
-    search_bar = ft.TextField(
-        label="Buscar pearls...",
-        on_change=lambda e: filter_current_value(e),
-        border=ft.InputBorder.UNDERLINE,
-        border_color=ft.Colors.OUTLINE,
-        bgcolor=ft.Colors.TRANSPARENT,
-        filled=False,
-        dense=True,
-        content_padding=ft.padding.symmetric(horizontal=12, vertical=10),
-        width=400,
-        expand=True,
+    # añadir botón rápido para nueva nota en la cabecera (junto al search_bar)
+    btn_new_nota = ft.IconButton(
+        icon=ft.Icons.ADD,
+        tooltip="Nueva nota",
+        on_click=lambda e: open_note_editor(page, filename=None),
     )
 
-    # Barra fija superior (contiene solo el search bar de Perlas)
+    # Barra superior inicial solo con el search_bar.
+    # El botón de nueva nota se añadirá/quitará según la pestaña activa en on_tab_change.
     barra_superior = ft.Container(
         content=ft.Row(
             controls=[search_bar],
@@ -273,8 +401,22 @@ def pantalla_home(page: ft.Page):
         idx = e.control.selected_index
         if idx == 0:
             search_bar.label = "Buscar pearls..."
+            # quitar el botón de nueva nota si está presente
+            try:
+                row = barra_superior.content
+                if btn_new_nota in row.controls:
+                    row.controls.remove(btn_new_nota)
+            except Exception:
+                pass
         else:
             search_bar.label = "Buscar notas..."
+            # añadir el botón de nueva nota si no está ya
+            try:
+                row = barra_superior.content
+                if btn_new_nota not in row.controls:
+                    row.controls.append(btn_new_nota)
+            except Exception:
+                pass
         # reaplicar el filtro actual (no limpiar el texto)
         filter_current_value()
         page.update()
