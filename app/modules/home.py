@@ -180,12 +180,51 @@ def pantalla_home(page: ft.Page):
         tf_title = ft.TextField(label="Título", value=title_val, expand=True)
         tf_content = ft.TextField(label="Contenido (Markdown)", value=content_val, expand=True, multiline=True)
 
+        # Plantillas predeterminadas para el contenido
+        templates = {
+            "Seleccionar plantilla": "",
+
+            "HC Medicina general": "## HISTORIA CLÍNICA - MEDICINA GENERAL\n\n### 1. Identificación\n- Nombre:\n- Edad:\n- Sexo:\n- Ocupación:\n- Estado civil:\n- Fecha de consulta:\n- Motivo de consulta:\n\n### 2. Historia de la enfermedad actual (HEA)\n- Inicio:\n- Curso:\n- Síntomas principales:\n- Factores agravantes y atenuantes:\n- Tratamientos previos:\n\n### 3. Antecedentes personales\n- Patológicos:\n- Quirúrgicos:\n- Traumáticos:\n- Alérgicos:\n- Tóxicos:\n- Gineco-obstétricos (si aplica):\n\n### 4. Antecedentes familiares\n- Enfermedades hereditarias o familiares relevantes:\n\n### 5. Revisión por sistemas\n- Cabeza y cuello:\n- Respiratorio:\n- Cardiovascular:\n- Digestivo:\n- Genitourinario:\n- Músculo-esquelético:\n- Neurológico:\n\n### 6. Examen físico\n- Signos vitales:\n- General:\n- Cabeza y cuello:\n- Tórax:\n- Abdomen:\n- Extremidades:\n- Neurológico:\n\n### 7. Análisis / Impresión diagnóstica\n- Diagnóstico presuntivo:\n- Diagnóstico diferencial:\n\n### 8. Plan\n- Exámenes complementarios:\n- Tratamiento:\n- Educación al paciente:\n- Control y seguimiento:\n",
+
+            "HC Pediatria": "## HISTORIA CLÍNICA - PEDIATRÍA\n\n### 1. Identificación\n- Nombre:\n- Edad:\n- Sexo:\n- Fecha de nacimiento:\n- Escolaridad:\n- Acompañante / cuidador:\n- Motivo de consulta:\n\n### 2. Antecedentes prenatales, natales y postnatales\n- Control prenatal:\n- Edad gestacional al nacer:\n- Tipo de parto:\n- Peso y talla al nacer:\n- Complicaciones perinatales:\n\n### 3. Antecedentes personales\n- Patológicos:\n- Quirúrgicos:\n- Alérgicos:\n- Alimentarios:\n- Vacunación:\n- Desarrollo psicomotor:\n\n### 4. Antecedentes familiares\n- Enfermedades hereditarias:\n- Antecedentes relevantes en padres o hermanos:\n\n### 5. Historia de la enfermedad actual (HEA)\n- Inicio y evolución:\n- Síntomas principales:\n- Factores asociados:\n- Tratamientos previos:\n\n### 6. Examen físico\n- Signos vitales:\n- Peso / talla / IMC / percentil:\n- Cabeza:\n- Tórax:\n- Abdomen:\n- Extremidades:\n- Neurológico:\n\n### 7. Análisis / Impresión diagnóstica\n- Diagnóstico presuntivo:\n- Diagnósticos diferenciales:\n\n### 8. Plan\n- Laboratorios y estudios:\n- Tratamiento farmacológico:\n- Recomendaciones nutricionales:\n- Seguimiento y controles:\n",
+
+            "HC Ginecologia": "## HISTORIA CLÍNICA - GINECOLOGÍA\n\n### 1. Identificación\n- Nombre:\n- Edad:\n- Estado civil:\n- Ocupación:\n- Fecha de consulta:\n- Motivo de consulta:\n\n### 2. Antecedentes gineco-obstétricos\n- Menarquia:\n- Ciclo menstrual:\n- FUR (Fecha de última regla):\n- FUP (Fecha de última citología / papanicolau):\n- Gestaciones:\n- Partos:\n- Abortos:\n- Métodos anticonceptivos:\n- Vida sexual activa (VSA):\n\n### 3. Antecedentes personales y familiares\n- Patológicos:\n- Quirúrgicos:\n- Alérgicos:\n- Familiares:\n\n### 4. Historia de la enfermedad actual\n- Inicio y evolución:\n- Síntomas principales (flujo, dolor, sangrado, etc.):\n- Factores asociados:\n- Tratamientos previos:\n\n### 5. Examen físico\n- Signos vitales:\n- Mamas:\n- Abdomen:\n- Examen pélvico:\n- Especuloscopia:\n- Tacto bimanual:\n\n### 6. Análisis / Impresión diagnóstica\n- Diagnóstico presuntivo:\n- Diagnóstico diferencial:\n\n### 7. Plan\n- Estudios de laboratorio o imagen:\n- Tratamiento médico / quirúrgico:\n- Consejería y educación sexual:\n- Seguimiento:\n",
+        }
+
+
+
+        # Dropdown de plantillas
+        template_dropdown = ft.Dropdown(
+            label="Plantilla",
+            options=[ft.dropdown.Option(k) for k in templates.keys()],
+            value="Seleccionar plantilla",
+            width=True,
+            expand=True,
+        )
+
+        def on_template_change(e):
+            sel = (e.control.value or "")
+            # si hay contenido existente y se está editando, preguntar si sobrescribir?
+            # comportamiento: si tf_content está vacío o viene de la plantilla, reemplaza; si tiene texto no vacío concatena
+            tpl_text = templates.get(sel, "")
+            if not tpl_text:
+                return
+            # si el contenido actual es vacío o igual a la plantilla previa, reemplazar; en otro caso preguntar por concatenar
+            if not (tf_content.value or "").strip():
+                tf_content.value = tpl_text
+            else:
+                # concatenar la plantilla al contenido existente para no perder texto
+                tf_content.value = (tf_content.value or "") + "\n\n" + tpl_text
+            page.update()
+
+        template_dropdown.on_change = on_template_change
+
         # Scroll interno para evitar recortes
         content_list = ft.ListView(
             expand=True,
             padding=ft.padding.all(8),
             spacing=8,
-            controls=[tf_title, tf_content],
+            controls=[template_dropdown, tf_title, tf_content],
         )
 
         def guardar(e):
@@ -211,7 +250,6 @@ def pantalla_home(page: ft.Page):
             else:
                 # si renombró el título, actualizar nombre; evitar sobrescribir otra nota
                 if destino != filename:
-                    # si destino existe y no es el mismo archivo, evitar sobrescribir: añadir sufijo
                     if os.path.exists(os.path.join(RUTA_NOTAS, destino)):
                         i = 1
                         new_dest = f"{base_name}_{i}.md"
