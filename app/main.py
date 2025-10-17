@@ -327,7 +327,7 @@ def main(page: ft.Page):
             page.close(dlg)
             show_meds()
 
-        # Empaquetamos los TextFields en un ListView dentro de un Container para scroll interno
+        # Scroll interno para el dialogo
         content_list = ft.ListView(
             expand=True,
             padding=ft.padding.all(8),
@@ -339,8 +339,8 @@ def main(page: ft.Page):
             title=ft.Text("Nuevo medicamento" if is_new else "Editar medicamento"),
             content=ft.Container(
                 content=content_list,
-                width=600,   # ajusta si quieres
-                height=420,  # altura del diálogo con scroll interno
+                width=600,
+                height=420,
             ),
             actions=[ft.TextButton("Cancelar", on_click=lambda e: page.close(dlg)), ft.ElevatedButton("Guardar", on_click=guardar)],
             actions_alignment=ft.MainAxisAlignment.END,
