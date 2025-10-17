@@ -1,6 +1,6 @@
 [project]
 name = "medcore"
-version = "0.2.1"
+version = "1.0.0"
 description = "Application for calculating, searching, and accessing medical tools for your medical practice and study. "
 readme = "README.md"
 requires-python = ">=3.9"
