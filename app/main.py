@@ -36,7 +36,6 @@ def main(page: ft.Page):
             filled=False,
             dense=True,
             content_padding=ft.padding.symmetric(horizontal=12, vertical=10),
-            width=400,
             expand=True,
         )
 
@@ -57,7 +56,7 @@ def main(page: ft.Page):
                         padding=50,
                     )
                 )
-            list_container.update()
+            page.update()
 
         def filtrar_items(e):
             filtro = e.control.value.lower()
@@ -108,7 +107,256 @@ def main(page: ft.Page):
     RUTA_MEDS = os.path.abspath(os.path.join(os.path.dirname(__file__), "storage", "data", "meds"))
     os.makedirs(RUTA_MEDS, exist_ok=True) # Confirmacion de que existe el .json
 
-    # Generacion de panel por cada item de la Base de datos .json
+    def save_meds_to_json(meds_list):
+        os.makedirs(RUTA_MEDS, exist_ok=True)
+        ruta = os.path.join(RUTA_MEDS, "meds.json")
+        with open(ruta, "w", encoding="utf-8") as f:
+            json.dump(meds_list, f, ensure_ascii=False, indent=2)
+
+    def load_meds_raw():
+        ruta = os.path.join(RUTA_MEDS, "meds.json")
+        if not os.path.exists(ruta):
+            # crear archivo vacío si no existe
+            save_meds_to_json([])
+        with open(ruta, "r", encoding="utf-8") as f:
+            return json.load(f)
+
+    # reemplazar la función existente para usar load_meds_raw en vez de abrir directamente
+    def cargar_medicamentos_desde_json(ruta_archivo=None):
+        # Devuelve la lista cruda de medicamentos (dicts), ordenada alfabéticamente por nombre
+        meds = load_meds_raw()
+        return sorted(meds, key=lambda m: m.get("nombre", "").lower())
+
+    # ------------------------------------------
+    def pagina_medicamentos(page: ft.Page):
+        all_meds = cargar_medicamentos_desde_json()
+
+        buscar = "Buscar medicamentos..."
+        mensaje_no_resultados = ft.Text(
+            value="No se encontraron medicamentos.",
+            style=ft.TextThemeStyle.BODY_MEDIUM,
+            text_align=ft.TextAlign.CENTER,
+            color=ft.Colors.ON_SURFACE_VARIANT,
+        )
+
+        batch_size = 20
+        current_index = 0
+        current_data = all_meds
+        list_container = ft.Column(spacing=20)
+        loading = False 
+
+        def make_item(med):
+            return crear_panel_medicamento(med)["componente"]
+
+        def cargar_mas(need_update=True):
+            nonlocal current_index, loading
+            if loading:
+                return
+            loading = True
+            try:
+                if current_index >= len(current_data):
+                    return
+                end = min(current_index + batch_size, len(current_data))
+                # Evitar IndexError
+                for i in range(current_index, end):
+                    if i < len(current_data):
+                        try:
+                            list_container.controls.append(make_item(current_data[i]))
+                        except Exception:
+                            continue
+                current_index = min(end, len(current_data))
+                if need_update:
+                    try:
+                        page.update()
+                    except Exception:
+                        pass
+            finally:
+                loading = False
+
+        def on_scroll(e):
+            # Cargar más cuando se llega al final de la lista
+            try:
+                if e.pixels >= e.max_scroll_extent - 150:
+                    cargar_mas(need_update=True)
+            except Exception:
+                pass
+
+        def filtrar_items(e):
+            nonlocal current_data, current_index
+            try:
+                filtro = (e.control.value or "").lower()
+            except Exception:
+                filtro = ""
+            if not filtro:
+                current_data = all_meds
+            else:
+                # filtrar por nombre o tags
+                filtered = []
+                for med in all_meds:
+                    nombre = med.get("nombre", "").lower()
+                    tags = " ".join(med.get("tags", [])).lower()
+                    if filtro in nombre or filtro in tags:
+                        filtered.append(med)
+                # ordenar los resultados filtrados
+                current_data = sorted(filtered, key=lambda m: m.get("nombre", "").lower())
+            # reset y cargar lote
+            current_index = 0
+            list_container.controls.clear()
+            if len(current_data) == 0:
+                list_container.controls.append(
+                    ft.Container(
+                        content=mensaje_no_resultados,
+                        alignment=ft.alignment.center,
+                        padding=50,
+                    )
+                )
+                try:
+                    page.update()
+                except Exception:
+                    pass
+                return
+            # carga el primer lote de forma segura
+            try:
+                cargar_mas(need_update=False)
+                page.update()
+            except Exception:
+                try:
+                    page.update()
+                except Exception:
+                    pass
+
+        if len(current_data) == 0:
+            list_container.controls.append(
+                ft.Container(
+                    content=mensaje_no_resultados,
+                    alignment=ft.alignment.center,
+                    padding=50,
+                )
+            )
+        else:
+            end = min(batch_size, len(current_data))
+            for i in range(0, end):
+                list_container.controls.append(make_item(current_data[i]))
+            current_index = end
+
+        # Boton de añadir medicamento
+        btn_add = ft.IconButton(
+            icon=ft.Icons.ADD,
+            icon_size=28,
+            tooltip="Añadir medicamento",
+            on_click=lambda e: open_med_dialog(page, med=None),
+        )
+
+
+        search_field = search_bar(filtrar_items, buscar)
+
+        return ft.Column(
+            expand=True,
+            controls=[
+                ft.Container(
+                    content=ft.Row([search_field, btn_add], alignment=ft.MainAxisAlignment.CENTER, spacing=10),
+                    padding=ft.padding.symmetric(horizontal=40, vertical=10),
+                    alignment=ft.alignment.center,
+                ),
+                ft.Container(
+                    expand=True,
+                    content=ft.ListView(
+                        expand=True,
+                        padding=ft.padding.symmetric(horizontal=10, vertical=5),
+                        controls=[list_container],
+                        on_scroll=on_scroll,
+                    ),
+                ),
+            ],
+        )
+
+# -------------------------------------------------------------------------------
+    # Dialog para editar/crear un medicamento
+    def open_med_dialog(page: ft.Page, med=None, on_save=None):
+        is_new = med is None
+        temp = {
+            "nombre": "" if is_new else med.get("nombre", ""),
+            "tags": "" if is_new else ",".join(med.get("tags", [])),
+            "mecanismo": "" if is_new else med.get("mecanismo", ""),
+            "indicaciones": "" if is_new else med.get("indicaciones", ""),
+            "dosis": "" if is_new else med.get("dosis", ""),
+            "contraindicaciones": "" if is_new else med.get("contraindicaciones", ""),
+            "observaciones": "" if is_new else med.get("observaciones", "")
+        }
+
+        tf_nombre = ft.TextField(label="Nombre", value=temp["nombre"], expand=True)
+        tf_tags = ft.TextField(label="Tags (separar por comas)", value=temp["tags"], expand=True)
+        tf_mecanismo = ft.TextField(label="Mecanismo de acción", value=temp["mecanismo"], expand=True, multiline=True)
+        tf_indicaciones = ft.TextField(label="Indicaciones", value=temp["indicaciones"], expand=True, multiline=True)
+        tf_dosis = ft.TextField(label="Dosis", value=temp["dosis"], expand=True)
+        tf_contra = ft.TextField(label="Contraindicaciones", value=temp["contraindicaciones"], expand=True, multiline=True)
+        tf_obs = ft.TextField(label="Observaciones", value=temp["observaciones"], expand=True, multiline=True)
+
+        def guardar(e):
+            nombre = tf_nombre.value.strip()
+            if not nombre:
+                dlg_err = ft.AlertDialog(
+                    title=ft.Text("Error"),
+                    content=ft.Text("El nombre es obligatorio"),
+                    actions=[ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_err))],
+                    actions_alignment=ft.MainAxisAlignment.END,
+                    modal=True,
+                )
+                page.open(dlg_err)
+                return
+            nuevo = {
+                "nombre": nombre,
+                "tags": [t.strip() for t in tf_tags.value.split(",") if t.strip()],
+                "mecanismo": tf_mecanismo.value,
+                "indicaciones": tf_indicaciones.value,
+                "dosis": tf_dosis.value,
+                "contraindicaciones": tf_contra.value,
+                "observaciones": tf_obs.value
+            }
+            # cargar lista actual
+            meds = load_meds_raw()
+            if is_new:
+                meds.append(nuevo)
+            else:
+                # reemplazar el medicamento por nombre (si hay duplicados, reemplaza el primero)
+                for i, m in enumerate(meds):
+                    if m.get("nombre") == med.get("nombre"):
+                        meds[i] = nuevo
+                        break
+                else:
+                    meds.append(nuevo)
+            save_meds_to_json(meds)
+            page.close(dlg)
+            show_meds()
+
+        # Dialogo de nuevo medicamentos
+        dlg = ft.AlertDialog(
+            title=ft.Text("Nuevo medicamento" if is_new else "Editar medicamento"),
+            content=ft.Column(controls=[tf_nombre, tf_tags, tf_mecanismo, tf_indicaciones, tf_dosis, tf_contra, tf_obs], spacing=8),
+            actions=[ft.TextButton("Cancelar", on_click=lambda e: page.close(dlg)), ft.ElevatedButton("Guardar", on_click=guardar)],
+            actions_alignment=ft.MainAxisAlignment.END,
+            modal=True,
+        )
+        page.open(dlg)
+
+    def confirm_delete_med(page: ft.Page, med):
+        def eliminar(e):
+            meds = load_meds_raw()
+            meds = [m for m in meds if m.get("nombre") != med.get("nombre")]
+            save_meds_to_json(meds)
+            page.close(dlg)
+            show_meds()
+
+        dlg = ft.AlertDialog(
+            title=ft.Text("Confirmar eliminación"),
+            content=ft.Text(f"¿Eliminar el medicamento '{med.get('nombre')}'?"),
+            actions=[ft.TextButton("Cancelar", on_click=lambda e: page.close(dlg)), ft.TextButton("Eliminar", on_click=eliminar)],
+            actions_alignment=ft.MainAxisAlignment.END,
+            modal=True,
+        )
+        page.open(dlg)
+
+    # Incluir botones Editar/Eliminar en los paneles de los medicamentos
     def crear_panel_medicamento(med: dict):
         panel_ref = ft.Ref[ft.ExpansionPanel]()
 
@@ -131,16 +379,31 @@ def main(page: ft.Page):
                 spacing=10
             )
 
-        # Datos que se extraen y se muestran del .json
         contenido_panel = ft.Column(
             controls=[
-                fila_info("Mecanismo de acción:", med["mecanismo"]),
-                fila_info("Indicaciones:", med["indicaciones"]),
-                fila_info("Dosis:", med["dosis"]),
-                fila_info("Contraindicaciones:", med["contraindicaciones"]),
-                fila_info("Observaciones:", med["observaciones"])
+                fila_info("Mecanismo de acción:", med.get("mecanismo","")),
+                fila_info("Indicaciones:", med.get("indicaciones","")),
+                fila_info("Dosis:", med.get("dosis","")),
+                fila_info("Contraindicaciones:", med.get("contraindicaciones","")),
+                fila_info("Observaciones:", med.get("observaciones","")),
+                ft.Row( # botones al final del panel
+                    controls=[
+                        ft.ElevatedButton("Editar", icon=ft.Icons.EDIT, on_click=lambda e, m=med: open_med_dialog(page, med=m)),
+                        ft.ElevatedButton(
+                            "Eliminar",
+                            icon=ft.Icons.DELETE,
+                            on_click=lambda e, m=med: confirm_delete_med(page, m),
+                            style=ft.ButtonStyle(
+                                bgcolor=ft.Colors.RED_900,
+                                color=ft.Colors.BLUE_ACCENT
+                            ),
+                        ),
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    spacing=10
+                )
             ],
-            spacing=0
+            spacing=8
         )
 
         def on_expand_change(e):
@@ -150,8 +413,8 @@ def main(page: ft.Page):
             panel.update()
 
         return {
-            "titulo": med["nombre"],
-            "tags": med["tags"],
+            "titulo": med.get("nombre",""),
+            "tags": med.get("tags", []),
             "componente": ft.ExpansionPanelList(
                 on_change=on_expand_change,
                 expand_icon_color=TEXT_COLOR,
@@ -161,7 +424,7 @@ def main(page: ft.Page):
                     ft.ExpansionPanel(
                         ref=panel_ref,
                         header=ft.ListTile(
-                            title=ft.Text(med["nombre"], text_align=ft.TextAlign.LEFT),
+                            title=ft.Text(med.get("nombre",""), text_align=ft.TextAlign.LEFT),
                         ),
                         content=ft.Container(
                             content=contenido_panel,
@@ -173,41 +436,6 @@ def main(page: ft.Page):
                 ],
             )
         }
-
-    def cargar_medicamentos_desde_json(ruta_archivo):
-        with open(ruta_archivo, "r", encoding="utf-8") as f:
-            datos = json.load(f)
-        return [crear_panel_medicamento(med) for med in datos]
-
-    def pagina_medicamentos(page: ft.Page):
-        list_data = cargar_medicamentos_desde_json(f"{RUTA_MEDS}/meds.json")
-        buscar = "Buscar medicamentos..."
-        mensaje_no_resultados = ft.Text(
-            value="No se encontraron medicamentos.",
-            style=ft.TextThemeStyle.BODY_MEDIUM,
-            text_align=ft.TextAlign.CENTER,
-            color=ft.Colors.ON_SURFACE_VARIANT,
-        )
-        list_container, filtrar_items = list_content_search(list_data, mensaje_no_resultados)
-
-        return ft.Column(
-            expand=True,
-            controls=[
-                ft.Container(
-                    content=search_bar(filtrar_items, buscar),
-                    padding=ft.padding.symmetric(horizontal=40, vertical=10),
-                    alignment=ft.alignment.center,
-                ),
-                ft.Container(
-                    expand=True,
-                    content=ft.ListView(
-                        expand=True,
-                        padding=ft.padding.symmetric(horizontal=10, vertical=5),
-                        controls=[list_container],
-                    ),
-                ),
-            ],
-        )
 #-------------------------------------------
     # Contenido disponible
     def show_cals():
