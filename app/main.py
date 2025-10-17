@@ -313,12 +313,10 @@ def main(page: ft.Page):
                 "contraindicaciones": tf_contra.value,
                 "observaciones": tf_obs.value
             }
-            # cargar lista actual
             meds = load_meds_raw()
             if is_new:
                 meds.append(nuevo)
             else:
-                # reemplazar el medicamento por nombre (si hay duplicados, reemplaza el primero)
                 for i, m in enumerate(meds):
                     if m.get("nombre") == med.get("nombre"):
                         meds[i] = nuevo
@@ -329,10 +327,21 @@ def main(page: ft.Page):
             page.close(dlg)
             show_meds()
 
-        # Dialogo de nuevo medicamentos
+        # Empaquetamos los TextFields en un ListView dentro de un Container para scroll interno
+        content_list = ft.ListView(
+            expand=True,
+            padding=ft.padding.all(8),
+            spacing=8,
+            controls=[tf_nombre, tf_tags, tf_mecanismo, tf_indicaciones, tf_dosis, tf_contra, tf_obs],
+        )
+
         dlg = ft.AlertDialog(
             title=ft.Text("Nuevo medicamento" if is_new else "Editar medicamento"),
-            content=ft.Column(controls=[tf_nombre, tf_tags, tf_mecanismo, tf_indicaciones, tf_dosis, tf_contra, tf_obs], spacing=8),
+            content=ft.Container(
+                content=content_list,
+                width=600,   # ajusta si quieres
+                height=420,  # altura del diálogo con scroll interno
+            ),
             actions=[ft.TextButton("Cancelar", on_click=lambda e: page.close(dlg)), ft.ElevatedButton("Guardar", on_click=guardar)],
             actions_alignment=ft.MainAxisAlignment.END,
             modal=True,
