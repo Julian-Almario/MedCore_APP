@@ -7,6 +7,22 @@ BACKEND_URL = "http://localhost:8000"
 
 def descargar_md_desde_backend(page: ft.Page):
     try:
+        # Asegurar que la carpeta exista
+        os.makedirs(RUTA_MDS, exist_ok=True)
+
+        # Eliminar .md existentes
+        borrados = 0
+        for nombre in os.listdir(RUTA_MDS):
+            ruta = os.path.join(RUTA_MDS, nombre)
+            if os.path.isfile(ruta) and nombre.lower().endswith(".md"):
+                try:
+                    os.remove(ruta)
+                    borrados += 1
+                except Exception:
+                    # ignorar errores individuales de borrado
+                    pass
+
+        # Descargar archivos desde el backend
         resp = requests.get(f"{BACKEND_URL}/pearls")
         resp.raise_for_status()
         archivos = resp.json().get("pearls", [])
@@ -16,16 +32,16 @@ def descargar_md_desde_backend(page: ft.Page):
             archivo_url = f"{BACKEND_URL}/pearls/{archivo}"
             r = requests.get(archivo_url)
             if r.status_code == 200:
-                with open(os.path.join(RUTA_MDS, archivo), "w", encoding="utf-8") as f:
+                destino = os.path.join(RUTA_MDS, archivo)
+                with open(destino, "w", encoding="utf-8") as f:
                     f.write(r.text)
                 descargados += 1
 
+        # Mostrar diálogo de descarga
         dlg_exito = ft.AlertDialog(
-            title=ft.Text("Descarga completada"),
-            content=ft.Text(f"Se actualizaron las guías ({descargados})"),
-            actions=[
-                ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_exito))
-            ],
+            title=ft.Text("Actualización completada"),
+            content=ft.Text(f"Se actualizaron las perlas"),
+            actions=[ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_exito))],
             actions_alignment=ft.MainAxisAlignment.END,
         )
         page.dialog = dlg_exito
@@ -34,10 +50,8 @@ def descargar_md_desde_backend(page: ft.Page):
     except Exception as ex:
         dlg_error = ft.AlertDialog(
             title=ft.Text("Error"),
-            content=ft.Text("Ocurrió un error al descargar los archivos."),
-            actions=[
-                ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_error))
-            ],
+            content=ft.Text(f"Ocurrió un error al actualizar: {str(ex)}"),
+            actions=[ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_error))],
             actions_alignment=ft.MainAxisAlignment.END,
         )
         page.dialog = dlg_error
@@ -79,7 +93,7 @@ def info_page(page: ft.Page):
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
-    #Lista de referencias
+    # Lista de referencias
     referencias = [
         "- Huerta Aragonés J, Cela de Julián E. Hematología práctica: interpretación del hemograma y de las pruebas de coagulación. En: AEPap (ed.). Curso de Actualización Pediatría 2018. Madrid: Lúa Ediciones 3.0; 2018. p. 507-526.",
         "- Singer M, Deutschman CS, Seymour CW, et al. The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3). JAMA. 2016;315(8):801–810. doi:10.1001/jama.2016.0287",
@@ -88,7 +102,7 @@ def info_page(page: ft.Page):
         "- Interpretación del líquido cefalorraquídeo. (n.d.). Retrieved June 3, 2025, from https://www.elsevier.es/es-revista-anales-pediatria-continuada-51-pdf-S1696281814701647"
     ]
 
-    #Informacion de referencias, terminos y condiciones, y privacidad
+    # Informacion de referencias, terminos y condiciones, y privacidad
     info_panel = ft.ExpansionPanelList(
         expand_icon_color=ft.Colors.WHITE,
         elevation=8,
@@ -156,6 +170,8 @@ def info_page(page: ft.Page):
             ),
         ]
     )
+
+    # Boton de actualizar bases de datos
     btn_actualizar = ft.ElevatedButton(
         text="Actualizar Bases de datos",
         icon=ft.Icons.AUTORENEW,
@@ -166,6 +182,7 @@ def info_page(page: ft.Page):
         ),
     )
 
+    # Vista principal de información
     return ft.Column(
         scroll=ft.ScrollMode.AUTO,
         expand=True,

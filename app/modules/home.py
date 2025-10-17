@@ -1,6 +1,5 @@
 import os
 import flet as ft
-import requests  # Agrega esta importación
 
 # Carpeta donde se almacenan los archivos Markdown
 RUTA_MDS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "storage", "data", "guias"))
@@ -13,7 +12,7 @@ def pantalla_home(page: ft.Page):
     lista_tarjetas = ft.Column(spacing=10, expand=True)
     mostrar_barra = True
 
-    # Layout principal que se va a modificar
+    # Layout principal
     layout_principal = ft.Column(expand=True)
 
     def construir_tarjetas(filtro=""):
@@ -108,7 +107,7 @@ def pantalla_home(page: ft.Page):
         ])
         actualizar_layout()
 
-    # Barra superior: search bar y botón
+    # Buscador de perlas
     search_bar = ft.TextField(
         label="Buscar pearls...",
         on_change=filtrar_md,
@@ -122,6 +121,7 @@ def pantalla_home(page: ft.Page):
         expand=True,
     )
 
+    # Barra fiaja superior
     barra_superior = ft.Container(
         content=ft.Row(
             controls=[search_bar],
@@ -140,7 +140,6 @@ def pantalla_home(page: ft.Page):
         ),
     )
 
-    # Solo modifica los controles del layout principal
     def actualizar_layout():
         layout_principal.controls.clear()
         if mostrar_barra:
