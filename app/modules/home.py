@@ -448,11 +448,13 @@ def pantalla_home(page: ft.Page):
         filter_current_value()
         page.update()
 
+    
     tabs = ft.Tabs(
         expand=True,
         on_change=on_tab_change,
+        tab_alignment=ft.TabAlignment.CENTER,
         tabs=[
-            ft.Tab(text="Perlas", content=ft.Column(controls=[area_perlas_scroll], expand=True)),
+            ft.Tab(text="Perlas",content=ft.Column(controls=[area_perlas_scroll], expand=True)),
             ft.Tab(text="Mis notas", content=ft.Column(controls=[area_notas_scroll], expand=True)),
         ],
     )
