@@ -6,7 +6,7 @@ import shutil
 
 RUTA_MDS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "storage", "data", "guias"))
 RUTA_ASSETS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "assets", "anexos"))
-BACKEND_URL = "http://localhost:8000"
+BACKEND_URL = "https://medcoreappbackend.vercel.app/"
 
 def descargar_md_desde_backend(page: ft.Page, show_dialog: bool = True):
     try:
