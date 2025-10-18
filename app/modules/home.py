@@ -41,7 +41,7 @@ def pantalla_home(page: ft.Page):
         if not archivos:
             lista_tarjetas.controls.append(
                 ft.Container(
-                    content=ft.Text("No tienes archivos Markdown subidos", size=16, color=ft.Colors.RED, text_align=ft.TextAlign.CENTER),
+                    content=ft.Text("Descarga perlas en > Info > Actualizar bases de datos", size=16, color=ft.Colors.RED, text_align=ft.TextAlign.CENTER),
                     alignment=ft.alignment.center,
                     height=120
                 )
@@ -55,7 +55,7 @@ def pantalla_home(page: ft.Page):
                             content=ft.Row(
                                 controls=[
                                     ft.Text(
-                                        nombre_sin_ext,
+                                        pretty_title(archivo),
                                         size=18,
                                         text_align=ft.TextAlign.CENTER,
                                     )
@@ -82,14 +82,6 @@ def pantalla_home(page: ft.Page):
                         height=120
                     )
                 )
-
-    def filtrar_md(e):
-        filtro = (search_bar.value or "").strip()
-        construir_tarjetas(filtro)
-
-    def filtrar_notas(e):
-        filtro = (search_bar.value or "").strip()
-        construir_notas(filtro)
 
     def filter_current_value(_e=None):
         try:
@@ -129,7 +121,7 @@ def pantalla_home(page: ft.Page):
                     tooltip="Volver",
                     on_click=lambda e: mostrar_lista()
                 ),
-                ft.Text(os.path.splitext(nombre_md)[0], size=22),
+                ft.Text(pretty_title(nombre_md), size=22),
             ], alignment=ft.MainAxisAlignment.START),
             ft.Container(
                 ft.Markdown(

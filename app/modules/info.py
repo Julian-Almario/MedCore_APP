@@ -6,7 +6,7 @@ import shutil
 
 RUTA_MDS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "storage", "data", "guias"))
 RUTA_ASSETS = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "assets", "anexos"))
-BACKEND_URL = "https://medcoreappbackend.vercel.app/"
+BACKEND_URL = "https://medcoreappbackend.vercel.app"
 
 def descargar_md_desde_backend(page: ft.Page, show_dialog: bool = True):
     try:
@@ -26,7 +26,6 @@ def descargar_md_desde_backend(page: ft.Page, show_dialog: bool = True):
                     actions=[ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_info))],
                     actions_alignment=ft.MainAxisAlignment.END,
                 )
-                page.dialog = dlg_info
                 page.open(dlg_info)
             return {"success": True, "descargados": 0, "borrados": 0, "message": msg}
 
@@ -52,7 +51,6 @@ def descargar_md_desde_backend(page: ft.Page, show_dialog: bool = True):
                     actions=[ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_error))],
                     actions_alignment=ft.MainAxisAlignment.END,
                 )
-                page.dialog = dlg_error
                 page.open(dlg_error)
             return {"success": False, "message": str(ex)}
 
@@ -80,7 +78,6 @@ def descargar_md_desde_backend(page: ft.Page, show_dialog: bool = True):
                     actions=[ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_exito))],
                     actions_alignment=ft.MainAxisAlignment.END,
                 )
-                page.dialog = dlg_exito
                 page.open(dlg_exito)
             try:
                 page.update()
@@ -98,7 +95,6 @@ def descargar_md_desde_backend(page: ft.Page, show_dialog: bool = True):
                 actions=[ft.TextButton("Cerrar", on_click=lambda e: page.close(dlg_error))],
                 actions_alignment=ft.MainAxisAlignment.END,
             )
-            page.dialog = dlg_error
             page.open(dlg_error)
         return {"success": False, "message": str(ex)}
 
@@ -248,7 +244,6 @@ def info_page(page: ft.Page):
             actions=[ft.TextButton("Cerrar", on_click=lambda ev: page.close(dlg))],
             actions_alignment=ft.MainAxisAlignment.END,
         )
-        page.dialog = dlg
         page.open(dlg)
 
     btn_actualizar = ft.ElevatedButton(
@@ -305,7 +300,7 @@ def descargar_imagenes_desde_backend(page: ft.Page, on_update: callable = None, 
         return {"success": True, "descargados": 0, "removed": 0, "message": msg}
 
     descargados = 0
-    # Usar mkdtemp para mantener los archivos hasta confirmar la operación
+    # Confirmar descarga
     tmpdir = tempfile.mkdtemp()
     try:
         try:
