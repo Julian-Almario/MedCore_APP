@@ -136,50 +136,55 @@ def ckd_epi_2021():
     resultado_ckd = ft.Text("eGFR (CKD-EPI 2021): -", text_align=ft.TextAlign.CENTER, color=TEXT_COLOR)
     interpretacion_ckd = ft.Text("Clasificación: -", text_align=ft.TextAlign.CENTER, color=TEXT_COLOR)
 
-    tabla_clasificacion = ft.DataTable(
-        columns=[
-            ft.DataColumn(ft.Text(f"Grupo", color=TEXT_COLOR,text_align=ft.TextAlign.CENTER)),
-            ft.DataColumn(ft.Text(f"eGFR\n(mL/min/1.73m²)", color=TEXT_COLOR,text_align=ft.TextAlign.CENTER)),
-            ft.DataColumn(ft.Text(f"Descripción", color=TEXT_COLOR,text_align=ft.TextAlign.CENTER)),
-        ],
-        rows=[
-            ft.DataRow(cells=[
-                ft.DataCell(ft.Text("G1", color=TEXT_COLOR)),
-                ft.DataCell(ft.Text("≥ 90", color=TEXT_COLOR)),
-                ft.DataCell(ft.Text("Función renal normal", color=TEXT_COLOR)),
-            ]),
-            ft.DataRow(cells=[
-                ft.DataCell(ft.Text("G2", color=TEXT_COLOR)),
-                ft.DataCell(ft.Text("60–89", color=TEXT_COLOR)),
-                ft.DataCell(ft.Text("Disminución leve", color=TEXT_COLOR)),
-            ]),
-            ft.DataRow(cells=[
-                ft.DataCell(ft.Text("G3a", color=TEXT_COLOR)),
-                ft.DataCell(ft.Text("45–59", color=TEXT_COLOR)),
-                ft.DataCell(ft.Text("Disminución leve-moderada", color=TEXT_COLOR)),
-            ]),
-            ft.DataRow(cells=[
-                ft.DataCell(ft.Text("G3b", color=TEXT_COLOR)),
-                ft.DataCell(ft.Text("30–44", color=TEXT_COLOR)),
-                ft.DataCell(ft.Text("Disminución moderada-severa", color=TEXT_COLOR)),
-            ]),
-            ft.DataRow(cells=[
-                ft.DataCell(ft.Text("G4", color=TEXT_COLOR)),
-                ft.DataCell(ft.Text("15–29", color=TEXT_COLOR)),
-                ft.DataCell(ft.Text("Disminución severa", color=TEXT_COLOR)),
-            ]),
-            ft.DataRow(cells=[
-                ft.DataCell(ft.Text("G5", color=TEXT_COLOR)),
-                ft.DataCell(ft.Text("< 15", color=TEXT_COLOR)),
-                ft.DataCell(ft.Text("Falla renal", color=TEXT_COLOR)),
-            ]),
-        ],
-        border=ft.border.all(1, TEXT_COLOR),
-        vertical_lines=ft.border.BorderSide(1, TEXT_COLOR),
-        column_spacing=60,
-        horizontal_margin=10,
-        data_row_max_height=50,
-        heading_row_color=ft.Colors.with_opacity(0.1, TEXT_COLOR)
+    # Tabla responsiva: usar contenedores expandibles en encabezados y celdas
+    tabla_clasificacion = ft.Container(
+        expand=True,
+        content=ft.DataTable(
+            columns=[
+                ft.DataColumn(ft.Container(expand=True, content=ft.Text("Grupo", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                ft.DataColumn(ft.Container(expand=True, content=ft.Text("eGFR\n(mL/min/1.73m²)", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                ft.DataColumn(ft.Container(expand=True, content=ft.Text("Descripción", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+            ],
+            rows=[
+                ft.DataRow(cells=[
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("G1", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("≥ 90", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("Función renal normal", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                ]),
+                ft.DataRow(cells=[
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("G2", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("60–89", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("Disminución leve", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                ]),
+                ft.DataRow(cells=[
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("G3a", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("45–59", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("Disminución leve-moderada", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                ]),
+                ft.DataRow(cells=[
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("G3b", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("30–44", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("Disminución moderada-severa", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                ]),
+                ft.DataRow(cells=[
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("G4", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("15–29", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("Disminución severa", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                ]),
+                ft.DataRow(cells=[
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("G5", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("< 15", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                    ft.DataCell(ft.Container(expand=True, content=ft.Text("Falla renal", color=TEXT_COLOR, text_align=ft.TextAlign.CENTER))),
+                ]),
+            ],
+            border=ft.border.all(1, TEXT_COLOR),
+            vertical_lines=ft.border.BorderSide(1, TEXT_COLOR),
+            column_spacing=20,
+            horizontal_margin=8,
+            data_row_max_height=50,
+            heading_row_color=ft.Colors.with_opacity(0.06, TEXT_COLOR)
+        ),
+        padding=ft.padding.symmetric(horizontal=8, vertical=6)
     )
 
     def calcular_ckd(e):

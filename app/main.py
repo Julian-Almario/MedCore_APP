@@ -3,7 +3,6 @@ import os
 import json
 from modules.cal import *
 from modules.info import *
-from modules.labs import *
 from modules.home import *
 
 def main(page: ft.Page):
@@ -462,11 +461,6 @@ def main(page: ft.Page):
         main_content.controls.append(pantalla_home(page))
         page.update()
 
-    def show_labs():
-        main_content.controls.clear()
-        main_content.controls.append(build_fixed_page(paraclinicos, "Buscar laboratorio..."))
-        page.update()
-
     def show_info():
         main_content.controls.clear()
         main_content.controls.append(info_page(page))
@@ -489,8 +483,8 @@ def main(page: ft.Page):
             controls=[
                 # Botones de la barra de navegacion (para crear mas no se te olvide especificar y/o cambia la pagina a la cual apunta)
                 ft.TextButton(
-                    text="Perlas",
-                    icon=ft.Icons.NEWSPAPER,
+                    text="Home",
+                    icon=ft.Icons.HOME,
                     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 0 else SELECT_COLOR),
                     on_click=lambda e: cambiar_pagina(0),
                 ),
@@ -507,16 +501,10 @@ def main(page: ft.Page):
                     on_click=lambda e: cambiar_pagina(2),
                 ),
                 ft.TextButton(
-                    text="Laboratorios",
-                    icon=ft.Icons.BIOTECH_OUTLINED,
-                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 3 else SELECT_COLOR),
-                    on_click=lambda e: cambiar_pagina(3),
-                ),
-                ft.TextButton(
                     text="Info",
                     icon=ft.Icons.INFO_OUTLINED,
-                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 4 else SELECT_COLOR),
-                    on_click=lambda e: cambiar_pagina(4),
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 3 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(3),
                 )
 
             ]
@@ -543,8 +531,6 @@ def main(page: ft.Page):
         elif current_page_index == 2:
             show_meds()
         elif current_page_index == 3:
-            show_labs()
-        elif current_page_index == 4:
             show_info()
 
 

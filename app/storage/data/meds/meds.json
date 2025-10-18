@@ -847,17 +847,6 @@
     "tags": ["antipsicótico", "bipolar", "dopamina", "autismo", "esquizofrenia"]
   },
   {
-    "nombre": "Haloperidol",
-    "mecanismo": "Antipsicótico típico (butirofenona) que bloquea fuertemente los receptores dopaminérgicos D2 en vías mesolímbicas y nigroestriatales.",
-    "indicaciones": "• Esquizofrenia\n• Delirium\n• Agitación psicomotriz aguda\n• Síndromes de Tourette",
-    "dosis": "• Adultos: 1–10 mg/día oral o IM.\n• Crisis aguda: 5 mg IM cada 4–6 h según necesidad.",
-    "contraindicaciones": "• Coma, depresión del SNC, enfermedad de Parkinson, hipersensibilidad.",
-    "observaciones": "• Alta incidencia de síntomas extrapiramidales.\n• Menor riesgo de efectos metabólicos.",
-    "interacciones": "• Potencia sedación con alcohol.\n• Riesgo de arritmias con fármacos que prolongan QT.",
-    "toxicidad": "• Distonías agudas, parkinsonismo, discinesia tardía, prolongación del QT.",
-    "tags": ["antipsicótico", "típico", "dopamina", "delirium", "Tourette"]
-  },
-  {
     "nombre": "Litio",
     "mecanismo": "Modula la neurotransmisión serotoninérgica y noradrenérgica. Inhibe la señalización de inositol trifosfato y proteína G, estabilizando el estado de ánimo.",
     "indicaciones": "• Trastorno bipolar (prevención de episodios maníacos y depresivos)\n• Potenciador en depresión resistente",

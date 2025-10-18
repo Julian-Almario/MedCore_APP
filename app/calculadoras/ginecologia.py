@@ -311,8 +311,8 @@ def edad_corregida_prematuro():
 
 def bishop():
     opciones_bishop = {
-        "Dilatación (cm)": ["Cerrado", "1–2", "3–4", "≥5"],
-        "Borramiento (%)": ["0–30", "40–50", "60–70", "≥80"],
+        "Dilatación (cm)": ["Cerrado", "1–2 cm", "3–4 cm", "≥5 cm"],
+        "Borramiento (cm)": [">3 cm", "2-3 cm", "1-2 cm", "<1 cm"],
         "Estación fetal": ["–3", "–2", "–1/0", "+1/+2"],
         "Consistencia cervical": ["Firme", "Media", "Blanda"],
         "Posición cervical": ["Posterior", "Media", "Anterior"],
