@@ -143,7 +143,7 @@ def pantalla_home(page: ft.Page):
         text = re.sub(r"[\s]+", "_", text)
         return text or "nota"
 
-    # Mostrar título amigable: reemplazar guiones bajos por espacios
+    # Reemplazar guiones bajos por espacios
     def pretty_title(filename: str) -> str:
         root = os.path.splitext(filename)[0]
         return re.sub(r'[_]+', ' ', root).strip()

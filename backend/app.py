@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 CORS(app) 
 
-# Carpeta donde están los .md
+# Carpetas de guías y imágenes
 MDS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "guias"))
 IMAGES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "imagenes"))
 
@@ -20,7 +20,7 @@ def obtener_pearl(nombre_md):
         abort(404)
     return send_from_directory(MDS_DIR, nombre_md, mimetype="text/markdown")
 
-# NUEVAS RUTAS PARA IMÁGENES
+# Rutas para imágenes
 @app.route("/imagenes", methods=["GET"])
 def listar_images():
     if not os.path.isdir(IMAGES_DIR):
@@ -34,14 +34,13 @@ def obtener_image(nombre_img):
         abort(404)
     return send_from_directory(IMAGES_DIR, nombre_img)
 
-# Añadir esta ruta para servir el HTML de bienvenida en la raíz
+# Servir la página de inicio
 @app.route("/", methods=["GET"])
 def home_page():
     static_dir = os.path.join(os.path.dirname(__file__), "static")
     index_path = os.path.join(static_dir, "index.html")
     if os.path.isfile(index_path):
         return send_from_directory(static_dir, "index.html")
-    # fallback simple si el archivo no existe
     return "<h1>Bienvenido al backend de MedCore</h1><p>Servidor en ejecución.</p>", 200
 
 if __name__ == "__main__":

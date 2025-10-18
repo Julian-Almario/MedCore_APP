@@ -10,7 +10,6 @@ BACKEND_URL = "https://medcoreappbackend.vercel.app"
 
 def descargar_md_desde_backend(page: ft.Page, show_dialog: bool = True):
     try:
-        # Asegurar que la carpeta exista
         os.makedirs(RUTA_MDS, exist_ok=True)
 
         # Solicitar lista de perlas al backend
@@ -58,7 +57,7 @@ def descargar_md_desde_backend(page: ft.Page, show_dialog: bool = True):
         try:
             local_files = set(os.listdir(RUTA_MDS)) if os.path.exists(RUTA_MDS) else set()
             remote_files = set(archivos)
-            # eliminar locales que ya no están en remoto (solo .md)
+            # Eliminar locales que ya no están en remoto
             for nombre in local_files - remote_files:
                 ruta = os.path.join(RUTA_MDS, nombre)
                 if os.path.isfile(ruta) and nombre.lower().endswith(".md"):
@@ -67,7 +66,7 @@ def descargar_md_desde_backend(page: ft.Page, show_dialog: bool = True):
                         removed_count += 1
                     except Exception:
                         pass
-            # mover los nuevos descargados desde tmpdir a RUTA_MDS
+            # Mover los nuevos descargados desde tmpdir a RUTA_MDS
             for nombre in os.listdir(tmpdir):
                 shutil.move(os.path.join(tmpdir, nombre), os.path.join(RUTA_MDS, nombre))
             msg = f"Perlas: descargadas={descargados}, eliminadas_previas={removed_count}"

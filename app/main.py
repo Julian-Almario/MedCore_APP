@@ -104,7 +104,7 @@ def main(page: ft.Page):
 # -------------------------------------------------------------------------------
     # Ruta de medicamentos
     RUTA_MEDS = os.path.abspath(os.path.join(os.path.dirname(__file__), "storage", "data", "meds"))
-    os.makedirs(RUTA_MEDS, exist_ok=True) # Confirmacion de que existe el .json
+    os.makedirs(RUTA_MEDS, exist_ok=True)
 
     def save_meds_to_json(meds_list):
         os.makedirs(RUTA_MEDS, exist_ok=True)
@@ -115,14 +115,11 @@ def main(page: ft.Page):
     def load_meds_raw():
         ruta = os.path.join(RUTA_MEDS, "meds.json")
         if not os.path.exists(ruta):
-            # crear archivo vacío si no existe
             save_meds_to_json([])
         with open(ruta, "r", encoding="utf-8") as f:
             return json.load(f)
 
-    # reemplazar la función existente para usar load_meds_raw en vez de abrir directamente
     def cargar_medicamentos_desde_json(ruta_archivo=None):
-        # Devuelve la lista cruda de medicamentos (dicts), ordenada alfabéticamente por nombre
         meds = load_meds_raw()
         return sorted(meds, key=lambda m: m.get("nombre", "").lower())
 
@@ -189,16 +186,16 @@ def main(page: ft.Page):
             if not filtro:
                 current_data = all_meds
             else:
-                # filtrar por nombre o tags
+                # Filtrar por nombre o tags
                 filtered = []
                 for med in all_meds:
                     nombre = med.get("nombre", "").lower()
                     tags = " ".join(med.get("tags", [])).lower()
                     if filtro in nombre or filtro in tags:
                         filtered.append(med)
-                # ordenar los resultados filtrados
+                # Ordenar los resultados filtrados
                 current_data = sorted(filtered, key=lambda m: m.get("nombre", "").lower())
-            # reset y cargar lote
+            # Reset y cargar lote
             current_index = 0
             list_container.controls.clear()
             if len(current_data) == 0:
