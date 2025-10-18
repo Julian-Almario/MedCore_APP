@@ -13,7 +13,7 @@ def descargar_md_desde_backend(page: ft.Page, show_dialog: bool = True):
         # Asegurar que la carpeta exista
         os.makedirs(RUTA_MDS, exist_ok=True)
 
-        # Solicitar lista de perlas al backend (si falla aquí, no tocamos nada)
+        # Solicitar lista de perlas al backend
         resp = requests.get(f"{BACKEND_URL}/pearls", timeout=10)
         resp.raise_for_status()
         archivos = resp.json().get("pearls", [])
@@ -30,7 +30,7 @@ def descargar_md_desde_backend(page: ft.Page, show_dialog: bool = True):
                 page.open(dlg_info)
             return {"success": True, "descargados": 0, "borrados": 0, "message": msg}
 
-        # Descargar a un directorio temporal; si falla, no se toca RUTA_MDS
+        # Descargar a un directorio temporal
         tmpdir = tempfile.mkdtemp()
         descargados = 0
         try:
@@ -56,7 +56,6 @@ def descargar_md_desde_backend(page: ft.Page, show_dialog: bool = True):
                 page.open(dlg_error)
             return {"success": False, "message": str(ex)}
 
-        # Si llegamos aquí, las descargas fueron exitosas: aplicar cambios en RUTA_MDS
         removed_count = 0
         try:
             local_files = set(os.listdir(RUTA_MDS)) if os.path.exists(RUTA_MDS) else set()
@@ -227,7 +226,6 @@ def info_page(page: ft.Page):
     )
 
     def actualizar_bases(e):
-        # Ejecutar ambas actualizaciones en modo silencioso (sin diálogos individuales)
         res_md = {"success": False, "message": "No ejecutado"}
         res_img = {"success": False, "message": "No ejecutado"}
         try:
@@ -239,7 +237,7 @@ def info_page(page: ft.Page):
         except Exception as ex:
             res_img = {"success": False, "message": str(ex)}
 
-        # Construir un único diálogo resumen
+        # Comprobacion de confirmación
         lines = []
         success = res_md.get("success", False) and res_img.get("success", False)
         title = "Actualización completada" if success else "Fallo en la conexión con el servidor"
@@ -333,9 +331,7 @@ def descargar_imagenes_desde_backend(page: ft.Page, on_update: callable = None, 
                 )
                 page.open(dlg_error)
             return {"success": False, "message": msg}
-
-        # Confirmación antes de reemplazar los assets locales
-        # Si show_dialog es False, aplicar la actualización automáticamente y devolver resultado
+        
         try:
             local_files = set(os.listdir(RUTA_ASSETS)) if os.path.exists(RUTA_ASSETS) else set()
             remote_files = set(archivos)

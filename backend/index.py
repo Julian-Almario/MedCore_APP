@@ -34,5 +34,15 @@ def obtener_image(nombre_img):
         abort(404)
     return send_from_directory(IMAGES_DIR, nombre_img)
 
+# Añadir esta ruta para servir el HTML de bienvenida en la raíz
+@app.route("/", methods=["GET"])
+def home_page():
+    static_dir = os.path.join(os.path.dirname(__file__), "static")
+    index_path = os.path.join(static_dir, "index.html")
+    if os.path.isfile(index_path):
+        return send_from_directory(static_dir, "index.html")
+    # fallback simple si el archivo no existe
+    return "<h1>Bienvenido al backend de MedCore</h1><p>Servidor en ejecución.</p>", 200
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)

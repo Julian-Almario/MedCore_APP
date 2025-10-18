@@ -151,6 +151,11 @@ def pantalla_home(page: ft.Page):
         text = re.sub(r"[\s]+", "_", text)
         return text or "nota"
 
+    # Mostrar título amigable: reemplazar guiones bajos por espacios
+    def pretty_title(filename: str) -> str:
+        root = os.path.splitext(filename)[0]
+        return re.sub(r'[_]+', ' ', root).strip()
+
     def open_note_editor(page: ft.Page, filename: str = None):
         is_new = filename is None
         title_val = ""
@@ -158,11 +163,11 @@ def pantalla_home(page: ft.Page):
         if not is_new:
             ruta = os.path.join(RUTA_NOTAS, filename)
             try:
-                title_val = os.path.splitext(filename)[0]
+                title_val = pretty_title(filename)
                 with open(ruta, "r", encoding="utf-8") as f:
                     content_val = f.read()
             except Exception:
-                title_val = os.path.splitext(filename)[0]
+                title_val = pretty_title(filename)
                 content_val = ""
 
         tf_title = ft.TextField(label="Título", value=title_val, expand=True)
@@ -305,6 +310,7 @@ def pantalla_home(page: ft.Page):
         archivos = listar_notas()
         filtro = (filtro or "").lower()
         encontrados = False
+
         if not archivos:
             lista_notas.controls.append(
                 ft.Container(
@@ -313,42 +319,43 @@ def pantalla_home(page: ft.Page):
                     height=120
                 )
             )
-        else:
-            for archivo in sorted(archivos, key=lambda x: x.lower()):
-                nombre_sin_ext = os.path.splitext(archivo)[0]
-                if filtro in nombre_sin_ext.lower():
-                    card = ft.Card(
-                        content=ft.Container(
-                            content=ft.Row(
-                                controls=[
-                                    ft.Text(
-                                        nombre_sin_ext,
-                                        size=18,
-                                        text_align=ft.TextAlign.CENTER,
-                                    )
-                                ],
-                                alignment=ft.MainAxisAlignment.CENTER,
-                                vertical_alignment=ft.CrossAxisAlignment.CENTER,
-                            ),
-                            padding=20,
-                            width=True,
-                            height=80,
-                            alignment=ft.alignment.center,
-                            on_click=lambda e, a=archivo: ver_nota(a),
-                        ),
-                        margin=ft.margin.symmetric(vertical=8, horizontal=16),
-                        elevation=2,
-                    )
-                    lista_notas.controls.append(card)
-                    encontrados = True
-            if not encontrados:
-                lista_notas.controls.append(
-                    ft.Container(
-                        content=ft.Text("No se encontraron notas.", size=16, color=ft.Colors.OUTLINE, text_align=ft.TextAlign.CENTER),
-                        alignment=ft.alignment.center,
-                        height=120
-                    )
+            return
+
+        for archivo in sorted(archivos, key=lambda x: x.lower()):
+            nombre_sin_ext = os.path.splitext(archivo)[0]
+            nombre_busqueda = re.sub(r'[_]+', ' ', nombre_sin_ext).lower()
+            if filtro and filtro not in nombre_busqueda:
+                continue
+
+            card = ft.Card(
+                content=ft.Container(
+                    content=ft.Row(
+                        controls=[
+                            ft.Text(pretty_title(archivo), size=18, text_align=ft.TextAlign.CENTER),
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                    ),
+                    padding=20,
+                    width=True,
+                    height=80,
+                    alignment=ft.alignment.center,
+                    on_click=lambda e, a=archivo: ver_nota(a),
+                ),
+                margin=ft.margin.symmetric(vertical=8, horizontal=16),
+                elevation=2,
+            )
+            lista_notas.controls.append(card)
+            encontrados = True
+
+        if not encontrados:
+            lista_notas.controls.append(
+                ft.Container(
+                    content=ft.Text("No hay notas que coincidan con la búsqueda.", size=16, color=ft.Colors.OUTLINE, text_align=ft.TextAlign.CENTER),
+                    alignment=ft.alignment.center,
+                    height=120
                 )
+            )
 
     def ver_nota(nombre_md):
         nonlocal mostrar_barra, current_view
@@ -368,7 +375,7 @@ def pantalla_home(page: ft.Page):
                     tooltip="Volver",
                     on_click=lambda e: mostrar_lista()
                 ),
-                ft.Text(os.path.splitext(nombre_md)[0], size=22),
+                ft.Text(pretty_title(nombre_md), size=22),
                 ft.Container(expand=True),
                 ft.IconButton(ft.Icons.EDIT, tooltip="Editar", on_click=lambda e, a=nombre_md: open_note_editor(page, filename=a)),
                 ft.IconButton(ft.Icons.DELETE, tooltip="Eliminar", on_click=lambda e, a=nombre_md: confirm_delete_note(page, filename=a), icon_color=ft.Colors.RED_700),
