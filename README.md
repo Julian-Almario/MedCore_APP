@@ -13,12 +13,6 @@
 **MedCore** es una aplicación multiplataforma para **móvil, web y escritorio**, desarrollada en Python utilizando el framework [Flet](https://flet.dev).
 Su objetivo es centralizar calculadoras clínicas, valores de laboratorio de referencia y otros recursos útiles en una plataforma **intuitiva, modular y eficiente**.
 
-## Demostración
-
-<p align="center">
-  <img src="img/demo.gif" alt="MedCore Demo" width="400"/>
-</p>
-
 ## Características
 
 * **Uso inmediato sin necesidad de inicio de sesión**
