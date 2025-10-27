@@ -9,7 +9,6 @@ authors = [
 ]
 dependencies = [
   "flet==0.28.2",
-  "requests==2.32.4",
 ]
 
 [tool.flet]
@@ -33,7 +32,6 @@ key_alias = "upload"
 [tool.uv]
 dev-dependencies = [
     "flet[all]==0.28.2",
-    "requests==2.32.4",
 ]
 
 [tool.poetry]

@@ -1,0 +1,17 @@
+[
+  {
+    "nombre": "Codigo rojo",
+    "tags": ["ginecologia", "uterino", "emergencia", "postparto", "parto"],
+    "imagen": "codigorojo.png"
+  },
+  {
+    "nombre": "EPOC Gold 2025",
+    "tags": ["epoc", "pulmonar", "respiratorio", "ambulatorio"],
+    "imagen": "epocgold2025.png"
+  },
+  {
+    "nombre": "Control prenatal",
+    "tags": ["neonatos", "pediatria", "ginecologia", "ambulatorio"],
+    "imagen": "controlprenatal.jpeg"
+  }
+]
