@@ -4,6 +4,7 @@ import json
 from modules.cal import *
 from modules.info import *
 from modules.home import *
+from modules.hc import *
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
@@ -453,9 +454,9 @@ def main(page: ft.Page):
         main_content.controls.append(pagina_medicamentos(page))
         page.update()
     
-    def show_pearls():
+    def show_hc():
         main_content.controls.clear()
-        main_content.controls.append(pantalla_home(page))
+        main_content.controls.append(pantalla_historia_clinica(page))
         page.update()
 
     def show_info():
@@ -480,19 +481,19 @@ def main(page: ft.Page):
             controls=[
                 # Botones de la barra de navegacion (para crear mas no se te olvide especificar y/o cambia la pagina a la cual apunta)
                 ft.TextButton(
-                    text="Home",
-                    icon=ft.Icons.HOME,
+                    text="Calculadoras",
+                    icon=ft.Icons.CALCULATE_OUTLINED,
                     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 0 else SELECT_COLOR),
                     on_click=lambda e: cambiar_pagina(0),
                 ),
                 ft.TextButton(
-                    text="Calculadoras",
-                    icon=ft.Icons.CALCULATE_OUTLINED,
+                    text="Medicamentos",
+                    icon=ft.Icons.LOCAL_PHARMACY_OUTLINED,
                     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 1 else SELECT_COLOR),
                     on_click=lambda e: cambiar_pagina(1),
                 ),
                 ft.TextButton(
-                    text="Medicamentos",
+                    text="Historias clinicas",
                     icon=ft.Icons.LOCAL_PHARMACY_OUTLINED,
                     style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 2 else SELECT_COLOR),
                     on_click=lambda e: cambiar_pagina(2),
@@ -522,11 +523,11 @@ def main(page: ft.Page):
     # Paginacion
     def load_current_page():
         if current_page_index == 0:
-            show_pearls()
-        elif current_page_index == 1:
             show_cals()
-        elif current_page_index == 2:
+        elif current_page_index == 1:
             show_meds()
+        elif current_page_index == 2:
+            show_hc()
         elif current_page_index == 3:
             show_info()
 
