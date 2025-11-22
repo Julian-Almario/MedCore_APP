@@ -3,7 +3,6 @@ import os
 import json
 from modules.cal import *
 from modules.info import *
-from modules.home import *
 from modules.hc import *
 
 def main(page: ft.Page):
@@ -457,11 +456,6 @@ def main(page: ft.Page):
     def show_hc():
         main_content.controls.clear()
         main_content.controls.append(pantalla_historia_clinica(page))
-        page.update()
-    
-    def show_home():
-        main_content.controls.clear()
-        main_content.controls.append(pantalla_home(page))
         page.update()
 
     def show_info():
