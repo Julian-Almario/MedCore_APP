@@ -4,6 +4,7 @@ import json
 from modules.cal import *
 from modules.info import *
 from modules.hc import *
+from modules.anthro import *
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
@@ -463,6 +464,11 @@ def main(page: ft.Page):
         main_content.controls.append(info_page(page))
         page.update()
 
+    def show_anthro():
+        main_content.controls.clear()
+        main_content.controls.append(show_anthropometry())
+        page.update()
+
     # Barra de navegacion personalizada
     def cambiar_pagina(index):
         nonlocal current_page_index
@@ -492,16 +498,22 @@ def main(page: ft.Page):
                     on_click=lambda e: cambiar_pagina(1),
                 ),
                 ft.TextButton(
+                    text="anthropometry",
+                    icon=ft.Icons.RULE,
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 2 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(2)
+                ),
+                ft.TextButton(
                     text="Historias clinicas",
                     icon=ft.Icons.LOCAL_PHARMACY_OUTLINED,
-                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 2 else SELECT_COLOR),
-                    on_click=lambda e: cambiar_pagina(2),
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 3 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(3),
                 ),
                 ft.TextButton(
                     text="Info",
                     icon=ft.Icons.INFO_OUTLINED,
-                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 3 else SELECT_COLOR),
-                    on_click=lambda e: cambiar_pagina(3),
+                    style=ft.ButtonStyle(color=TEXT_COLOR if current_page_index == 4 else SELECT_COLOR),
+                    on_click=lambda e: cambiar_pagina(4),
                 )
 
             ]
@@ -526,8 +538,10 @@ def main(page: ft.Page):
         elif current_page_index == 1:
             show_meds()
         elif current_page_index == 2:
-            show_hc()
+            show_anthro()
         elif current_page_index == 3:
+            show_hc()
+        elif current_page_index == 4:
             show_info()
 
 
