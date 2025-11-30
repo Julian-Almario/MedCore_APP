@@ -1,22 +1,29 @@
-# modules/anthro.py
 import flet as ft
 import os
 import json
 from datetime import date, datetime
-from modules.colors import *   # mantiene tu paleta
+from modules.colors import *
 
-RUTA_JSON = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "storage", "data", "zscores", "girlzscore.json")
+RUTA_JSON_PESO_EDAD = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "storage", "data", "zscores", "peso-edad.json")
+)
+RUTA_JSON_PESO_TALLA = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "storage", "data", "zscores", "peso-talla.json")
 )
 
-with open(RUTA_JSON, "r", encoding="utf-8") as f:
-    DATA = json.load(f)
+with open(RUTA_JSON_PESO_EDAD, "r", encoding="utf-8") as f:
+    DATA_PE = json.load(f)
 
-# Convertir claves string -> int
-OMS_GIRLS_WEEKS  = {int(k): v for k, v in DATA["girls"]["weeks"].items()}
-OMS_GIRLS_MONTHS = {int(k): v for k, v in DATA["girls"]["months"].items()}
-OMS_BOYS_WEEKS   = {int(k): v for k, v in DATA["boys"]["weeks"].items()}
-OMS_BOYS_MONTHS  = {int(k): v for k, v in DATA["boys"]["months"].items()}
+OMS_GIRLS_WEEKS_PE  = {int(k): v for k, v in DATA_PE["girls"]["weeks"].items()}
+OMS_GIRLS_MONTHS_PE = {int(k): v for k, v in DATA_PE["girls"]["months"].items()}
+OMS_BOYS_WEEKS_PE   = {int(k): v for k, v in DATA_PE["boys"]["weeks"].items()}
+OMS_BOYS_MONTHS_PE  = {int(k): v for k, v in DATA_PE["boys"]["months"].items()}
+
+with open(RUTA_JSON_PESO_TALLA, "r", encoding="utf-8") as f:
+    DATA_PT = json.load(f)
+
+OMS_GIRLS_PESO_TALLA = {float(k): v for k, v in DATA_PT["girls"].items()}
+OMS_BOYS_PESO_TALLA = {float(k): v for k, v in DATA_PT["boys"].items()}
 
 def zscore_lms(value, L, M, S):
     if L == 0:
@@ -25,9 +32,9 @@ def zscore_lms(value, L, M, S):
 
 def calcular_z_peso_edad(sexo: str, edad: int, peso: float, unidad: str):
     if sexo == "girl":
-        tabla = OMS_GIRLS_WEEKS if unidad == "sem" else OMS_GIRLS_MONTHS
+        tabla = OMS_GIRLS_WEEKS_PE if unidad == "sem" else OMS_GIRLS_MONTHS_PE
     else:
-        tabla = OMS_BOYS_WEEKS if unidad == "sem" else OMS_BOYS_MONTHS
+        tabla = OMS_BOYS_WEEKS_PE if unidad == "sem" else OMS_BOYS_MONTHS_PE
 
     if edad not in tabla:
         return None
@@ -37,9 +44,26 @@ def calcular_z_peso_edad(sexo: str, edad: int, peso: float, unidad: str):
     S = tabla[edad]["S"]
     return zscore_lms(peso, L, M, S)
 
+def calcular_z_peso_talla(sexo: str, talla: float, peso: float):
+    if sexo == "girl":
+        tabla = OMS_GIRLS_PESO_TALLA
+    else:
+        tabla = OMS_BOYS_PESO_TALLA
+    
+    talla_redondeada = round(talla, 1)
+
+    if talla_redondeada not in tabla:
+        return None
+
+    L = tabla[talla_redondeada]["L"]
+    M = tabla[talla_redondeada]["M"]
+    S = tabla[talla_redondeada]["S"]
+    
+    return zscore_lms(peso, L, M, S)
+
 def interpretar_z(z):
     if z is None:
-        return "Datos incompletos"
+        return "Fuera de rango"
     if z < -3:
         return "Desnutrición severa"
     if -3 <= z < -2:
@@ -51,7 +75,6 @@ def interpretar_z(z):
     return "Obesidad"
 
 def calcular_edad_semanas_meses(fecha_str: str):
-    
     try:
         fnac = datetime.strptime(fecha_str, "%Y-%m-%d").date()
         hoy = date.today()
@@ -59,21 +82,39 @@ def calcular_edad_semanas_meses(fecha_str: str):
         if dias < 0:
             return None, None
         semanas = dias // 7
-        if semanas <= 13:
+        if dias <= 91:
             return semanas, "sem"
-        meses = dias // 30
-        return meses, "mes"
-    except Exception:
+        
+        meses_completos = int(dias // 30.4375)
+        
+        if 0 < meses_completos <= 60:
+             return meses_completos, "mes"
+        
+        return None, None
+    except ValueError:
         return None, None
 
 def show_anthropometry():
     fecha_texto = ft.Text("Fecha de nacimiento: -", color=TEXT_COLOR)
+    # Resultado ahora contendrá todos los índices (P/E, T/E, P/T)
     resultado = ft.Text("", size=16, color=TEXT_COLOR)
 
     date_picker_ref = ft.Ref[ft.DatePicker]()
-    peso_input = ft.TextField(label="Peso (kg)", width=220, keyboard_type=ft.KeyboardType.NUMBER)
+    
+    # Campo para el peso
+    peso_input = ft.TextField(
+        label="Peso (kg)", 
+        width=220, 
+        keyboard_type=ft.KeyboardType.NUMBER
+    )
+    
+    # Campo para la altura/talla
+    altura_input = ft.TextField(
+        label="Talla/Longitud (cm)",
+        width=220, 
+        keyboard_type=ft.KeyboardType.NUMBER
+    )
 
-    # sexo dropdown dentro del scope de la vista
     sexo_dropdown = ft.Dropdown(
         label="Sexo",
         width=220,
@@ -86,7 +127,6 @@ def show_anthropometry():
 
     edad_calculada = {"edad": None, "unidad": None}
 
-    # DatePicker y calculo de edad
     def on_fnac_selected(e):
         if e.data:
             fnac = datetime.fromisoformat(e.data).strftime("%Y-%m-%d")
@@ -94,7 +134,7 @@ def show_anthropometry():
             edad_calculada["edad"] = edad
             edad_calculada["unidad"] = unidad
             if edad is None:
-                fecha_texto.value = "Fecha inválida"
+                fecha_texto.value = "Fecha inválida o edad fuera de rango (0-60 meses)"
             else:
                 fecha_texto.value = f"Edad: {edad} {'semanas' if unidad == 'sem' else 'meses'}"
         else:
@@ -110,31 +150,51 @@ def show_anthropometry():
         date_picker_ref.current.open = True
         e.page.update()
 
-    # Handler calcular
+
     def calcular(e):
         try:
             peso = float(peso_input.value)
         except Exception:
-            resultado.value = "Error: peso inválido"
-            resultado.update()
-            return
+            peso = None
+        
+        try:
+            altura = float(altura_input.value)
+        except Exception:
+            altura = None
+
 
         edad = edad_calculada["edad"]
         unidad = edad_calculada["unidad"]
+        
         if edad is None:
             resultado.value = "Selecciona una fecha válida"
             resultado.update()
             return
+        
+        sexo = sexo_dropdown.value
+        
+        resultado_pe = ""
+        if peso is not None:
+            z_pe = calcular_z_peso_edad(sexo, edad, peso, unidad)
+            if z_pe is None:
+                resultado_pe = "P/E: Fuera de rango para la edad"
+            else:
+                dx_pe = interpretar_z(z_pe)
+                resultado_pe = f"**P/E** Z-score: {z_pe:.2f}\nDiagnóstico: {dx_pe}"
+        else:
+            resultado_pe = "P/E: Peso no ingresado"
 
-        sexo = sexo_dropdown.value  # "girl" o "boy"
-        z = calcular_z_peso_edad(sexo, edad, peso, unidad)
-        if z is None:
-            resultado.value = "Edad fuera del rango OMS (0–13 semanas / 0–60 meses)"
-            resultado.update()
-            return
 
-        dx = interpretar_z(z)
-        resultado.value = f"Z-score: {z:.2f}\nDiagnóstico: {dx}"
+        resultado_te_pt = "\n---\n"
+        if altura is None:
+            resultado_te_pt += "Talla/Longitud no ingresada. No se calculan T/E ni P/T."
+        else:
+            
+            resultado_te_pt += "T/E y P/T pendientes de cálculo."
+
+
+        # Mostrar el resultado final
+        resultado.value = f"{resultado_pe}{resultado_te_pt}"
         resultado.update()
 
     contenido = ft.Column(
@@ -144,7 +204,7 @@ def show_anthropometry():
         expand=False,
         controls=[
             ft.Text(
-                "Antropometría OMS — Peso para la edad",
+                "Antropometría OMS — Indicadores",
                 size=20,
                 weight=ft.FontWeight.BOLD,
                 color=TEXT_COLOR,
@@ -160,9 +220,16 @@ def show_anthropometry():
             fecha_texto,
 
             sexo_dropdown,
-
-            peso_input,
-
+            
+            
+            ft.Row(
+                alignment=ft.MainAxisAlignment.CENTER,
+                controls=[
+                    peso_input,
+                    altura_input, 
+                ]
+            ),
+            
             ft.ElevatedButton("Calcular", on_click=calcular),
 
             ft.Container(
@@ -171,7 +238,7 @@ def show_anthropometry():
                 margin=ft.margin.only(top=8),
                 border_radius=10,
                 bgcolor=PRIMARY_COLOR,
-                alignment=ft.alignment.center,
+                alignment=ft.alignment.center_left,
                 width=320
             ),
 
@@ -179,7 +246,6 @@ def show_anthropometry():
         ]
     )
 
-    # Envolver en un container expandible centrado horizontalmente
     return ft.Container(
         expand=True,
         alignment=ft.alignment.top_center,
@@ -191,4 +257,3 @@ def show_anthropometry():
             controls=[contenido]
         )
     )
-
