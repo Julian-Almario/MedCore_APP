@@ -187,10 +187,20 @@ def show_anthropometry():
 
         resultado_te_pt = "\n---\n"
         if altura is None:
-            resultado_te_pt += "Talla/Longitud no ingresada. No se calculan T/E ni P/T."
+             resultado_te_pt += "Talla/Longitud no ingresada. No se calculan T/E ni P/T."
         else:
-            
-            resultado_te_pt += "T/E y P/T pendientes de cálculo."
+            talla_cm = altura
+            talla_m = altura / 100
+            z_pt = calcular_z_peso_talla(sexo, talla_cm, peso)
+
+        if z_pt is None:
+            resultado_te_pt += "P/T: Fuera de rango para la talla\n"
+        else:
+            dx_pt = interpretar_z(z_pt)
+            resultado_te_pt += f"**P/T** Z-score: {z_pt:.2f}\nDiagnóstico: {dx_pt}\n"
+
+            resultado_te_pt += "\nT/E: Aún no implementado (faltan tablas OMS T/E)"
+
 
 
         # Mostrar el resultado final
@@ -204,7 +214,7 @@ def show_anthropometry():
         expand=False,
         controls=[
             ft.Text(
-                "Antropometría OMS — Indicadores",
+                "Antropometría OMS",
                 size=20,
                 weight=ft.FontWeight.BOLD,
                 color=TEXT_COLOR,
