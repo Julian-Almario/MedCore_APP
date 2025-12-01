@@ -4,7 +4,6 @@ import json
 from modules.cal import *
 from modules.info import *
 from modules.hc import *
-from modules.anthro import *
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
