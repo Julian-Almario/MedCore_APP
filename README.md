@@ -111,6 +111,8 @@ MedCore/
 
 **MedCore** busca ser una herramienta de referencia para estudiantes de medicina, médicos generales, que buscan tener a mano todas las herramientas posibles en un solo lugar para un trabajo y un aprendizaje mas optimo.
 
+⚠️ **ESTA APLICACIÓN ESTA HECHA CON FINES EDUCATIVOS Y DE APRENDIZAJ, SU USO ESTA SUJETO PLENAMTENE A LA UTILIDAD DEL USUARIO. ESTA APLICACION NO SUSTITUYE EL JUICIO CLINICO DEL PROFECIONAL DE SALUD** ⚠️
+
 ## Contribuciones
 
 ¡Las contribuciones son bienvenidas!
