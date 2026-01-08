@@ -106,4 +106,10 @@ calculadoras = [
             "tags": ["ginecolgia", "parto", "gestacion"],
             "componente": semanas_gestacion_por_fpp()
         },
+        {
+            "titulo": "WIFI score pie diabetico",
+            "tags": ["diabetes", "amputación", "infectologia"],
+            "componente": wifi_score()
+
+        }
     ]
