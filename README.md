@@ -102,6 +102,7 @@ MedCore/
   * [x] CKD-EPI 2021
   * [x] Brecha aniónica
   * [x] Sodio corregido
+  * [x] WIFI score
 * [x] Base de datos de medicamentos
 * [x] Editor de base de datos de medicamentos
 * [x] Búsqueda interactiva
