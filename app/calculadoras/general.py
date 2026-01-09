@@ -209,3 +209,141 @@ def talla_medioparental():
             )
         ],
     )
+
+def calculadora_paquete_año():
+    # Campos de entrada
+    cigarrillos_field = ft.TextField(
+        label="Cigarrillos por día",
+        hint_text="Ej: 10",
+        keyboard_type=ft.KeyboardType.NUMBER,
+        text_align=ft.TextAlign.CENTER,
+        width=250
+    )
+
+    anios_field = ft.TextField(
+        label="Años fumando",
+        hint_text="Ej: 5",
+        keyboard_type=ft.KeyboardType.NUMBER,
+        text_align=ft.TextAlign.CENTER,
+        width=250
+    )
+
+    resultado_texto = ft.Text(
+        "Índice Paquete-Año: -",
+        style=ft.TextThemeStyle.HEADLINE_SMALL,
+        color=TEXT_COLOR,
+        text_align=ft.TextAlign.CENTER
+    )
+
+    riesgo_texto = ft.Text(
+        "Riesgo: -",
+        style=ft.TextThemeStyle.BODY_LARGE,
+        color=TEXT_COLOR,
+        text_align=ft.TextAlign.CENTER
+    )
+
+    formula_text = ft.Text(
+        "Fórmula: (Cigarrillos/día x Años fumando) ÷ 20",
+        color=TEXT_COLOR,
+        size=14,
+        text_align=ft.TextAlign.CENTER
+    )
+
+    def calcular_paquete_anio(e):
+        try:
+            cigarrillos = float(cigarrillos_field.value.replace(',', '.'))
+            anios = float(anios_field.value.replace(',', '.'))
+
+            paquete_anio = (cigarrillos * anios) / 20
+
+            # Estratificación del riesgo
+            if paquete_anio < 10:
+                riesgo = "Nulo"
+            elif 10 <= paquete_anio < 20:
+                riesgo = "Leve"
+            elif 20 <= paquete_anio <= 40:
+                riesgo = "Moderado"
+            else:
+                riesgo = "Alto"
+
+            resultado_texto.value = f"Índice Paquete-Año: {paquete_anio:.2f}"
+            riesgo_texto.value = f"Riesgo: {riesgo}"
+            formula_text.value = (
+                f"Fórmula: ({cigarrillos} x {anios}) ÷ 20 = {paquete_anio:.2f}"
+            )
+
+        except ValueError:
+            resultado_texto.value = "Índice Paquete-Año: Valor inválido"
+            riesgo_texto.value = "Riesgo: -"
+            formula_text.value = "Fórmula: (Cigarrillos/día x Años fumando) ÷ 20"
+
+        resultado_texto.update()
+        riesgo_texto.update()
+        formula_text.update()
+
+    cigarrillos_field.on_change = calcular_paquete_anio
+    anios_field.on_change = calcular_paquete_anio
+
+    panel_ref = ft.Ref[ft.ExpansionPanel]()
+    panel_list_ref = ft.Ref[ft.ExpansionPanelList]()
+
+    def on_expand_change(e):
+        panel = panel_ref.current
+        is_expanded = panel.expanded
+        panel.bgcolor = SECONDARY_COLOR if is_expanded else PRIMARY_COLOR
+        panel.update()
+
+        if not is_expanded:
+            cigarrillos_field.value = ""
+            anios_field.value = ""
+            resultado_texto.value = "Índice Paquete-Año: -"
+            riesgo_texto.value = "Riesgo: -"
+            formula_text.value = "Fórmula: (Cigarrillos/día x Años fumando) ÷ 20"
+
+            cigarrillos_field.update()
+            anios_field.update()
+            resultado_texto.update()
+            riesgo_texto.update()
+            formula_text.update()
+
+    return ft.ExpansionPanelList(
+        ref=panel_list_ref,
+        on_change=on_expand_change,
+        expand_icon_color=TEXT_COLOR,
+        elevation=8,
+        divider_color=TEXT_COLOR,
+        controls=[
+            ft.ExpansionPanel(
+                ref=panel_ref,
+                header=ft.ListTile(
+                    title=ft.Text(
+                        "Índice Paquete-Año",
+                        text_align=ft.TextAlign.LEFT,
+                        color=TEXT_COLOR
+                    )
+                ),
+                content=ft.Container(
+                    content=ft.Column(
+                        controls=[
+                            ft.Column(
+                                controls=[
+                                    cigarrillos_field,
+                                    anios_field,
+                                ],
+                                spacing=8,
+                                horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                            ),
+                            ft.Row([formula_text], alignment=ft.MainAxisAlignment.CENTER),
+                            ft.Row([resultado_texto], alignment=ft.MainAxisAlignment.CENTER),
+                            ft.Row([riesgo_texto], alignment=ft.MainAxisAlignment.CENTER),
+                        ],
+                        spacing=15,
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                    ),
+                    padding=ft.padding.all(10)
+                ),
+                bgcolor=PRIMARY_COLOR,
+                expanded=False,
+            )
+        ],
+    )

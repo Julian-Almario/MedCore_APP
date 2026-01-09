@@ -110,6 +110,10 @@ calculadoras = [
             "titulo": "WIFI score pie diabetico",
             "tags": ["diabetes", "amputación", "infectologia"],
             "componente": wifi_score()
-
+        },
+        {
+            "titulo": "Indice tabaco año",
+            "tags": ["caridopulmonar", "prevención", "neumologia"],
+            "componente": calculadora_paquete_año()
         }
     ]
